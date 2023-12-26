@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>seisio.seg2 API documentation</title>
+<meta name="description" content="I/O of seismic files in SEG2 format." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>seisio.seg2</code></h1>
+</header>
+<section id="section-intro">
+<p>I/O of seismic files in SEG2 format.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;I/O of seismic files in SEG2 format.&#34;&#34;&#34;
+
+import logging
+import numpy as np
+import pandas as pd
+import time
+
+from struct import unpack_from
+
+from . import seisio
+from . import tools
+
+log = logging.getLogger(__name__)
+
+
+class Reader(seisio.SeisIO):
+    &#34;&#34;&#34;Class to deal with input of seismic files in SEG2 format.&#34;&#34;&#34;
+
+    def __init__(self, file):
+        &#34;&#34;&#34;
+        Initialize class Reader.
+
+        Parameters
+        ----------
+        file : str or pathlib.Path
+            The name of the SEG2 input file to read.
+        &#34;&#34;&#34;
+        super().__init__(file)
+
+        self._sg2 = self._SEG2()
+        self._fp.fixed = True
+
+        log.info(&#34;Input file: %s&#34;, self._fp.file)
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            fio.seek(0, 2)
+            self._fp.filesize = fio.tell()
+            fio.seek(0, 0)
+
+            # file descriptor block and free format section
+            tpb_size = self._read_file_descriptor_block(fio)
+            log.debug(&#34;Size of file descriptor block: %d bytes.&#34;, tpb_size)
+            self._read_trace_pointer_subblock(fio, tpb_size)
+            free_form_str = fio.read(self._sg2.trcptr[0]-fio.tell())
+            self._sg2.fheader = self._parse_free_format_section(self._sg2.fheader, free_form_str)
+            self._check_fdb_strings()
+            self._fp.skip = self._sg2.trcptr[0]
+            # first trace header descriptor block
+            fio.seek(self._sg2.trcptr[0], 0)
+            tdb_size = self._read_trace_descriptor_block(fio)
+            log.debug(&#34;Size of first trace descriptor block: %d bytes.&#34;, tpb_size)
+            free_form_str = fio.read(tdb_size-32)
+            self._sg2.theader = self._parse_free_format_section(self._sg2.theader, free_form_str)
+            self._check_tdb_strings()
+
+    @property
+    def fheader(self):
+        &#34;&#34;&#34;
+        Get information from the free-form file header.
+
+        Returns
+        -------
+        dict
+            The file header as dictionary.
+        &#34;&#34;&#34;
+        return self._sg2.fheader
+
+    @property
+    def vsi(self):
+        &#34;&#34;&#34;
+        Get the (vertical) sampling interval (of first trace).
+
+        Returns
+        -------
+        float
+            Sampling interval.
+        &#34;&#34;&#34;
+        return self._dp.si
+
+    def _read_file_descriptor_block(self, fio):
+        &#34;&#34;&#34;Read SEG2 file descriptor block.&#34;&#34;&#34;
+        fdb = fio.read(32)
+
+        # Determine the endianness and check validity of block
+        magic = np.frombuffer(fdb, dtype=&#39;B&#39;, count=2)
+        if magic[0] == 85 and magic[1] == 58:
+            self._fp.endian = &#34;&lt;&#34;
+        elif magic[0] == 58 and magic[1] == 85:
+            self._fp.endian = &#34;&gt;&#34;
+        else:
+            log.error(&#34;File descriptor block does not start 0x3a55 or 0x553a.&#34;)
+            raise ValueError(&#34;Invalid file descriptor block magic number.&#34;)
+        log.info(&#34;Valid SEG2 file descriptor found. File endianess: &#39;%s&#39;.&#34;, self._fp.endian)
+
+        # Check revision number
+        revno = np.frombuffer(fdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)
+        if revno != 1:
+            log.warning(&#34;Only SEG2 rev. 1 is supported. File&#39;s revision is &#34;
+                        &#34;%d, though. Trying to continue.&#34;, revno)
+        else:
+            log.info(&#34;File standard is SEG2 rev. 1.&#34;)
+
+        # Determine size of Trace Pointer Subblock in bytes
+        tpb_size, ntraces = np.frombuffer(fdb, dtype=f&#34;{self._fp.endian}H&#34;, count=2, offset=4)
+        log.debug(&#34;Size of trace pointer subblock: %d bytes.&#34;, tpb_size)
+
+        if ntraces*4 &gt; tpb_size:
+            log.error(&#34;File indicates %d traces but there are only %d trace &#34;
+                      &#34;pointers.&#34;, ntraces, tpb_size//4)
+            raise ValueError(&#34;Mismatch of number of traces and trace pointer block size.&#34;)
+        self._dp.nt = ntraces
+        log.info(&#34;Number of data traces in file: %d.&#34;, self.nt)
+
+        # Define string and line terminator
+        st_size, fstchar, sstchar, lt_size, fltchar, sltchar = unpack_from(&#34;BccBcc&#34;, fdb, 8)
+
+        log.debug(&#34;String terminator size: %d, characters &#39;%s&#39;,&#39;%s&#39;&#34;,
+                  st_size, fstchar, sstchar)
+        log.debug(&#34;Line terminator size: %d, characters &#39;%s&#39;,&#39;%s&#39;&#34;,
+                  lt_size, fltchar, sltchar)
+
+        # Assemble the string terminator
+        if st_size == 1:
+            self._sg2.sterm = fstchar
+        elif st_size == 2:
+            self._sg2.sterm = fstchar + sstchar
+        else:
+            raise ValueError(&#34;String terminator has wrong size.&#34;)
+
+        # Assemble the line terminator
+        if lt_size == 1:
+            self._sg2.lterm = fltchar
+        elif lt_size == 2:
+            self._sg2.lterm = fltchar + sltchar
+        else:
+            raise ValueError(&#34;Line terminator has wrong size.&#34;)
+
+        return tpb_size
+
+    def _read_trace_pointer_subblock(self, fio, tpb_size):
+        &#34;&#34;&#34;
+        Read the Trace Pointer Subblock.
+
+        The Trace Pointer Subblock starts at byte 32, and contains pointers
+        (unsigned long integers) to the start of each Trace Descriptor Block
+        contained in the file. The length of this subblock in bytes (M) is
+        specified in bytes 4 and 5, and the number of pointers contained in
+        the subblock (N) is specified in bytes 6 and 7 (see above). This
+        fixed format allows a file to be built up one trace at a time by
+        upgrading the value N and adding a pointer to the new trace in the
+        Trace Pointer Subblock, but without otherwise changing the file format.
+        &#34;&#34;&#34;
+        fio.seek(32, 0)
+        tpb = fio.read(tpb_size)
+        self._sg2.trcptr = np.array(unpack_from(self._fp.endian+(&#34;L&#34;*self.nt), tpb), dtype=&#34;int64&#34;)
+
+    def _parse_free_format_section(self, header, free_form_str):
+        &#34;&#34;&#34;
+        Parse the free form section.
+
+        Parameter
+        ---------
+        header : dict
+            The header dictionary to update.
+        free_form_str : str
+            The free-form string to parse.
+        &#34;&#34;&#34;
+        def cleanup_and_decode_string(value):
+            def is_good_char(c):
+                return c in (b&#39;0123456789&#39;
+                             b&#39;abcdefghijklmnopqrstuvwxyz&#39;
+                             b&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;
+                             b&#39;!&#34;#$%&amp;\&#39;()*+,-./:; &lt;=&gt;?@[\\]^_`{|}~ &#39;)
+            return &#34;&#34;.join(map(chr, filter(is_good_char, value))).strip()
+
+        offset = 0
+        strings = []
+        while offset+2 &lt; len(free_form_str):
+            strlen = np.frombuffer(free_form_str, dtype=f&#34;{self._fp.endian}H&#34;,
+                                   count=1, offset=offset)[0]
+            if strlen == 0:
+                break
+            curstr = free_form_str[offset+2:offset+strlen]
+            try:
+                curstrlen = curstr.index(self._sg2.sterm)
+            except ValueError:
+                strings.append(curstr)
+            else:
+                strings.append(curstr[:curstrlen])
+            offset += strlen
+
+        for string in strings:
+            string = string.strip().split(b&#34; &#34;, 1)
+            key = cleanup_and_decode_string(string[0])
+            try:
+                value = string[1]
+            except IndexError:
+                value = &#34;&#34;
+            if key == &#34;NOTE&#34;:
+                if len(value) &gt; 0:
+                    value = [cleanup_and_decode_string(line)
+                             for line in value.split(self._sg2.lterm) if line]
+                else:
+                    value = &#34;&#34;
+            else:
+                value = cleanup_and_decode_string(value)
+            header[key] = value
+
+        return header
+
+    def _check_fdb_strings(self):
+        &#34;&#34;&#34;Check strings in file descriptor block.&#34;&#34;&#34;
+        for key in self._sg2.fheader:
+            if key not in tools._SEG2FILEDESCSTR:
+                log.warning(&#34;Unknown string &#39;%s&#39; found in free format section.&#34;, key)
+                log.warning(&#34;Value associated with this key: %s.&#34;, self._sg2.fheader[key])
+
+    def _read_trace_descriptor_block(self, fio):
+        &#34;&#34;&#34;
+        Read first part of a trace descriptor block.
+
+        The file pointer must have been positioned correctly.
+        &#34;&#34;&#34;
+        tdb = fio.read(32)
+        # Check validity of block
+        magic = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1)
+        if magic != 17442:
+            log.error(&#34;Trace descriptor block does not start 0x4422.&#34;)
+            raise ValueError(&#34;Invalid trace descriptor block magic number.&#34;)
+        else:
+            log.info(&#34;Valid SEG2 trace descriptor found on first trace.&#34;)
+
+        self._tr.thsize = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)[0]
+        trdsize = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=4)[0]
+        self._tr.trsize = self._tr.thsize + trdsize
+        self._dp.ns = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=8)[0]
+        self._fp.datfmt = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=12)[0]
+
+        if self._fp.datfmt not in tools._SEG2DATAFORMAT:
+            raise ValueError(f&#34;SEG2 data format &#39;{self._fp.datfmt}&#39; not supported.&#34;)
+        log.info(&#34;Number of samples on first data trace: %d.&#34;, self.ns)
+        log.info(&#34;Data sample format: %s.&#34;, tools._SEG2DATAFORMAT[self._fp.datfmt][&#34;desc&#34;])
+
+        return self._tr.thsize
+
+    def _check_tdb_strings(self):
+        &#34;&#34;&#34;Check strings in (first) trace descriptor block.&#34;&#34;&#34;
+        for i, key in enumerate(tools._SEG2TRACEDESCSTR):
+            self._tr.thdict[key] = {&#34;byte&#34;: i+1, &#34;type&#34;: &#34;str&#34;,
+                                    &#34;desc&#34;: tools._SEG2TRACEDESCALIAS[i]}
+
+        i = len(tools._SEG2TRACEDESCSTR)
+        for key in self._sg2.theader:
+            if (key not in tools._SEG2TRACEDESCSTR):
+                i += 1
+                log.warning(&#34;Unknown string &#39;%s&#39; found in trace descriptor block of 1st trace.&#34;, key)
+                log.warning(&#34;Adding string to trace header table.&#34;)
+                self._tr.thdict[key] = {&#34;byte&#34;: i, &#34;type&#34;: &#34;str&#34;,
+                                        &#34;desc&#34;: &#34;...non-standard SEG2 string...&#34;}
+        self._tr.thdict[&#34;NSAMPLES&#34;] = {&#34;byte&#34;: i+1, &#34;type&#34;: &#34;str&#34;, &#34;desc&#34;: &#34;Number of samples&#34;}
+        self._dp.si = float(self._sg2.theader[tools._SEG2TRACEDESCSTR[25]])
+
+    def read_dataset(self, silent=False):
+        &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
+        return self.read_all_traces(silent=silent)
+
+    def read_all_traces(self, silent=False):
+        &#34;&#34;&#34;
+        Get all traces (e.g., read the entire file).
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Returns
+        -------
+        Numpy array, Pandas dataframe
+            Data and trace headers.
+        &#34;&#34;&#34;
+        if not silent:
+            log.info(&#34;Reading entire data set (%d traces) from disk...&#34;, self.nt)
+
+        st = time.time()
+        all_headers = []
+        all_data = []
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            for trace in np.arange(self.nt):
+                trp = self._sg2.trcptr[trace]
+                fio.seek(trp, 0)
+                d, h = self._parse_trace(fio, trace)
+                all_headers.append(h)
+                all_data.append(d)
+
+        max_ns = self.ns
+        if not self._fp.fixed:
+            for d in all_data:
+                max_ns = len(d) if len(d) &gt; max_ns else max_ns
+            if max_ns != self.ns:
+                self._dp.ns = max_ns
+                log.warning(&#34;Updated number of samples to maximum in data set: %d.&#34;, self.ns)
+
+        data = np.zeros((self.nt, max_ns), dtype=tools._SEG2DATAFORMAT[self._fp.datfmt][&#34;dtype&#34;])
+        df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+        if not self._fp.fixed:
+            for i, d in enumerate(all_data):
+                if len(d) &lt; max_ns:
+                    data[i, 0:len(d)] = all_data[i]
+                else:
+                    data[i, :] = all_data[i]
+                for key in self.mnemonics:
+                    df.at[i, key] = all_headers[i].get(key, 0)
+        else:
+            for i in np.arange(self.nt):
+                data[i, :] = all_data[i]
+                for key in self.mnemonics:
+                    df.at[i, key] = all_headers[i].get(key, 0)
+
+        et = time.time()
+        if not silent:
+            diff = et-st
+            if diff &lt; 0.1:
+                log.info(&#34;Reading all traces took %.3f seconds.&#34;, et-st)
+            else:
+                log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
+
+        return data, df
+
+    def read_all_headers(self, silent=False):
+        &#34;&#34;&#34;
+        Get all trace headers.
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Returns
+        -------
+        Pandas dataframe
+            Trace header table.
+        &#34;&#34;&#34;
+        if not silent:
+            log.info(&#34;Reading all (i.e., %d) trace headers from disk...&#34;, self.nt)
+
+        st = time.time()
+        all_headers = []
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            for trace in np.arange(self.nt):
+                trp = self._sg2.trcptr[trace]
+                fio.seek(trp, 0)
+                _, h = self._parse_trace(fio, trace, headers_only=True)
+                all_headers.append(h)
+
+        df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+        for i in np.arange(len(all_headers)):
+            for key in self.mnemonics:
+                df.at[i, key] = all_headers[i].get(key, 0)
+
+        et = time.time()
+        if not silent:
+            diff = et-st
+            if diff &lt; 0.1:
+                log.info(&#34;Reading all headers took %.3f seconds.&#34;, et-st)
+            else:
+                log.info(&#34;Reading all headers took %.1f seconds.&#34;, et-st)
+
+        return df
+
+    def _parse_trace(self, fio, itrc, headers_only=False):
+        &#34;&#34;&#34;Parse next trace.&#34;&#34;&#34;
+        tdb = fio.read(32)
+        # Check validity of block
+        magic = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1)
+        if magic != 17442:
+            log.error(&#34;Trace descriptor block %d does not start 0x4422.&#34;, itrc)
+            raise ValueError(&#34;Invalid trace descriptor block magic number.&#34;)
+
+        tdb_size = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)[0]
+        ns = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=8)[0]
+
+        if ns != self.ns:
+            log.warning(&#34;Number of samples varies in file %s!&#34;, self._fp.file)
+            self._fp.fixed = False
+
+        if self._fp.datfmt == 3:
+            if ns % 4 != 0:
+                log.error(&#34;Data format code 3 requires that the no. of samples is divisible by 4!&#34;)
+                log.error(&#34;However, ns=%d on trace %d.&#34;, ns, itrc)
+                raise RuntimeError(&#34;SEG2 file violating data format code 3 specs.&#34;)
+            else:
+                nsfmt3 = int((2.5*ns)/2)
+                dtype = np.dtype(f&#34;({nsfmt3},){self._fp.endian}&#34;
+                                 f&#34;{tools._SEG2DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
+        else:
+            dtype = np.dtype(f&#34;({ns},){self._fp.endian}&#34;
+                             f&#34;{tools._SEG2DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
+
+        header = {}
+        free_form_str = fio.read(tdb_size-32)
+        header = self._parse_free_format_section(header, free_form_str)
+        header[&#34;NSAMPLES&#34;] = str(ns)
+        if headers_only:
+            data = None
+        else:
+            data = np.fromfile(fio, dtype=dtype, count=1).squeeze()
+            if self._fp.datfmt == 3:
+                # The following conversion code stems from obspy, Lion Krischer,
+                # licensed under LGPL v3 - full credits to the original author
+                #
+                # Convert one&#39;s complement to two&#39;s complement by adding one to
+                # negative numbers.
+                one_to_two = (data &lt; 0)
+                # The first two bytes (1 word) of every 10 bytes (5 words) contains
+                # a 4-bit exponent for each of the 4 remaining 2-byte (int16) samples.
+                exponents = data[0::5].view(self._fp.endian + &#39;u2&#39;)
+                result = np.empty(ns, dtype=np.int32)
+                # Apply the negative correction, then multiply by correct exponent.
+                result[0::4] = ((data[1::5] + one_to_two[1::5]) *
+                                2**((exponents &amp; 0x000f) &gt;&gt; 0))
+                result[1::4] = ((data[2::5] + one_to_two[2::5]) *
+                                2**((exponents &amp; 0x00f0) &gt;&gt; 4))
+                result[2::4] = ((data[3::5] + one_to_two[3::5]) *
+                                2**((exponents &amp; 0x0f00) &gt;&gt; 8))
+                result[3::4] = ((data[4::5] + one_to_two[4::5]) *
+                                2**((exponents &amp; 0xf000) &gt;&gt; 12))
+                data = result
+
+        return data, header</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="seisio.seg2.Reader"><code class="flex name class">
+<span>class <span class="ident">Reader</span></span>
+<span>(</span><span>file)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class to deal with input of seismic files in SEG2 format.</p>
+<p>Initialize class Reader.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the SEG2 input file to read.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Reader(seisio.SeisIO):
+    &#34;&#34;&#34;Class to deal with input of seismic files in SEG2 format.&#34;&#34;&#34;
+
+    def __init__(self, file):
+        &#34;&#34;&#34;
+        Initialize class Reader.
+
+        Parameters
+        ----------
+        file : str or pathlib.Path
+            The name of the SEG2 input file to read.
+        &#34;&#34;&#34;
+        super().__init__(file)
+
+        self._sg2 = self._SEG2()
+        self._fp.fixed = True
+
+        log.info(&#34;Input file: %s&#34;, self._fp.file)
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            fio.seek(0, 2)
+            self._fp.filesize = fio.tell()
+            fio.seek(0, 0)
+
+            # file descriptor block and free format section
+            tpb_size = self._read_file_descriptor_block(fio)
+            log.debug(&#34;Size of file descriptor block: %d bytes.&#34;, tpb_size)
+            self._read_trace_pointer_subblock(fio, tpb_size)
+            free_form_str = fio.read(self._sg2.trcptr[0]-fio.tell())
+            self._sg2.fheader = self._parse_free_format_section(self._sg2.fheader, free_form_str)
+            self._check_fdb_strings()
+            self._fp.skip = self._sg2.trcptr[0]
+            # first trace header descriptor block
+            fio.seek(self._sg2.trcptr[0], 0)
+            tdb_size = self._read_trace_descriptor_block(fio)
+            log.debug(&#34;Size of first trace descriptor block: %d bytes.&#34;, tpb_size)
+            free_form_str = fio.read(tdb_size-32)
+            self._sg2.theader = self._parse_free_format_section(self._sg2.theader, free_form_str)
+            self._check_tdb_strings()
+
+    @property
+    def fheader(self):
+        &#34;&#34;&#34;
+        Get information from the free-form file header.
+
+        Returns
+        -------
+        dict
+            The file header as dictionary.
+        &#34;&#34;&#34;
+        return self._sg2.fheader
+
+    @property
+    def vsi(self):
+        &#34;&#34;&#34;
+        Get the (vertical) sampling interval (of first trace).
+
+        Returns
+        -------
+        float
+            Sampling interval.
+        &#34;&#34;&#34;
+        return self._dp.si
+
+    def _read_file_descriptor_block(self, fio):
+        &#34;&#34;&#34;Read SEG2 file descriptor block.&#34;&#34;&#34;
+        fdb = fio.read(32)
+
+        # Determine the endianness and check validity of block
+        magic = np.frombuffer(fdb, dtype=&#39;B&#39;, count=2)
+        if magic[0] == 85 and magic[1] == 58:
+            self._fp.endian = &#34;&lt;&#34;
+        elif magic[0] == 58 and magic[1] == 85:
+            self._fp.endian = &#34;&gt;&#34;
+        else:
+            log.error(&#34;File descriptor block does not start 0x3a55 or 0x553a.&#34;)
+            raise ValueError(&#34;Invalid file descriptor block magic number.&#34;)
+        log.info(&#34;Valid SEG2 file descriptor found. File endianess: &#39;%s&#39;.&#34;, self._fp.endian)
+
+        # Check revision number
+        revno = np.frombuffer(fdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)
+        if revno != 1:
+            log.warning(&#34;Only SEG2 rev. 1 is supported. File&#39;s revision is &#34;
+                        &#34;%d, though. Trying to continue.&#34;, revno)
+        else:
+            log.info(&#34;File standard is SEG2 rev. 1.&#34;)
+
+        # Determine size of Trace Pointer Subblock in bytes
+        tpb_size, ntraces = np.frombuffer(fdb, dtype=f&#34;{self._fp.endian}H&#34;, count=2, offset=4)
+        log.debug(&#34;Size of trace pointer subblock: %d bytes.&#34;, tpb_size)
+
+        if ntraces*4 &gt; tpb_size:
+            log.error(&#34;File indicates %d traces but there are only %d trace &#34;
+                      &#34;pointers.&#34;, ntraces, tpb_size//4)
+            raise ValueError(&#34;Mismatch of number of traces and trace pointer block size.&#34;)
+        self._dp.nt = ntraces
+        log.info(&#34;Number of data traces in file: %d.&#34;, self.nt)
+
+        # Define string and line terminator
+        st_size, fstchar, sstchar, lt_size, fltchar, sltchar = unpack_from(&#34;BccBcc&#34;, fdb, 8)
+
+        log.debug(&#34;String terminator size: %d, characters &#39;%s&#39;,&#39;%s&#39;&#34;,
+                  st_size, fstchar, sstchar)
+        log.debug(&#34;Line terminator size: %d, characters &#39;%s&#39;,&#39;%s&#39;&#34;,
+                  lt_size, fltchar, sltchar)
+
+        # Assemble the string terminator
+        if st_size == 1:
+            self._sg2.sterm = fstchar
+        elif st_size == 2:
+            self._sg2.sterm = fstchar + sstchar
+        else:
+            raise ValueError(&#34;String terminator has wrong size.&#34;)
+
+        # Assemble the line terminator
+        if lt_size == 1:
+            self._sg2.lterm = fltchar
+        elif lt_size == 2:
+            self._sg2.lterm = fltchar + sltchar
+        else:
+            raise ValueError(&#34;Line terminator has wrong size.&#34;)
+
+        return tpb_size
+
+    def _read_trace_pointer_subblock(self, fio, tpb_size):
+        &#34;&#34;&#34;
+        Read the Trace Pointer Subblock.
+
+        The Trace Pointer Subblock starts at byte 32, and contains pointers
+        (unsigned long integers) to the start of each Trace Descriptor Block
+        contained in the file. The length of this subblock in bytes (M) is
+        specified in bytes 4 and 5, and the number of pointers contained in
+        the subblock (N) is specified in bytes 6 and 7 (see above). This
+        fixed format allows a file to be built up one trace at a time by
+        upgrading the value N and adding a pointer to the new trace in the
+        Trace Pointer Subblock, but without otherwise changing the file format.
+        &#34;&#34;&#34;
+        fio.seek(32, 0)
+        tpb = fio.read(tpb_size)
+        self._sg2.trcptr = np.array(unpack_from(self._fp.endian+(&#34;L&#34;*self.nt), tpb), dtype=&#34;int64&#34;)
+
+    def _parse_free_format_section(self, header, free_form_str):
+        &#34;&#34;&#34;
+        Parse the free form section.
+
+        Parameter
+        ---------
+        header : dict
+            The header dictionary to update.
+        free_form_str : str
+            The free-form string to parse.
+        &#34;&#34;&#34;
+        def cleanup_and_decode_string(value):
+            def is_good_char(c):
+                return c in (b&#39;0123456789&#39;
+                             b&#39;abcdefghijklmnopqrstuvwxyz&#39;
+                             b&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;
+                             b&#39;!&#34;#$%&amp;\&#39;()*+,-./:; &lt;=&gt;?@[\\]^_`{|}~ &#39;)
+            return &#34;&#34;.join(map(chr, filter(is_good_char, value))).strip()
+
+        offset = 0
+        strings = []
+        while offset+2 &lt; len(free_form_str):
+            strlen = np.frombuffer(free_form_str, dtype=f&#34;{self._fp.endian}H&#34;,
+                                   count=1, offset=offset)[0]
+            if strlen == 0:
+                break
+            curstr = free_form_str[offset+2:offset+strlen]
+            try:
+                curstrlen = curstr.index(self._sg2.sterm)
+            except ValueError:
+                strings.append(curstr)
+            else:
+                strings.append(curstr[:curstrlen])
+            offset += strlen
+
+        for string in strings:
+            string = string.strip().split(b&#34; &#34;, 1)
+            key = cleanup_and_decode_string(string[0])
+            try:
+                value = string[1]
+            except IndexError:
+                value = &#34;&#34;
+            if key == &#34;NOTE&#34;:
+                if len(value) &gt; 0:
+                    value = [cleanup_and_decode_string(line)
+                             for line in value.split(self._sg2.lterm) if line]
+                else:
+                    value = &#34;&#34;
+            else:
+                value = cleanup_and_decode_string(value)
+            header[key] = value
+
+        return header
+
+    def _check_fdb_strings(self):
+        &#34;&#34;&#34;Check strings in file descriptor block.&#34;&#34;&#34;
+        for key in self._sg2.fheader:
+            if key not in tools._SEG2FILEDESCSTR:
+                log.warning(&#34;Unknown string &#39;%s&#39; found in free format section.&#34;, key)
+                log.warning(&#34;Value associated with this key: %s.&#34;, self._sg2.fheader[key])
+
+    def _read_trace_descriptor_block(self, fio):
+        &#34;&#34;&#34;
+        Read first part of a trace descriptor block.
+
+        The file pointer must have been positioned correctly.
+        &#34;&#34;&#34;
+        tdb = fio.read(32)
+        # Check validity of block
+        magic = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1)
+        if magic != 17442:
+            log.error(&#34;Trace descriptor block does not start 0x4422.&#34;)
+            raise ValueError(&#34;Invalid trace descriptor block magic number.&#34;)
+        else:
+            log.info(&#34;Valid SEG2 trace descriptor found on first trace.&#34;)
+
+        self._tr.thsize = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)[0]
+        trdsize = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=4)[0]
+        self._tr.trsize = self._tr.thsize + trdsize
+        self._dp.ns = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=8)[0]
+        self._fp.datfmt = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=12)[0]
+
+        if self._fp.datfmt not in tools._SEG2DATAFORMAT:
+            raise ValueError(f&#34;SEG2 data format &#39;{self._fp.datfmt}&#39; not supported.&#34;)
+        log.info(&#34;Number of samples on first data trace: %d.&#34;, self.ns)
+        log.info(&#34;Data sample format: %s.&#34;, tools._SEG2DATAFORMAT[self._fp.datfmt][&#34;desc&#34;])
+
+        return self._tr.thsize
+
+    def _check_tdb_strings(self):
+        &#34;&#34;&#34;Check strings in (first) trace descriptor block.&#34;&#34;&#34;
+        for i, key in enumerate(tools._SEG2TRACEDESCSTR):
+            self._tr.thdict[key] = {&#34;byte&#34;: i+1, &#34;type&#34;: &#34;str&#34;,
+                                    &#34;desc&#34;: tools._SEG2TRACEDESCALIAS[i]}
+
+        i = len(tools._SEG2TRACEDESCSTR)
+        for key in self._sg2.theader:
+            if (key not in tools._SEG2TRACEDESCSTR):
+                i += 1
+                log.warning(&#34;Unknown string &#39;%s&#39; found in trace descriptor block of 1st trace.&#34;, key)
+                log.warning(&#34;Adding string to trace header table.&#34;)
+                self._tr.thdict[key] = {&#34;byte&#34;: i, &#34;type&#34;: &#34;str&#34;,
+                                        &#34;desc&#34;: &#34;...non-standard SEG2 string...&#34;}
+        self._tr.thdict[&#34;NSAMPLES&#34;] = {&#34;byte&#34;: i+1, &#34;type&#34;: &#34;str&#34;, &#34;desc&#34;: &#34;Number of samples&#34;}
+        self._dp.si = float(self._sg2.theader[tools._SEG2TRACEDESCSTR[25]])
+
+    def read_dataset(self, silent=False):
+        &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
+        return self.read_all_traces(silent=silent)
+
+    def read_all_traces(self, silent=False):
+        &#34;&#34;&#34;
+        Get all traces (e.g., read the entire file).
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Returns
+        -------
+        Numpy array, Pandas dataframe
+            Data and trace headers.
+        &#34;&#34;&#34;
+        if not silent:
+            log.info(&#34;Reading entire data set (%d traces) from disk...&#34;, self.nt)
+
+        st = time.time()
+        all_headers = []
+        all_data = []
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            for trace in np.arange(self.nt):
+                trp = self._sg2.trcptr[trace]
+                fio.seek(trp, 0)
+                d, h = self._parse_trace(fio, trace)
+                all_headers.append(h)
+                all_data.append(d)
+
+        max_ns = self.ns
+        if not self._fp.fixed:
+            for d in all_data:
+                max_ns = len(d) if len(d) &gt; max_ns else max_ns
+            if max_ns != self.ns:
+                self._dp.ns = max_ns
+                log.warning(&#34;Updated number of samples to maximum in data set: %d.&#34;, self.ns)
+
+        data = np.zeros((self.nt, max_ns), dtype=tools._SEG2DATAFORMAT[self._fp.datfmt][&#34;dtype&#34;])
+        df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+        if not self._fp.fixed:
+            for i, d in enumerate(all_data):
+                if len(d) &lt; max_ns:
+                    data[i, 0:len(d)] = all_data[i]
+                else:
+                    data[i, :] = all_data[i]
+                for key in self.mnemonics:
+                    df.at[i, key] = all_headers[i].get(key, 0)
+        else:
+            for i in np.arange(self.nt):
+                data[i, :] = all_data[i]
+                for key in self.mnemonics:
+                    df.at[i, key] = all_headers[i].get(key, 0)
+
+        et = time.time()
+        if not silent:
+            diff = et-st
+            if diff &lt; 0.1:
+                log.info(&#34;Reading all traces took %.3f seconds.&#34;, et-st)
+            else:
+                log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
+
+        return data, df
+
+    def read_all_headers(self, silent=False):
+        &#34;&#34;&#34;
+        Get all trace headers.
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Returns
+        -------
+        Pandas dataframe
+            Trace header table.
+        &#34;&#34;&#34;
+        if not silent:
+            log.info(&#34;Reading all (i.e., %d) trace headers from disk...&#34;, self.nt)
+
+        st = time.time()
+        all_headers = []
+
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            for trace in np.arange(self.nt):
+                trp = self._sg2.trcptr[trace]
+                fio.seek(trp, 0)
+                _, h = self._parse_trace(fio, trace, headers_only=True)
+                all_headers.append(h)
+
+        df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+        for i in np.arange(len(all_headers)):
+            for key in self.mnemonics:
+                df.at[i, key] = all_headers[i].get(key, 0)
+
+        et = time.time()
+        if not silent:
+            diff = et-st
+            if diff &lt; 0.1:
+                log.info(&#34;Reading all headers took %.3f seconds.&#34;, et-st)
+            else:
+                log.info(&#34;Reading all headers took %.1f seconds.&#34;, et-st)
+
+        return df
+
+    def _parse_trace(self, fio, itrc, headers_only=False):
+        &#34;&#34;&#34;Parse next trace.&#34;&#34;&#34;
+        tdb = fio.read(32)
+        # Check validity of block
+        magic = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1)
+        if magic != 17442:
+            log.error(&#34;Trace descriptor block %d does not start 0x4422.&#34;, itrc)
+            raise ValueError(&#34;Invalid trace descriptor block magic number.&#34;)
+
+        tdb_size = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}H&#34;, count=1, offset=2)[0]
+        ns = np.frombuffer(tdb, dtype=f&#34;{self._fp.endian}I&#34;, count=1, offset=8)[0]
+
+        if ns != self.ns:
+            log.warning(&#34;Number of samples varies in file %s!&#34;, self._fp.file)
+            self._fp.fixed = False
+
+        if self._fp.datfmt == 3:
+            if ns % 4 != 0:
+                log.error(&#34;Data format code 3 requires that the no. of samples is divisible by 4!&#34;)
+                log.error(&#34;However, ns=%d on trace %d.&#34;, ns, itrc)
+                raise RuntimeError(&#34;SEG2 file violating data format code 3 specs.&#34;)
+            else:
+                nsfmt3 = int((2.5*ns)/2)
+                dtype = np.dtype(f&#34;({nsfmt3},){self._fp.endian}&#34;
+                                 f&#34;{tools._SEG2DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
+        else:
+            dtype = np.dtype(f&#34;({ns},){self._fp.endian}&#34;
+                             f&#34;{tools._SEG2DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
+
+        header = {}
+        free_form_str = fio.read(tdb_size-32)
+        header = self._parse_free_format_section(header, free_form_str)
+        header[&#34;NSAMPLES&#34;] = str(ns)
+        if headers_only:
+            data = None
+        else:
+            data = np.fromfile(fio, dtype=dtype, count=1).squeeze()
+            if self._fp.datfmt == 3:
+                # The following conversion code stems from obspy, Lion Krischer,
+                # licensed under LGPL v3 - full credits to the original author
+                #
+                # Convert one&#39;s complement to two&#39;s complement by adding one to
+                # negative numbers.
+                one_to_two = (data &lt; 0)
+                # The first two bytes (1 word) of every 10 bytes (5 words) contains
+                # a 4-bit exponent for each of the 4 remaining 2-byte (int16) samples.
+                exponents = data[0::5].view(self._fp.endian + &#39;u2&#39;)
+                result = np.empty(ns, dtype=np.int32)
+                # Apply the negative correction, then multiply by correct exponent.
+                result[0::4] = ((data[1::5] + one_to_two[1::5]) *
+                                2**((exponents &amp; 0x000f) &gt;&gt; 0))
+                result[1::4] = ((data[2::5] + one_to_two[2::5]) *
+                                2**((exponents &amp; 0x00f0) &gt;&gt; 4))
+                result[2::4] = ((data[3::5] + one_to_two[3::5]) *
+                                2**((exponents &amp; 0x0f00) &gt;&gt; 8))
+                result[3::4] = ((data[4::5] + one_to_two[4::5]) *
+                                2**((exponents &amp; 0xf000) &gt;&gt; 12))
+                data = result
+
+        return data, header</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="seisio.seisio.SeisIO" href="seisio.html#seisio.seisio.SeisIO">SeisIO</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="seisio.seg2.Reader.fheader"><code class="name">var <span class="ident">fheader</span></code></dt>
+<dd>
+<div class="desc"><p>Get information from the free-form file header.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>The file header as dictionary.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def fheader(self):
+    &#34;&#34;&#34;
+    Get information from the free-form file header.
+
+    Returns
+    -------
+    dict
+        The file header as dictionary.
+    &#34;&#34;&#34;
+    return self._sg2.fheader</code></pre>
+</details>
+</dd>
+<dt id="seisio.seg2.Reader.vsi"><code class="name">var <span class="ident">vsi</span></code></dt>
+<dd>
+<div class="desc"><p>Get the (vertical) sampling interval (of first trace).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>Sampling interval.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def vsi(self):
+    &#34;&#34;&#34;
+    Get the (vertical) sampling interval (of first trace).
+
+    Returns
+    -------
+    float
+        Sampling interval.
+    &#34;&#34;&#34;
+    return self._dp.si</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="seisio.seg2.Reader.read_all_headers"><code class="name flex">
+<span>def <span class="ident">read_all_headers</span></span>(<span>self, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get all trace headers.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Whether to suppress all standard logging (True) or not (False).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Pandas dataframe</code></dt>
+<dd>Trace header table.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_all_headers(self, silent=False):
+    &#34;&#34;&#34;
+    Get all trace headers.
+
+    Parameters
+    ----------
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+
+    Returns
+    -------
+    Pandas dataframe
+        Trace header table.
+    &#34;&#34;&#34;
+    if not silent:
+        log.info(&#34;Reading all (i.e., %d) trace headers from disk...&#34;, self.nt)
+
+    st = time.time()
+    all_headers = []
+
+    with open(self._fp.file, &#34;rb&#34;) as fio:
+        for trace in np.arange(self.nt):
+            trp = self._sg2.trcptr[trace]
+            fio.seek(trp, 0)
+            _, h = self._parse_trace(fio, trace, headers_only=True)
+            all_headers.append(h)
+
+    df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+    for i in np.arange(len(all_headers)):
+        for key in self.mnemonics:
+            df.at[i, key] = all_headers[i].get(key, 0)
+
+    et = time.time()
+    if not silent:
+        diff = et-st
+        if diff &lt; 0.1:
+            log.info(&#34;Reading all headers took %.3f seconds.&#34;, et-st)
+        else:
+            log.info(&#34;Reading all headers took %.1f seconds.&#34;, et-st)
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="seisio.seg2.Reader.read_all_traces"><code class="name flex">
+<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get all traces (e.g., read the entire file).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Whether to suppress all standard logging (True) or not (False).</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy array, Pandas dataframe</code></dt>
+<dd>Data and trace headers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_all_traces(self, silent=False):
+    &#34;&#34;&#34;
+    Get all traces (e.g., read the entire file).
+
+    Parameters
+    ----------
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+
+    Returns
+    -------
+    Numpy array, Pandas dataframe
+        Data and trace headers.
+    &#34;&#34;&#34;
+    if not silent:
+        log.info(&#34;Reading entire data set (%d traces) from disk...&#34;, self.nt)
+
+    st = time.time()
+    all_headers = []
+    all_data = []
+
+    with open(self._fp.file, &#34;rb&#34;) as fio:
+        for trace in np.arange(self.nt):
+            trp = self._sg2.trcptr[trace]
+            fio.seek(trp, 0)
+            d, h = self._parse_trace(fio, trace)
+            all_headers.append(h)
+            all_data.append(d)
+
+    max_ns = self.ns
+    if not self._fp.fixed:
+        for d in all_data:
+            max_ns = len(d) if len(d) &gt; max_ns else max_ns
+        if max_ns != self.ns:
+            self._dp.ns = max_ns
+            log.warning(&#34;Updated number of samples to maximum in data set: %d.&#34;, self.ns)
+
+    data = np.zeros((self.nt, max_ns), dtype=tools._SEG2DATAFORMAT[self._fp.datfmt][&#34;dtype&#34;])
+    df = pd.DataFrame(columns=self.mnemonics, index=range(self.nt))
+
+    if not self._fp.fixed:
+        for i, d in enumerate(all_data):
+            if len(d) &lt; max_ns:
+                data[i, 0:len(d)] = all_data[i]
+            else:
+                data[i, :] = all_data[i]
+            for key in self.mnemonics:
+                df.at[i, key] = all_headers[i].get(key, 0)
+    else:
+        for i in np.arange(self.nt):
+            data[i, :] = all_data[i]
+            for key in self.mnemonics:
+                df.at[i, key] = all_headers[i].get(key, 0)
+
+    et = time.time()
+    if not silent:
+        diff = et-st
+        if diff &lt; 0.1:
+            log.info(&#34;Reading all traces took %.3f seconds.&#34;, et-st)
+        else:
+            log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
+
+    return data, df</code></pre>
+</details>
+</dd>
+<dt id="seisio.seg2.Reader.read_dataset"><code class="name flex">
+<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get all traces - an alias for read_all_traces().</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_dataset(self, silent=False):
+    &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
+    return self.read_all_traces(silent=silent)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="seisio.seisio.SeisIO" href="seisio.html#seisio.seisio.SeisIO">SeisIO</a></b></code>:
+<ul class="hlist">
+<li><code><a title="seisio.seisio.SeisIO.endianess" href="seisio.html#seisio.seisio.SeisIO.endianess">endianess</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.file" href="seisio.html#seisio.seisio.SeisIO.file">file</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.fsize" href="seisio.html#seisio.seisio.SeisIO.fsize">fsize</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.log_thdef" href="seisio.html#seisio.seisio.SeisIO.log_thdef">log_thdef</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.mnemonics" href="seisio.html#seisio.seisio.SeisIO.mnemonics">mnemonics</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.ns" href="seisio.html#seisio.seisio.SeisIO.ns">ns</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.nt" href="seisio.html#seisio.seisio.SeisIO.nt">nt</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.thsize" href="seisio.html#seisio.seisio.SeisIO.thsize">thsize</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.trsize" href="seisio.html#seisio.seisio.SeisIO.trsize">trsize</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="seisio" href="index.html">seisio</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="seisio.seg2.Reader" href="#seisio.seg2.Reader">Reader</a></code></h4>
+<ul class="">
+<li><code><a title="seisio.seg2.Reader.fheader" href="#seisio.seg2.Reader.fheader">fheader</a></code></li>
+<li><code><a title="seisio.seg2.Reader.read_all_headers" href="#seisio.seg2.Reader.read_all_headers">read_all_headers</a></code></li>
+<li><code><a title="seisio.seg2.Reader.read_all_traces" href="#seisio.seg2.Reader.read_all_traces">read_all_traces</a></code></li>
+<li><code><a title="seisio.seg2.Reader.read_dataset" href="#seisio.seg2.Reader.read_dataset">read_dataset</a></code></li>
+<li><code><a title="seisio.seg2.Reader.vsi" href="#seisio.seg2.Reader.vsi">vsi</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

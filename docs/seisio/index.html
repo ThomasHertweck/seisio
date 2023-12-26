@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>seisio API documentation</title>
+<meta name="description" content="I/O of seismic files …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>seisio</code></h1>
+</header>
+<section id="section-intro">
+<p>I/O of seismic files.</p>
+<p>The seisio Python module provides basic input/output operations for seismic
+data in typical standard formats such as SEG-Y or SU.</p>
+<p>In this module, data and trace headers are handled as Numpy structured arrays,
+i.e., the full spectrum of functions coming along with Numpy and related
+modules can be used. Simplicity and user-friendliness have priority in this
+module and its intended use compared to achieving the best performance or
+highest throughput. The classes and methods provided are kept deliberately
+simple to get students participating our lectures and exercises going with
+Python and seismic data in standard industry formats. The classes are not
+meant to offer all functionality required in a commercial production
+processing environment. Having said that, the module tries to keep
+performance in mind (e.g., using memory-mapped files where possible) and also
+offers functionality not readily available in other packages that are
+available in the Python ecosystem.</p>
+<p>Author &amp; Copyright: Dr. Thomas Hertweck, KIT, Thomas.Hertweck@kit.edu</p>
+<p>License: GNU Lesser General Public License, Version 3
+<a href="https://www.gnu.org/licenses/lgpl-3.0.html">https://www.gnu.org/licenses/lgpl-3.0.html</a></p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+I/O of seismic files.
+
+The seisio Python module provides basic input/output operations for seismic
+data in typical standard formats such as SEG-Y or SU.
+
+In this module, data and trace headers are handled as Numpy structured arrays,
+i.e., the full spectrum of functions coming along with Numpy and related
+modules can be used. Simplicity and user-friendliness have priority in this
+module and its intended use compared to achieving the best performance or
+highest throughput. The classes and methods provided are kept deliberately
+simple to get students participating our lectures and exercises going with
+Python and seismic data in standard industry formats. The classes are not
+meant to offer all functionality required in a commercial production
+processing environment. Having said that, the module tries to keep
+performance in mind (e.g., using memory-mapped files where possible) and also
+offers functionality not readily available in other packages that are
+available in the Python ecosystem.
+
+Author &amp; Copyright: Dr. Thomas Hertweck, KIT, Thomas.Hertweck@kit.edu
+
+License: GNU Lesser General Public License, Version 3
+         https://www.gnu.org/licenses/lgpl-3.0.html
+&#34;&#34;&#34;
+
+__version__ = &#34;1.0.0&#34;
+__author__ = &#34;Thomas Hertweck&#34;
+__copyright__ = &#34;(c) 2024 Thomas Hertweck&#34;
+__license__ = &#34;GNU Lesser General Public License, Version 3&#34;
+
+import logging
+import numpy as np
+import pandas as pd
+from pathlib import Path
+
+from . import seg2
+from . import segy
+from . import su
+from . import _txtheader
+
+log = logging.getLogger(__name__)
+
+_FILE_SUFFIX = [&#34;.SGY&#34;, &#34;.SEGY&#34;, &#34;.SEG-Y&#34;, &#34;.SEG_Y&#34;,   # SEG-Y
+                &#34;.SEG2&#34;, &#34;.DAT&#34;, &#34;.SG2&#34;,               # SEG2
+                &#34;.SU&#34;]                                 # SU
+
+
+def input(file, *args, **kwargs):
+    &#34;&#34;&#34;
+    Open a seismic file for reading.
+
+    Parameters
+    ----------
+    file : str or pathlib.Path
+        The name of the file to read.
+    filetype : str
+        Force a specific file type if file suffix is unknown.
+
+    All other arguments are passed to the underlying class once
+    the type of input file is determined.
+    &#34;&#34;&#34;
+    filetype = kwargs.pop(&#34;filetype&#34;, None)
+
+    fpath = Path(file)
+    if not fpath.exists():
+        raise ValueError(f&#34;Input file {fpath} does not exist.&#34;)
+
+    if filetype is None:
+        suffix = fpath.suffix.upper()
+    else:
+        suffix = str(&#34;.&#34; + filetype).upper()
+        if suffix not in _FILE_SUFFIX:
+            raise ValueError(f&#34;Unknown value &#39;{filetype}&#39; for argument &#39;filetype&#39;.&#34;)
+
+    if suffix in [&#34;.SEGY&#34;, &#34;.SGY&#34;, &#34;.SEG-Y&#34;]:
+        return segy.Reader(file, **kwargs)
+    elif suffix in [&#34;.SEG2&#34;, &#34;.DAT&#34;, &#34;.S2&#34;, &#34;.SG2&#34;]:
+        return seg2.Reader(file, **kwargs)
+    elif suffix in [&#34;.SU&#34;]:
+        return su.Reader(file, **kwargs)
+    else:
+        raise RuntimeError(&#34;Cannot determine file type from file name.&#34;)
+
+
+def output(file, **kwargs):
+    &#34;&#34;&#34;
+    Open a seismic file for writing.
+
+    Parameters
+    ----------
+    file : str or pathlib.Path
+        The name of the file to write.
+    filetype : str
+        Force a specific file type if file suffix is unknown.
+
+    All other arguments are passed to the underlying class once
+    the type of output file is determined.
+    &#34;&#34;&#34;
+    filetype = kwargs.pop(&#34;filetype&#34;, None)
+
+    fpath = Path(file)
+
+    if filetype is None:
+        suffix = fpath.suffix.upper()
+    else:
+        suffix = str(&#34;.&#34; + filetype).upper()
+        if suffix not in _FILE_SUFFIX:
+            raise ValueError(f&#34;Unknown value &#39;{filetype}&#39; for parameter &#39;filetype&#39;.&#34;)
+
+    if suffix in [&#34;.SEGY&#34;, &#34;.SGY&#34;, &#34;.SEG-Y&#34;]:
+        return segy.Writer(file, **kwargs)
+    elif suffix in [&#34;.SEG2&#34;, &#34;.DAT&#34;, &#34;.S2&#34;, &#34;.SG2&#34;]:
+        raise NotImplementedError(&#34;SEG2 output not implemented as it is an acq. format.&#34;)
+    elif suffix in [&#34;.SU&#34;]:
+        return su.Writer(file, **kwargs)
+    else:
+        raise RuntimeError(&#34;Cannot determine file type from file name.&#34;)
+
+
+def segy_txthead_template(major_version=1, minor_version=0, fill=True):
+    &#34;&#34;&#34;
+    Get a template for a SEG-Y textual file header.
+
+    Parameters
+    ----------
+    major_version : int, optional (default: 1)
+        Major SEG-Y revision number.
+    minor_version : int, optional (default: 0)
+        Minor SEG-Y revision number.
+    fill : boolean, optional (default: True)
+        Fill the individual strings with Cxx convention (True) or not.
+
+    Returns
+    -------
+    list
+        A list of strings, 40 card images (strings), each of 80 characters.
+    &#34;&#34;&#34;
+    return _txtheader.TxtHeader().template(major_version=major_version,
+                                           minor_version=minor_version,
+                                           fill=fill)
+
+
+def _thstat(traces):
+    &#34;&#34;&#34;
+    Determine statistics for each trace header mnemonic.
+
+    Parameters
+    ----------
+    traces : Numpy structured array
+        The seismic traces.
+    &#34;&#34;&#34;
+    keys = list(traces.dtype.names)
+    if &#34;data&#34; in keys:
+        keys.remove(&#34;data&#34;)
+    summary = pd.DataFrame(traces[keys]).describe().transpose().loc[:, [&#39;min&#39;, &#39;max&#39;, &#39;mean&#39;,
+                                                                        &#39;std&#39;, &#39;25%&#39;, &#39;75%&#39;]]
+    return summary
+
+
+def log_thstat(traces, zero=False):
+    &#34;&#34;&#34;
+    Print statistics for each trace header mnemonic.
+
+    Parameters
+    ----------
+    traces : Numpy structured array
+        The seismic traces (trace headers plus data) or the seismic
+        trace headers (as provided by the &#39;read_all_headers&#39; function).
+    zero : bool, optional (default: False)
+        Do not print entries that have a value of zero (False) or print
+        all min/max entries, independent of values (True).
+    &#34;&#34;&#34;
+    df = _thstat(traces)
+
+    if zero is False:
+        msg = &#34;Summary of trace header statistics (zeros excluded):&#34;
+        mask = np.any([df[&#34;min&#34;] != 0, df[&#34;max&#34;] != 0], axis=0)
+        df = df.loc[mask, :]
+    else:
+        msg = &#34;Summary of trace header statistics (zeros included):&#34;
+
+    try:
+        from tabulate import tabulate
+        log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
+    except ImportError:
+        log.info(&#34;%s&#34;, msg)
+        log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
+        log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
+
+    return df</code></pre>
+</details>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="seisio.reader" href="reader.html">seisio.reader</a></code></dt>
+<dd>
+<div class="desc"><p>Abstract reader for seismic files.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.seg2" href="seg2.html">seisio.seg2</a></code></dt>
+<dd>
+<div class="desc"><p>I/O of seismic files in SEG2 format.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.segy" href="segy.html">seisio.segy</a></code></dt>
+<dd>
+<div class="desc"><p>I/O of seismic files in SEG-Y format.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.seisio" href="seisio.html">seisio.seisio</a></code></dt>
+<dd>
+<div class="desc"><p>SeisIO abstract base class.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.su" href="su.html">seisio.su</a></code></dt>
+<dd>
+<div class="desc"><p>I/O of seismic files in SU format.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.tools" href="tools.html">seisio.tools</a></code></dt>
+<dd>
+<div class="desc"><p>Tools to handle seismic trace headers as Numpy structured arrays.</p></div>
+</dd>
+<dt><code class="name"><a title="seisio.writer" href="writer.html">seisio.writer</a></code></dt>
+<dd>
+<div class="desc"><p>Abstract writer for seismic files.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="seisio.input"><code class="name flex">
+<span>def <span class="ident">input</span></span>(<span>file, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Open a seismic file for reading.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the file to read.</dd>
+<dt><strong><code>filetype</code></strong> :&ensp;<code>str</code></dt>
+<dd>Force a specific file type if file suffix is unknown.</dd>
+</dl>
+<p>All other arguments are passed to the underlying class once
+the type of input file is determined.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def input(file, *args, **kwargs):
+    &#34;&#34;&#34;
+    Open a seismic file for reading.
+
+    Parameters
+    ----------
+    file : str or pathlib.Path
+        The name of the file to read.
+    filetype : str
+        Force a specific file type if file suffix is unknown.
+
+    All other arguments are passed to the underlying class once
+    the type of input file is determined.
+    &#34;&#34;&#34;
+    filetype = kwargs.pop(&#34;filetype&#34;, None)
+
+    fpath = Path(file)
+    if not fpath.exists():
+        raise ValueError(f&#34;Input file {fpath} does not exist.&#34;)
+
+    if filetype is None:
+        suffix = fpath.suffix.upper()
+    else:
+        suffix = str(&#34;.&#34; + filetype).upper()
+        if suffix not in _FILE_SUFFIX:
+            raise ValueError(f&#34;Unknown value &#39;{filetype}&#39; for argument &#39;filetype&#39;.&#34;)
+
+    if suffix in [&#34;.SEGY&#34;, &#34;.SGY&#34;, &#34;.SEG-Y&#34;]:
+        return segy.Reader(file, **kwargs)
+    elif suffix in [&#34;.SEG2&#34;, &#34;.DAT&#34;, &#34;.S2&#34;, &#34;.SG2&#34;]:
+        return seg2.Reader(file, **kwargs)
+    elif suffix in [&#34;.SU&#34;]:
+        return su.Reader(file, **kwargs)
+    else:
+        raise RuntimeError(&#34;Cannot determine file type from file name.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="seisio.log_thstat"><code class="name flex">
+<span>def <span class="ident">log_thstat</span></span>(<span>traces, zero=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Print statistics for each trace header mnemonic.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>traces</code></strong> :&ensp;<code>Numpy structured array</code></dt>
+<dd>The seismic traces (trace headers plus data) or the seismic
+trace headers (as provided by the 'read_all_headers' function).</dd>
+<dt><strong><code>zero</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Do not print entries that have a value of zero (False) or print
+all min/max entries, independent of values (True).</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_thstat(traces, zero=False):
+    &#34;&#34;&#34;
+    Print statistics for each trace header mnemonic.
+
+    Parameters
+    ----------
+    traces : Numpy structured array
+        The seismic traces (trace headers plus data) or the seismic
+        trace headers (as provided by the &#39;read_all_headers&#39; function).
+    zero : bool, optional (default: False)
+        Do not print entries that have a value of zero (False) or print
+        all min/max entries, independent of values (True).
+    &#34;&#34;&#34;
+    df = _thstat(traces)
+
+    if zero is False:
+        msg = &#34;Summary of trace header statistics (zeros excluded):&#34;
+        mask = np.any([df[&#34;min&#34;] != 0, df[&#34;max&#34;] != 0], axis=0)
+        df = df.loc[mask, :]
+    else:
+        msg = &#34;Summary of trace header statistics (zeros included):&#34;
+
+    try:
+        from tabulate import tabulate
+        log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
+    except ImportError:
+        log.info(&#34;%s&#34;, msg)
+        log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
+        log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="seisio.output"><code class="name flex">
+<span>def <span class="ident">output</span></span>(<span>file, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Open a seismic file for writing.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the file to write.</dd>
+<dt><strong><code>filetype</code></strong> :&ensp;<code>str</code></dt>
+<dd>Force a specific file type if file suffix is unknown.</dd>
+</dl>
+<p>All other arguments are passed to the underlying class once
+the type of output file is determined.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def output(file, **kwargs):
+    &#34;&#34;&#34;
+    Open a seismic file for writing.
+
+    Parameters
+    ----------
+    file : str or pathlib.Path
+        The name of the file to write.
+    filetype : str
+        Force a specific file type if file suffix is unknown.
+
+    All other arguments are passed to the underlying class once
+    the type of output file is determined.
+    &#34;&#34;&#34;
+    filetype = kwargs.pop(&#34;filetype&#34;, None)
+
+    fpath = Path(file)
+
+    if filetype is None:
+        suffix = fpath.suffix.upper()
+    else:
+        suffix = str(&#34;.&#34; + filetype).upper()
+        if suffix not in _FILE_SUFFIX:
+            raise ValueError(f&#34;Unknown value &#39;{filetype}&#39; for parameter &#39;filetype&#39;.&#34;)
+
+    if suffix in [&#34;.SEGY&#34;, &#34;.SGY&#34;, &#34;.SEG-Y&#34;]:
+        return segy.Writer(file, **kwargs)
+    elif suffix in [&#34;.SEG2&#34;, &#34;.DAT&#34;, &#34;.S2&#34;, &#34;.SG2&#34;]:
+        raise NotImplementedError(&#34;SEG2 output not implemented as it is an acq. format.&#34;)
+    elif suffix in [&#34;.SU&#34;]:
+        return su.Writer(file, **kwargs)
+    else:
+        raise RuntimeError(&#34;Cannot determine file type from file name.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="seisio.segy_txthead_template"><code class="name flex">
+<span>def <span class="ident">segy_txthead_template</span></span>(<span>major_version=1, minor_version=0, fill=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a template for a SEG-Y textual file header.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>major_version</code></strong> :&ensp;<code>int</code>, optional <code>(default: 1)</code></dt>
+<dd>Major SEG-Y revision number.</dd>
+<dt><strong><code>minor_version</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dd>Minor SEG-Y revision number.</dd>
+<dt><strong><code>fill</code></strong> :&ensp;<code>boolean</code>, optional <code>(default: True)</code></dt>
+<dd>Fill the individual strings with Cxx convention (True) or not.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>A list of strings, 40 card images (strings), each of 80 characters.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def segy_txthead_template(major_version=1, minor_version=0, fill=True):
+    &#34;&#34;&#34;
+    Get a template for a SEG-Y textual file header.
+
+    Parameters
+    ----------
+    major_version : int, optional (default: 1)
+        Major SEG-Y revision number.
+    minor_version : int, optional (default: 0)
+        Minor SEG-Y revision number.
+    fill : boolean, optional (default: True)
+        Fill the individual strings with Cxx convention (True) or not.
+
+    Returns
+    -------
+    list
+        A list of strings, 40 card images (strings), each of 80 characters.
+    &#34;&#34;&#34;
+    return _txtheader.TxtHeader().template(major_version=major_version,
+                                           minor_version=minor_version,
+                                           fill=fill)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="seisio.reader" href="reader.html">seisio.reader</a></code></li>
+<li><code><a title="seisio.seg2" href="seg2.html">seisio.seg2</a></code></li>
+<li><code><a title="seisio.segy" href="segy.html">seisio.segy</a></code></li>
+<li><code><a title="seisio.seisio" href="seisio.html">seisio.seisio</a></code></li>
+<li><code><a title="seisio.su" href="su.html">seisio.su</a></code></li>
+<li><code><a title="seisio.tools" href="tools.html">seisio.tools</a></code></li>
+<li><code><a title="seisio.writer" href="writer.html">seisio.writer</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="seisio.input" href="#seisio.input">input</a></code></li>
+<li><code><a title="seisio.log_thstat" href="#seisio.log_thstat">log_thstat</a></code></li>
+<li><code><a title="seisio.output" href="#seisio.output">output</a></code></li>
+<li><code><a title="seisio.segy_txthead_template" href="#seisio.segy_txthead_template">segy_txthead_template</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

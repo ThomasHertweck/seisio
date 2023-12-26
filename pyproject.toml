@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seisio"
+
+dynamic = ["version"]
+
+authors = [
+  { name="Thomas Hertweck", email="Thomas.Hertweck@kit.edu" },
+]
+
+maintainers = [
+  { name="Thomas Hertweck", email="Thomas.Hertweck@kit.edu" },
+]
+
+description = "I/O of seismic data"
+
+readme = "README.md"
+
+requires-python = ">=3.8"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: LGPL v3.0",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "numpy",
+  "pandas",
+]
+
+keywords = [
+  "seismic",
+  "SU",
+  "SEGY", "SEG-Y",
+  "SEG2",
+  "I/O",
+  "read",
+  "write",
+  "radar", "GPR",
+]
+
+[project.urls]
+Repository = "https://gitlab.kit.edu/thomas.hertweck/seisio"
+
+[project.optional-dependencies]
+opt = [
+  "ibm2ieee",
+  "tabulate",
+  "numba",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "seisio.__version__" }
+
+[tool.setuptools]
+include-package-data = true
+
+package-dir = { "" = "./" }
+
+[tool.setuptools.package-data]
+"seisio.json" = [ "*.json" ] 
+
+"docs" = [ "*.html" ]
+
+"examples" = [ "*.ipynb", "data/README", "data/shot1.seg2" ]
+
