@@ -319,7 +319,7 @@ with I/O of seismic data:
 
 ## Main author
 
-Dr. Thomas Hertweck, Thomas.Hertweck@kit.edu
+Dr. Thomas Hertweck, geophysics@email.de
 
 ## License
 
