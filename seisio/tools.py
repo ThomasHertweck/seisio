@@ -248,29 +248,50 @@ def add_mnemonic(headers, names=None, data=None, dtypes=None):
     return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)
 
 
-def remove_mnemonic(headers, names=None):
+def remove_mnemonic(headers, names=None, allzero=False):
     """
     Remove mnemonic(s) from structured array.
 
     This function can be used to remove, for instance, a trace header
-    mnemonic from the corresponding Numpy structured array.
+    mnemonic from the corresponding Numpy structured array. If you remove
+    the "data" mnemonic, you end up with just the trace headers but no
+    data values anymore.
 
     Parameters
     ----------
     headers : Numpy structured array
         The header structure (e.g., trace headers).
-    names : str or list of str
+    names : str or list of str (default: None)
         The trace header mnemonics to remove.
+    allzero : bool (default: False)
+        If True, all mnemonics that contain only zeros will be removed,
+        possibly in addition to the mnemonics specified via 'names'.
 
     Returns
     -------
     Numpy structured array
         The original header array with the specified mnemonics removed.
     """
-    if names is None:
-        raise ValueError("Need at least one mnemonic to remove.")
+    remove = set()
 
-    return rfn.drop_fields(headers, names, usemask=False, asrecarray=False)
+    if names is None and not allzero:
+        raise ValueError("Need at least one mnemonic to remove, or allzero=True.")
+
+    if isinstance(names, str):
+        remove.add(names)
+    elif isinstance(names, list):
+        remove.update(set(names))
+    elif isinstance(names, set):
+        remove.update(names)
+
+    if allzero:
+        keys = list(headers.dtype.names)
+        keys.remove("data")
+        for k in keys:
+            if headers[k].min() == 0 and headers[k].max() == 0:
+                remove.add(k)
+
+    return rfn.drop_fields(headers, remove, usemask=False, asrecarray=False)
 
 
 def rename_mnemonic(headers, mapping=None):
