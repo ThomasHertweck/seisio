@@ -275,29 +275,50 @@ def add_mnemonic(headers, names=None, data=None, dtypes=None):
     return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)
 
 
-def remove_mnemonic(headers, names=None):
+def remove_mnemonic(headers, names=None, allzero=False):
     &#34;&#34;&#34;
     Remove mnemonic(s) from structured array.
 
     This function can be used to remove, for instance, a trace header
-    mnemonic from the corresponding Numpy structured array.
+    mnemonic from the corresponding Numpy structured array. If you remove
+    the &#34;data&#34; mnemonic, you end up with just the trace headers but no
+    data values anymore.
 
     Parameters
     ----------
     headers : Numpy structured array
         The header structure (e.g., trace headers).
-    names : str or list of str
+    names : str or list of str (default: None)
         The trace header mnemonics to remove.
+    allzero : bool (default: False)
+        If True, all mnemonics that contain only zeros will be removed,
+        possibly in addition to the mnemonics specified via &#39;names&#39;.
 
     Returns
     -------
     Numpy structured array
         The original header array with the specified mnemonics removed.
     &#34;&#34;&#34;
-    if names is None:
-        raise ValueError(&#34;Need at least one mnemonic to remove.&#34;)
+    remove = set()
 
-    return rfn.drop_fields(headers, names, usemask=False, asrecarray=False)
+    if names is None and not allzero:
+        raise ValueError(&#34;Need at least one mnemonic to remove, or allzero=True.&#34;)
+
+    if isinstance(names, str):
+        remove.add(names)
+    elif isinstance(names, list):
+        remove.update(set(names))
+    elif isinstance(names, set):
+        remove.update(names)
+
+    if allzero:
+        keys = list(headers.dtype.names)
+        keys.remove(&#34;data&#34;)
+        for k in keys:
+            if headers[k].min() == 0 and headers[k].max() == 0:
+                remove.add(k)
+
+    return rfn.drop_fields(headers, remove, usemask=False, asrecarray=False)
 
 
 def rename_mnemonic(headers, mapping=None):
@@ -460,18 +481,23 @@ initialized.</dd>
 </details>
 </dd>
 <dt id="seisio.tools.remove_mnemonic"><code class="name flex">
-<span>def <span class="ident">remove_mnemonic</span></span>(<span>headers, names=None)</span>
+<span>def <span class="ident">remove_mnemonic</span></span>(<span>headers, names=None, allzero=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Remove mnemonic(s) from structured array.</p>
 <p>This function can be used to remove, for instance, a trace header
-mnemonic from the corresponding Numpy structured array.</p>
+mnemonic from the corresponding Numpy structured array. If you remove
+the "data" mnemonic, you end up with just the trace headers but no
+data values anymore.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>headers</code></strong> :&ensp;<code>Numpy structured array</code></dt>
 <dd>The header structure (e.g., trace headers).</dd>
-<dt><strong><code>names</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code></dt>
+<dt><strong><code>names</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str (default: None)</code></dt>
 <dd>The trace header mnemonics to remove.</dd>
+<dt><strong><code>allzero</code></strong> :&ensp;<code>bool (default: False)</code></dt>
+<dd>If True, all mnemonics that contain only zeros will be removed,
+possibly in addition to the mnemonics specified via 'names'.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -482,29 +508,50 @@ mnemonic from the corresponding Numpy structured array.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def remove_mnemonic(headers, names=None):
+<pre><code class="python">def remove_mnemonic(headers, names=None, allzero=False):
     &#34;&#34;&#34;
     Remove mnemonic(s) from structured array.
 
     This function can be used to remove, for instance, a trace header
-    mnemonic from the corresponding Numpy structured array.
+    mnemonic from the corresponding Numpy structured array. If you remove
+    the &#34;data&#34; mnemonic, you end up with just the trace headers but no
+    data values anymore.
 
     Parameters
     ----------
     headers : Numpy structured array
         The header structure (e.g., trace headers).
-    names : str or list of str
+    names : str or list of str (default: None)
         The trace header mnemonics to remove.
+    allzero : bool (default: False)
+        If True, all mnemonics that contain only zeros will be removed,
+        possibly in addition to the mnemonics specified via &#39;names&#39;.
 
     Returns
     -------
     Numpy structured array
         The original header array with the specified mnemonics removed.
     &#34;&#34;&#34;
-    if names is None:
-        raise ValueError(&#34;Need at least one mnemonic to remove.&#34;)
+    remove = set()
 
-    return rfn.drop_fields(headers, names, usemask=False, asrecarray=False)</code></pre>
+    if names is None and not allzero:
+        raise ValueError(&#34;Need at least one mnemonic to remove, or allzero=True.&#34;)
+
+    if isinstance(names, str):
+        remove.add(names)
+    elif isinstance(names, list):
+        remove.update(set(names))
+    elif isinstance(names, set):
+        remove.update(names)
+
+    if allzero:
+        keys = list(headers.dtype.names)
+        keys.remove(&#34;data&#34;)
+        for k in keys:
+            if headers[k].min() == 0 and headers[k].max() == 0:
+                remove.add(k)
+
+    return rfn.drop_fields(headers, remove, usemask=False, asrecarray=False)</code></pre>
 </details>
 </dd>
 <dt id="seisio.tools.rename_mnemonic"><code class="name flex">

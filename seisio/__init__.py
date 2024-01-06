@@ -17,7 +17,7 @@ performance in mind (e.g., using memory-mapped files where possible) and also
 offers functionality not readily available in other packages that are
 available in the Python ecosystem.
 
-Author & Copyright: Dr. Thomas Hertweck, KIT, Thomas.Hertweck@kit.edu
+Author & Copyright: Dr. Thomas Hertweck, geophysics@email.de
 
 License: GNU Lesser General Public License, Version 3
          https://www.gnu.org/licenses/lgpl-3.0.html
