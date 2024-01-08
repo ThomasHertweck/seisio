@@ -23,7 +23,7 @@ License: GNU Lesser General Public License, Version 3
          https://www.gnu.org/licenses/lgpl-3.0.html
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Thomas Hertweck"
 __copyright__ = "(c) 2024 Thomas Hertweck"
 __license__ = "GNU Lesser General Public License, Version 3"
@@ -31,6 +31,8 @@ __license__ = "GNU Lesser General Public License, Version 3"
 import logging
 import numpy as np
 import pandas as pd
+import shutil
+
 from pathlib import Path
 
 from . import seg2
@@ -115,6 +117,70 @@ def output(file, **kwargs):
         return su.Writer(file, **kwargs)
     else:
         raise RuntimeError("Cannot determine file type from file name.")
+
+
+def segy_thdef_template(outfile):
+    """
+    Get a template to be used as SEG-Y trace header definition table.
+
+    The template can be adjusted for trace header mnemonic names, types,
+    byte offsets etc. and then used later on to allow for a custom-made
+    trace header definition table.
+
+    Parameters
+    ----------
+    outfile : str
+        Target name (or directory) for the JSON.
+    """
+    shutil.copy(Path(__file__).parent/"json/segy_traceheader.json", outfile)
+
+
+def segy_bhdef_template(outfile):
+    """
+    Get a template to be used as SEG-Y binary header definition table.
+
+    The template can be adjusted for binary header mnemonic names, types,
+    byte offsets etc. and then used later on to allow for a custom-made
+    binary header definition table.
+
+    Parameters
+    ----------
+    outfile : str
+        Target name (or directory) for JSON.
+    """
+    shutil.copy(Path(__file__).parent/"json/segy_binaryheader.json", outfile)
+
+
+def segy_thdef1_template(outfile):
+    """
+    Get a template to be used as SEG-Y trace header ext. 1 definition table.
+
+    The template can be adjusted for header mnemonic names, types, byte
+    offsets etc. and then used later on to allow for a custom-made trace
+    header extension 1 definition table.
+
+    Parameters
+    ----------
+    outfile : str
+        Target name (or directory) for the JSON.
+    """
+    shutil.copy(Path(__file__).parent/"json/segy_traceheader_ext1.json", outfile)
+
+
+def su_thdef_template(outfile):
+    """
+    Get a template to be used as SU trace header definition table.
+
+    The template can be adjusted for trace header mnemonic names, types,
+    byte offsets etc. and then used later on to allow for a custom-made
+    trace header definition table.
+
+    Parameters
+    ----------
+    outfile : str
+        Target name (or directory) for the JSON.
+    """
+    shutil.copy(Path(__file__).parent/"json/su_traceheader.json", outfile)
 
 
 def segy_txthead_template(major_version=1, minor_version=0, fill=True):
