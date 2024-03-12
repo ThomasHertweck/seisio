@@ -758,7 +758,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         if thstat is None and traces is None:
             df = self.thstat(headers=None, ntmax=ntmax)
         elif thstat is not None and traces is None:
-            df = df.copy()
+            df = thstat.copy()
         elif thstat is None and traces is not None:
             keys = list(traces.dtype.names)
             if "data" in keys:
