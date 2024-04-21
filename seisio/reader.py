@@ -589,6 +589,7 @@ class Reader(seisio.SeisIO, abc.ABC):
                                  order=self._idx.grp_by)[::self._idx.gord]
 
         log.info("Created lookup index for %s (order '%s').", self._idx.grp_by, group_order)
+        log.info("Each ensemble is sorted by %s (order '%s').", self._idx.srt_by, sort_order)
         log.info("Number of ensembles: %d", self.ne)
 
     @property
