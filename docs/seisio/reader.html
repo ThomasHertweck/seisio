@@ -481,9 +481,32 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
+    def batches_header(self, batch_size=100, silent=False):
+        &#34;&#34;&#34;
+        Loop through all headers in blocks (using a generator).
+
+        Parameters
+        ----------
+        batch_size : int, optional (default: 100)
+            The batch size, i.e., number of trace headers to read in one go.
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Yields
+        ------
+        Numpy structured array
+            Trace headers.
+        &#34;&#34;&#34;
+        nt = np.int64(self._dp.nt)
+        if batch_size &lt;= 0:
+            raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
+        bs = np.int64(batch_size)
+        for start, ntraces in _create_batches(nt, bs):
+            yield self.read_batch_of_headers(start, ntraces, silent=silent)
+
     def batches(self, batch_size=100, silent=False):
         &#34;&#34;&#34;
-        Loop through all data in blocks (using a generator).
+        Loop through all traces in blocks (using a generator).
 
         Parameters
         ----------
@@ -522,6 +545,25 @@ class Reader(seisio.SeisIO, abc.ABC):
         while counter &lt; self._dp.nt:
             yield self.read_traces(counter, silent=silent)
             counter += 1
+
+    def headers(self, silent=False):
+        &#34;&#34;&#34;
+        Loop through all headers of the file (using a generator).
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Yields
+        ------
+        Numpy structured array
+            Trace headers.
+        &#34;&#34;&#34;
+        hcounter = 0
+        while hcounter &lt; self._dp.nt:
+            yield self.read_headers(hcounter, silent=silent)
+            hcounter += 1
 
     def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, sort_order=&#34;&gt;&#34;,
                      headers=None, filt=None):
@@ -616,6 +658,7 @@ class Reader(seisio.SeisIO, abc.ABC):
                                  order=self._idx.grp_by)[::self._idx.gord]
 
         log.info(&#34;Created lookup index for %s (order &#39;%s&#39;).&#34;, self._idx.grp_by, group_order)
+        log.info(&#34;Each ensemble is sorted by %s (order &#39;%s&#39;).&#34;, self._idx.srt_by, sort_order)
         log.info(&#34;Number of ensembles: %d&#34;, self.ne)
 
     @property
@@ -785,7 +828,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         if thstat is None and traces is None:
             df = self.thstat(headers=None, ntmax=ntmax)
         elif thstat is not None and traces is None:
-            df = df.copy()
+            df = thstat.copy()
         elif thstat is None and traces is not None:
             keys = list(traces.dtype.names)
             if &#34;data&#34; in keys:
@@ -1235,9 +1278,32 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
+    def batches_header(self, batch_size=100, silent=False):
+        &#34;&#34;&#34;
+        Loop through all headers in blocks (using a generator).
+
+        Parameters
+        ----------
+        batch_size : int, optional (default: 100)
+            The batch size, i.e., number of trace headers to read in one go.
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Yields
+        ------
+        Numpy structured array
+            Trace headers.
+        &#34;&#34;&#34;
+        nt = np.int64(self._dp.nt)
+        if batch_size &lt;= 0:
+            raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
+        bs = np.int64(batch_size)
+        for start, ntraces in _create_batches(nt, bs):
+            yield self.read_batch_of_headers(start, ntraces, silent=silent)
+
     def batches(self, batch_size=100, silent=False):
         &#34;&#34;&#34;
-        Loop through all data in blocks (using a generator).
+        Loop through all traces in blocks (using a generator).
 
         Parameters
         ----------
@@ -1276,6 +1342,25 @@ class Reader(seisio.SeisIO, abc.ABC):
         while counter &lt; self._dp.nt:
             yield self.read_traces(counter, silent=silent)
             counter += 1
+
+    def headers(self, silent=False):
+        &#34;&#34;&#34;
+        Loop through all headers of the file (using a generator).
+
+        Parameters
+        ----------
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+
+        Yields
+        ------
+        Numpy structured array
+            Trace headers.
+        &#34;&#34;&#34;
+        hcounter = 0
+        while hcounter &lt; self._dp.nt:
+            yield self.read_headers(hcounter, silent=silent)
+            hcounter += 1
 
     def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, sort_order=&#34;&gt;&#34;,
                      headers=None, filt=None):
@@ -1370,6 +1455,7 @@ class Reader(seisio.SeisIO, abc.ABC):
                                  order=self._idx.grp_by)[::self._idx.gord]
 
         log.info(&#34;Created lookup index for %s (order &#39;%s&#39;).&#34;, self._idx.grp_by, group_order)
+        log.info(&#34;Each ensemble is sorted by %s (order &#39;%s&#39;).&#34;, self._idx.srt_by, sort_order)
         log.info(&#34;Number of ensembles: %d&#34;, self.ne)
 
     @property
@@ -1539,7 +1625,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         if thstat is None and traces is None:
             df = self.thstat(headers=None, ntmax=ntmax)
         elif thstat is not None and traces is None:
-            df = df.copy()
+            df = thstat.copy()
         elif thstat is None and traces is not None:
             keys = list(traces.dtype.names)
             if &#34;data&#34; in keys:
@@ -1773,7 +1859,7 @@ def vsi(self):
 <span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, silent=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Loop through all data in blocks (using a generator).</p>
+<div class="desc"><p>Loop through all traces in blocks (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
@@ -1792,7 +1878,7 @@ def vsi(self):
 </summary>
 <pre><code class="python">def batches(self, batch_size=100, silent=False):
     &#34;&#34;&#34;
-    Loop through all data in blocks (using a generator).
+    Loop through all traces in blocks (using a generator).
 
     Parameters
     ----------
@@ -1812,6 +1898,51 @@ def vsi(self):
     bs = np.int64(batch_size)
     for start, ntraces in _create_batches(nt, bs):
         yield self.read_batch_of_traces(start, ntraces, silent=silent)</code></pre>
+</details>
+</dd>
+<dt id="seisio.reader.Reader.batches_header"><code class="name flex">
+<span>def <span class="ident">batches_header</span></span>(<span>self, batch_size=100, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loop through all headers in blocks (using a generator).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
+<dd>The batch size, i.e., number of trace headers to read in one go.</dd>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Whether to suppress all standard logging (True) or not (False).</dd>
+</dl>
+<h2 id="yields">Yields</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>Trace headers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def batches_header(self, batch_size=100, silent=False):
+    &#34;&#34;&#34;
+    Loop through all headers in blocks (using a generator).
+
+    Parameters
+    ----------
+    batch_size : int, optional (default: 100)
+        The batch size, i.e., number of trace headers to read in one go.
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+
+    Yields
+    ------
+    Numpy structured array
+        Trace headers.
+    &#34;&#34;&#34;
+    nt = np.int64(self._dp.nt)
+    if batch_size &lt;= 0:
+        raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
+    bs = np.int64(batch_size)
+    for start, ntraces in _create_batches(nt, bs):
+        yield self.read_batch_of_headers(start, ntraces, silent=silent)</code></pre>
 </details>
 </dd>
 <dt id="seisio.reader.Reader.create_index"><code class="name flex">
@@ -1973,6 +2104,7 @@ therefore not contain any offsets larger than 3000 m.</p></div>
                              order=self._idx.grp_by)[::self._idx.gord]
 
     log.info(&#34;Created lookup index for %s (order &#39;%s&#39;).&#34;, self._idx.grp_by, group_order)
+    log.info(&#34;Each ensemble is sorted by %s (order &#39;%s&#39;).&#34;, self._idx.srt_by, sort_order)
     log.info(&#34;Number of ensembles: %d&#34;, self.ne)</code></pre>
 </details>
 </dd>
@@ -2014,6 +2146,45 @@ therefore not contain any offsets larger than 3000 m.</p></div>
             yield self.read_ensemble(e, silent=silent)
     else:
         raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="seisio.reader.Reader.headers"><code class="name flex">
+<span>def <span class="ident">headers</span></span>(<span>self, silent=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loop through all headers of the file (using a generator).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Whether to suppress all standard logging (True) or not (False).</dd>
+</dl>
+<h2 id="yields">Yields</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>Trace headers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def headers(self, silent=False):
+    &#34;&#34;&#34;
+    Loop through all headers of the file (using a generator).
+
+    Parameters
+    ----------
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+
+    Yields
+    ------
+    Numpy structured array
+        Trace headers.
+    &#34;&#34;&#34;
+    hcounter = 0
+    while hcounter &lt; self._dp.nt:
+        yield self.read_headers(hcounter, silent=silent)
+        hcounter += 1</code></pre>
 </details>
 </dd>
 <dt id="seisio.reader.Reader.log_thstat"><code class="name flex">
@@ -2066,7 +2237,7 @@ Only relevant if df=None.</dd>
     if thstat is None and traces is None:
         df = self.thstat(headers=None, ntmax=ntmax)
     elif thstat is not None and traces is None:
-        df = df.copy()
+        df = thstat.copy()
     elif thstat is None and traces is not None:
         keys = list(traces.dtype.names)
         if &#34;data&#34; in keys:
@@ -2816,10 +2987,12 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 <h4><code><a title="seisio.reader.Reader" href="#seisio.reader.Reader">Reader</a></code></h4>
 <ul class="">
 <li><code><a title="seisio.reader.Reader.batches" href="#seisio.reader.Reader.batches">batches</a></code></li>
+<li><code><a title="seisio.reader.Reader.batches_header" href="#seisio.reader.Reader.batches_header">batches_header</a></code></li>
 <li><code><a title="seisio.reader.Reader.create_index" href="#seisio.reader.Reader.create_index">create_index</a></code></li>
 <li><code><a title="seisio.reader.Reader.delay" href="#seisio.reader.Reader.delay">delay</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensemble_keys" href="#seisio.reader.Reader.ensemble_keys">ensemble_keys</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensembles" href="#seisio.reader.Reader.ensembles">ensembles</a></code></li>
+<li><code><a title="seisio.reader.Reader.headers" href="#seisio.reader.Reader.headers">headers</a></code></li>
 <li><code><a title="seisio.reader.Reader.log_thstat" href="#seisio.reader.Reader.log_thstat">log_thstat</a></code></li>
 <li><code><a title="seisio.reader.Reader.maxnte" href="#seisio.reader.Reader.maxnte">maxnte</a></code></li>
 <li><code><a title="seisio.reader.Reader.ne" href="#seisio.reader.Reader.ne">ne</a></code></li>
