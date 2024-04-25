@@ -454,7 +454,7 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
-    def batches_header(self, batch_size=100, silent=False):
+    def batches_of_headers(self, batch_size=100, silent=False):
         """
         Loop through all headers in blocks (using a generator).
 

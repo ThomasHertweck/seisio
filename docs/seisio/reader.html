@@ -481,7 +481,7 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
-    def batches_header(self, batch_size=100, silent=False):
+    def batches_of_headers(self, batch_size=100, silent=False):
         &#34;&#34;&#34;
         Loop through all headers in blocks (using a generator).
 
@@ -1278,7 +1278,7 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
-    def batches_header(self, batch_size=100, silent=False):
+    def batches_of_headers(self, batch_size=100, silent=False):
         &#34;&#34;&#34;
         Loop through all headers in blocks (using a generator).
 
@@ -1900,8 +1900,8 @@ def vsi(self):
         yield self.read_batch_of_traces(start, ntraces, silent=silent)</code></pre>
 </details>
 </dd>
-<dt id="seisio.reader.Reader.batches_header"><code class="name flex">
-<span>def <span class="ident">batches_header</span></span>(<span>self, batch_size=100, silent=False)</span>
+<dt id="seisio.reader.Reader.batches_of_headers"><code class="name flex">
+<span>def <span class="ident">batches_of_headers</span></span>(<span>self, batch_size=100, silent=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Loop through all headers in blocks (using a generator).</p>
@@ -1921,7 +1921,7 @@ def vsi(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def batches_header(self, batch_size=100, silent=False):
+<pre><code class="python">def batches_of_headers(self, batch_size=100, silent=False):
     &#34;&#34;&#34;
     Loop through all headers in blocks (using a generator).
 
@@ -2987,7 +2987,7 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 <h4><code><a title="seisio.reader.Reader" href="#seisio.reader.Reader">Reader</a></code></h4>
 <ul class="">
 <li><code><a title="seisio.reader.Reader.batches" href="#seisio.reader.Reader.batches">batches</a></code></li>
-<li><code><a title="seisio.reader.Reader.batches_header" href="#seisio.reader.Reader.batches_header">batches_header</a></code></li>
+<li><code><a title="seisio.reader.Reader.batches_of_headers" href="#seisio.reader.Reader.batches_of_headers">batches_of_headers</a></code></li>
 <li><code><a title="seisio.reader.Reader.create_index" href="#seisio.reader.Reader.create_index">create_index</a></code></li>
 <li><code><a title="seisio.reader.Reader.delay" href="#seisio.reader.Reader.delay">delay</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensemble_keys" href="#seisio.reader.Reader.ensemble_keys">ensemble_keys</a></code></li>
