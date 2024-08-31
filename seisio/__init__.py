@@ -23,7 +23,7 @@ License: GNU Lesser General Public License, Version 3
          https://www.gnu.org/licenses/lgpl-3.0.html
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __author__ = "Thomas Hertweck"
 __copyright__ = "(c) 2024 Thomas Hertweck"
 __license__ = "GNU Lesser General Public License, Version 3"
