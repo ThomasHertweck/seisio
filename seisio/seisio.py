@@ -157,7 +157,31 @@ class SeisIO(abc.ABC):
         return self._dp.ns
 
     @property
+    def nsamples(self):
+        """
+        Get the number of samples per trace.
+
+        Returns
+        -------
+        int
+            Number of samples.
+        """
+        return self._dp.ns
+
+    @property
     def nt(self):
+        """
+        Get the total (current) number of traces in file.
+
+        Returns
+        -------
+        int
+            Number of traces.
+        """
+        return self._dp.nt
+
+    @property
+    def ntraces(self):
         """
         Get the total (current) number of traces in file.
 

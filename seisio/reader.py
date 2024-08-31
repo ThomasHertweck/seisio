@@ -665,6 +665,18 @@ class Reader(seisio.SeisIO, abc.ABC):
         return 0
 
     @property
+    def nensembles(self):
+        """
+        Get the number of ensembles (groups) for the current index.
+
+        Returns
+        -------
+        int
+            Number of ensembles.
+        """
+        return self.ne
+
+    @property
     def nte(self):
         """
         Get the number of traces per ensemble key in this index.

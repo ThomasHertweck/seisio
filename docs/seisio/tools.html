@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>seisio.tools API documentation</title>
-<meta name="description" content="Tools to handle seismic trace headers as Numpy structured arrays." />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="Tools to handle seismic trace headers as Numpy structured arrays.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -21,330 +26,6 @@
 </header>
 <section id="section-intro">
 <p>Tools to handle seismic trace headers as Numpy structured arrays.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;Tools to handle seismic trace headers as Numpy structured arrays.&#34;&#34;&#34;
-
-import logging
-import numpy as np
-
-from collections.abc import Iterable
-from numpy.lib import recfunctions as rfn
-from sys import byteorder
-
-log = logging.getLogger(__name__)
-
-# (SEG-Y) data formats
-_DATAFORMAT = {1: {&#34;desc&#34;: &#34;4-byte IBM floating-point&#34;, &#34;type&#34;: &#34;f&#34;, &#34;dtype&#34;: np.float32},
-               2: {&#34;desc&#34;: &#34;4-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;i&#34;, &#34;dtype&#34;: np.int32},
-               3: {&#34;desc&#34;: &#34;2-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;h&#34;, &#34;dtype&#34;: np.int16},
-               5: {&#34;desc&#34;: &#34;4-byte IEEE floating-point&#34;, &#34;type&#34;: &#34;f&#34;, &#34;dtype&#34;: np.float32},
-               6: {&#34;desc&#34;: &#34;8-byte IEEE floating-point&#34;, &#34;type&#34;: &#34;d&#34;, &#34;dtype&#34;: np.float64},
-               8: {&#34;desc&#34;: &#34;1-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;b&#34;, &#34;dtype&#34;: np.int8},
-               9: {&#34;desc&#34;: &#34;8-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;q&#34;, &#34;dtype&#34;: np.int64},
-               10: {&#34;desc&#34;: &#34;4-byte unsigned integer&#34;, &#34;type&#34;: &#34;I&#34;, &#34;dtype&#34;: np.uint32},
-               11: {&#34;desc&#34;: &#34;2-byte unsigned integer&#34;, &#34;type&#34;: &#34;H&#34;, &#34;dtype&#34;: np.uint16},
-               12: {&#34;desc&#34;: &#34;8-byte unsigned integer&#34;, &#34;type&#34;: &#34;Q&#34;, &#34;dtype&#34;: np.uint64},
-               16: {&#34;desc&#34;: &#34;1-byte unsigned integer&#34;, &#34;type&#34;: &#34;B&#34;, &#34;dtype&#34;: np.uint8}}
-
-# encodings of different data types
-_DATAENCODING = {&#34;b&#34;: {&#34;dtype&#34;: &#34;int8&#34;, &#34;size&#34;: 1},
-                 &#34;B&#34;: {&#34;dtype&#34;: &#34;uint8&#34;, &#34;size&#34;: 1},
-                 &#34;h&#34;: {&#34;dtype&#34;: &#34;int16&#34;, &#34;size&#34;: 2},
-                 &#34;H&#34;: {&#34;dtype&#34;: &#34;uint16&#34;, &#34;size&#34;: 2},
-                 &#34;i&#34;: {&#34;dtype&#34;: &#34;int32&#34;, &#34;size&#34;: 4},
-                 &#34;I&#34;: {&#34;dtype&#34;: &#34;uint32&#34;, &#34;size&#34;: 4},
-                 &#34;q&#34;: {&#34;dtype&#34;: &#34;int64&#34;, &#34;size&#34;: 8},
-                 &#34;Q&#34;: {&#34;dtype&#34;: &#34;uint64&#34;, &#34;size&#34;: 8},
-                 &#34;f&#34;: {&#34;dtype&#34;: &#34;float32&#34;, &#34;size&#34;: 4},
-                 &#34;d&#34;: {&#34;dtype&#34;: &#34;float64&#34;, &#34;size&#34;: 8}}
-
-_SEG2DATAFORMAT = {1: {&#34;desc&#34;: &#34;2-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;h&#34;, &#34;dtype&#34;: np.int16},
-                   2: {&#34;desc&#34;: &#34;4-byte two&#39;s complement integer&#34;, &#34;type&#34;: &#34;i&#34;, &#34;dtype&#34;: np.int32},
-                   3: {&#34;desc&#34;: &#34;20-bit floating-point (SEG-D)&#34;, &#34;type&#34;: &#34;i2&#34;, &#34;dtype&#34;: np.int32},
-                   4: {&#34;desc&#34;: &#34;4-byte IEEE floating-point&#34;, &#34;type&#34;: &#34;f&#34;, &#34;dtype&#34;: np.float32},
-                   5: {&#34;desc&#34;: &#34;8-byte IEEE floating-point&#34;, &#34;type&#34;: &#34;d&#34;, &#34;dtype&#34;: np.float64}}
-# untested: format 3 = 20-bit floating point (SEG-D), stored as scaled 32-bit integer
-
-# Note: the order for SEG2 file header entries is important
-_SEG2FILEDESCSTR = [&#34;ACQUISITION_DATE&#34;, &#34;ACQUISITION_TIME&#34;, &#34;CLIENT&#34;, &#34;COMPANY&#34;,
-                    &#34;GENERAL_CONSTANT&#34;, &#34;INSTRUMENT&#34;, &#34;JOB_ID&#34;, &#34;OBSERVER&#34;,
-                    &#34;PROCESSING_DATE&#34;, &#34;PROCESSING_TIME&#34;, &#34;TRACE_SORT&#34;, &#34;UNITS&#34;, &#34;NOTE&#34;]
-
-# Note: the order for SEG2 trace header entries is important
-_SEG2TRACEDESCSTR = [&#34;ALIAS_FILTER&#34;, &#34;AMPLITUDE_RECOVERY&#34;, &#34;BAND_REJECT_FILTER&#34;,
-                     &#34;CDP_NUMBER&#34;, &#34;CDP_TRACE&#34;, &#34;CHANNEL_NUMBER&#34;, &#34;DATUM&#34;, &#34;DELAY&#34;,
-                     &#34;DESCALING_FACTOR&#34;, &#34;DIGITAL_BAND_REJECT_FILTER&#34;,
-                     &#34;DIGITAL_HIGH_CUT_FILTER&#34;, &#34;DIGITAL_LOW_CUT_FILTER&#34;,
-                     &#34;END_OF_GROUP&#34;, &#34;FIXED_GAIN&#34;, &#34;HIGH_CUT_FILTER&#34;, &#34;LINE_ID&#34;,
-                     &#34;LOW_CUT_FILTER&#34;, &#34;NOTCH_FREQUENCY&#34;, &#34;POLARITY&#34;, &#34;RAW_RECORD&#34;,
-                     &#34;RECEIVER&#34;, &#34;RECEIVER_GEOMETRY&#34;, &#34;RECEIVER_LOCATION&#34;,
-                     &#34;RECEIVER_SPECS&#34;, &#34;RECEIVER_STATION_NUMBER&#34;, &#34;SAMPLE_INTERVAL&#34;,
-                     &#34;SHOT_SEQUENCE_NUMBER&#34;, &#34;SKEW&#34;, &#34;SOURCE&#34;, &#34;SOURCE_GEOMETRY&#34;,
-                     &#34;SOURCE_LOCATION&#34;, &#34;SOURCE_STATION_NUMBER&#34;, &#34;STACK&#34;,
-                     &#34;STATIC_CORRECTIONS&#34;, &#34;TRACE_TYPE&#34;, &#34;NOTE&#34;]
-
-_SEG2TRACEDESCALIAS = [&#34;Anti-aliasing filter specs&#34;, &#34;Amplitude recovery method&#34;,
-                       &#34;Acquisition band-rejection filter specs&#34;, &#34;CDP number&#34;,
-                       &#34;Trace number within CDP&#34;, &#34;Channel number&#34;, &#34;Datum (elevation)&#34;,
-                       &#34;Delay recording time&#34;, &#34;Descaling factor&#34;,
-                       &#34;Processing digital band-rejection filter specs&#34;,
-                       &#34;Processing digital high-cut filter specs&#34;,
-                       &#34;Processing digital low-cut filter specs&#34;, &#34;Last trace of group flag&#34;,
-                       &#34;Recording instrument fixed gain (dB)&#34;, &#34;Acquisition high-cut filter specs&#34;,
-                       &#34;Line identification&#34;, &#34;Acquisition low-cut filter specs&#34;,
-                       &#34;Notch filter frequency&#34;, &#34;Polarity&#34;, &#34;File name of raw record&#34;,
-                       &#34;Type of receiver (and number of rec. in group)&#34;, &#34;Receiver group geometry&#34;,
-                       &#34;Receiver (group) location (x, y, z)&#34;, &#34;Receiver specs&#34;,
-                       &#34;Receiver station number&#34;, &#34;Sampling interval (s)&#34;, &#34;Shot sequence number&#34;,
-                       &#34;Skew value&#34;, &#34;Type of source&#34;, &#34;Source (array) geometry&#34;,
-                       &#34;Source (array) location (x, y, z)&#34;, &#34;Source station number&#34;,
-                       &#34;Stack (no. of summed shots)&#34;, &#34;Static correction (src, rec, total)&#34;,
-                       &#34;Trace type&#34;, &#34;Further comments&#34;]
-
-
-def _check(para):
-    &#34;&#34;&#34;Ensure a list exists.&#34;&#34;&#34;
-    if para is not None:
-        return list(np.atleast_1d(para))
-    return []
-
-
-def _check_if_contiguous(buffer):
-    &#34;&#34;&#34;Check if a buffer contains contiguous numbers with stride 1.&#34;&#34;&#34;
-    if len(buffer) &lt; 2:
-        return 0
-    grad = np.diff(buffer)
-    if grad.min() == 1 and grad.max() == 1:
-        return 1
-    else:
-        return 0
-
-
-def _foreign_endian():
-    &#34;&#34;&#34;Return foreign endianess.&#34;&#34;&#34;
-    if byteorder == &#34;little&#34;:
-        return &#34;&gt;&#34;
-    else:
-        return &#34;&lt;&#34;
-
-
-def _native_endian():
-    &#34;&#34;&#34;Return native endianess.&#34;&#34;&#34;
-    if byteorder == &#34;little&#34;:
-        return &#34;&lt;&#34;
-    else:
-        return &#34;&gt;&#34;
-
-
-def _need_swap(dtype, endian=&#34;&lt;&#34;):
-    &#34;&#34;&#34;Check whether byte-swapping is required, dependent on Numpy dtype.&#34;&#34;&#34;
-    if endian == &#34;=&#34;:
-        endian = _native_endian()
-
-    if dtype.isnative:
-        if byteorder == &#34;little&#34;:
-            retval = False if endian == &#34;&lt;&#34; else True
-        else:
-            retval = False if endian == &#34;&gt;&#34; else True
-    else:
-        if byteorder == &#34;little&#34;:
-            retval = True if endian == &#34;&lt;&#34; else False
-        else:
-            retval = True if endian == &#34;&gt;&#34; else False
-    return retval
-
-
-def _parse_hdef(hdict, endian=&#34;=&#34;):
-    &#34;&#34;&#34;Parse JSON header definition.&#34;&#34;&#34;
-    hkeys = list(hdict.keys())
-    hformats = []
-    bytepos = 1
-
-    for key in hkeys:
-        keytype = hdict[key][&#34;type&#34;]
-        keysize = _DATAENCODING[keytype][&#34;size&#34;]
-        hformats.append(f&#34;{endian}{keytype}&#34;)
-        if bytepos != hdict[key][&#34;byte&#34;]:
-            raise ValueError(f&#34;JSON has gaps or overlaps in byte positions at mnemonic {key}, &#34;
-                             f&#34;bytepos {bytepos}, expected {hdict[key][&#39;byte&#39;]}.&#34;)
-        bytepos += keysize
-
-    htitles = [hdict[k][&#34;desc&#34;] for k in hkeys]
-
-    return hkeys, hformats, htitles
-
-
-def _create_dtype(names, formats, titles=None):
-    &#34;&#34;&#34;Create Numpy dtype.&#34;&#34;&#34;
-    if titles is None:
-        dtype = np.dtype({&#34;names&#34;: names, &#34;formats&#34;: formats}, align=False)
-    else:
-        dtype = np.dtype({&#34;names&#34;: names, &#34;formats&#34;: formats, &#34;titles&#34;: titles}, align=False)
-
-    return dtype
-
-
-def add_mnemonic(headers, names=None, data=None, dtypes=None):
-    &#34;&#34;&#34;
-    Add mnemonic(s) to structured array.
-
-    This function can be used to add, for instance, a trace header
-    mnemonic to the corresponding Numpy structured array.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    names : str or list of str
-        The trace header mnemonics to add.
-    data : value or list of values, array or list of arrays, None
-        The data with which to fill the new header slots. If None,
-        then the entries will be filled with zeros. If a single value
-        is given, or a list of values where the length of the list
-        corresponds to the number of mnemonics to add, each value will
-        be used to initialize the corresponding new header slots. If
-        an array is given where the length of the array corresponds to
-        the number of traces in the header array, or a list of arrays
-        where each individual array&#39;s length equals the number of
-        traces, then each array will be used to initialize the
-        corresponding new header slots.
-    dtypes : data type or list of data types
-        The data types for the new header mnemonics. If only a single
-        data type is given but multiple mnemonics are added, then the
-        single data type will be used for all new mnemonics.
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the new mnemonics added and
-        initialized.
-    &#34;&#34;&#34;
-    if names is None:
-        raise ValueError(&#34;Need at least one mnemonic name to add.&#34;)
-    if dtypes is None:
-        raise ValueError(&#34;Need to specify dtypes for the new header mnemonic(s).&#34;)
-
-    nt = len(headers)
-
-    if isinstance(names, (tuple, list)):
-        keys = names
-    else:
-        keys = [names, ]
-    nk = len(keys)
-
-    dt = np.atleast_1d(dtypes)
-    ndt = len(dt)
-    if nk != ndt:
-        if ndt == 1:
-            for i in np.arange(nk-ndt):
-                dt = np.append(dt, dt[0])
-        else:
-            raise ValueError(&#34;Parameter dtypes must be a single dtype or a list &#34;
-                             &#34;of dtypes that matches the number of new mnemonics.&#34;)
-
-    val = np.atleast_1d(data)
-    nv = len(val)
-    if val is None:
-        newv = [np.zeros(nt) for i in np.arange(nk)]
-    elif nk != nv:
-        if nv == 1:
-            if isinstance(val[0], Iterable):
-                if len(val[0]) != nt:
-                    raise ValueError(&#34;Length of data does not match number of traces.&#34;)
-                newv = [val[0] for i in np.arange(nk)]
-            else:
-                newv = [val[0]*np.ones(nt) for i in np.arange(nk)]
-        else:
-            raise ValueError(&#34;Number of data entries does not match number of new mnemonics.&#34;)
-    else:
-        newv = []
-        for v in val:
-            if isinstance(v, Iterable):
-                if len(v) != nt:
-                    raise ValueError(&#34;Length of data does not match number of traces.&#34;)
-                newv.append(v)
-            else:
-                newv.append(v*np.ones(nt))
-
-    if not headers.dtype.isnative:
-        headers = headers.newbyteorder().byteswap()
-
-    return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)
-
-
-def remove_mnemonic(headers, names=None, allzero=False):
-    &#34;&#34;&#34;
-    Remove mnemonic(s) from structured array.
-
-    This function can be used to remove, for instance, a trace header
-    mnemonic from the corresponding Numpy structured array. If you remove
-    the &#34;data&#34; mnemonic, you end up with just the trace headers but no
-    data values anymore.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    names : str or list of str (default: None)
-        The trace header mnemonics to remove.
-    allzero : bool (default: False)
-        If True, all mnemonics that contain only zeros will be removed,
-        possibly in addition to the mnemonics specified via &#39;names&#39;.
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the specified mnemonics removed.
-    &#34;&#34;&#34;
-    remove = set()
-
-    if names is None and not allzero:
-        raise ValueError(&#34;Need at least one mnemonic to remove, or allzero=True.&#34;)
-
-    if isinstance(names, str):
-        remove.add(names)
-    elif isinstance(names, list):
-        remove.update(set(names))
-    elif isinstance(names, set):
-        remove.update(names)
-
-    if allzero:
-        keys = list(headers.dtype.names)
-        keys.remove(&#34;data&#34;)
-        for k in keys:
-            if headers[k].min() == 0 and headers[k].max() == 0:
-                remove.add(k)
-
-    return rfn.drop_fields(headers, remove, usemask=False, asrecarray=False)
-
-
-def rename_mnemonic(headers, mapping=None):
-    &#34;&#34;&#34;
-    Rename mnemonic(s) in structured array.
-
-    This function can be used to rename, for instance, a trace header
-    mnemonic in the corresponding Numpy structured array.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    namemap : dict
-        Dictionary mapping old name(s) to new name(s).
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the specified mnemonics renamed.
-    &#34;&#34;&#34;
-    if mapping is None:
-        raise ValueError(&#34;Need a dictionary to map old names to new names.&#34;)
-
-    return rfn.rename_fields(headers, mapping)</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -388,97 +69,6 @@ single data type will be used for all new mnemonics.</dd>
 <dd>The original header array with the new mnemonics added and
 initialized.</dd>
 </dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def add_mnemonic(headers, names=None, data=None, dtypes=None):
-    &#34;&#34;&#34;
-    Add mnemonic(s) to structured array.
-
-    This function can be used to add, for instance, a trace header
-    mnemonic to the corresponding Numpy structured array.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    names : str or list of str
-        The trace header mnemonics to add.
-    data : value or list of values, array or list of arrays, None
-        The data with which to fill the new header slots. If None,
-        then the entries will be filled with zeros. If a single value
-        is given, or a list of values where the length of the list
-        corresponds to the number of mnemonics to add, each value will
-        be used to initialize the corresponding new header slots. If
-        an array is given where the length of the array corresponds to
-        the number of traces in the header array, or a list of arrays
-        where each individual array&#39;s length equals the number of
-        traces, then each array will be used to initialize the
-        corresponding new header slots.
-    dtypes : data type or list of data types
-        The data types for the new header mnemonics. If only a single
-        data type is given but multiple mnemonics are added, then the
-        single data type will be used for all new mnemonics.
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the new mnemonics added and
-        initialized.
-    &#34;&#34;&#34;
-    if names is None:
-        raise ValueError(&#34;Need at least one mnemonic name to add.&#34;)
-    if dtypes is None:
-        raise ValueError(&#34;Need to specify dtypes for the new header mnemonic(s).&#34;)
-
-    nt = len(headers)
-
-    if isinstance(names, (tuple, list)):
-        keys = names
-    else:
-        keys = [names, ]
-    nk = len(keys)
-
-    dt = np.atleast_1d(dtypes)
-    ndt = len(dt)
-    if nk != ndt:
-        if ndt == 1:
-            for i in np.arange(nk-ndt):
-                dt = np.append(dt, dt[0])
-        else:
-            raise ValueError(&#34;Parameter dtypes must be a single dtype or a list &#34;
-                             &#34;of dtypes that matches the number of new mnemonics.&#34;)
-
-    val = np.atleast_1d(data)
-    nv = len(val)
-    if val is None:
-        newv = [np.zeros(nt) for i in np.arange(nk)]
-    elif nk != nv:
-        if nv == 1:
-            if isinstance(val[0], Iterable):
-                if len(val[0]) != nt:
-                    raise ValueError(&#34;Length of data does not match number of traces.&#34;)
-                newv = [val[0] for i in np.arange(nk)]
-            else:
-                newv = [val[0]*np.ones(nt) for i in np.arange(nk)]
-        else:
-            raise ValueError(&#34;Number of data entries does not match number of new mnemonics.&#34;)
-    else:
-        newv = []
-        for v in val:
-            if isinstance(v, Iterable):
-                if len(v) != nt:
-                    raise ValueError(&#34;Length of data does not match number of traces.&#34;)
-                newv.append(v)
-            else:
-                newv.append(v*np.ones(nt))
-
-    if not headers.dtype.isnative:
-        headers = headers.newbyteorder().byteswap()
-
-    return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)</code></pre>
-</details>
 </dd>
 <dt id="seisio.tools.remove_mnemonic"><code class="name flex">
 <span>def <span class="ident">remove_mnemonic</span></span>(<span>headers, names=None, allzero=False)</span>
@@ -504,55 +94,6 @@ possibly in addition to the mnemonics specified via 'names'.</dd>
 <dt><code>Numpy structured array</code></dt>
 <dd>The original header array with the specified mnemonics removed.</dd>
 </dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def remove_mnemonic(headers, names=None, allzero=False):
-    &#34;&#34;&#34;
-    Remove mnemonic(s) from structured array.
-
-    This function can be used to remove, for instance, a trace header
-    mnemonic from the corresponding Numpy structured array. If you remove
-    the &#34;data&#34; mnemonic, you end up with just the trace headers but no
-    data values anymore.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    names : str or list of str (default: None)
-        The trace header mnemonics to remove.
-    allzero : bool (default: False)
-        If True, all mnemonics that contain only zeros will be removed,
-        possibly in addition to the mnemonics specified via &#39;names&#39;.
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the specified mnemonics removed.
-    &#34;&#34;&#34;
-    remove = set()
-
-    if names is None and not allzero:
-        raise ValueError(&#34;Need at least one mnemonic to remove, or allzero=True.&#34;)
-
-    if isinstance(names, str):
-        remove.add(names)
-    elif isinstance(names, list):
-        remove.update(set(names))
-    elif isinstance(names, set):
-        remove.update(names)
-
-    if allzero:
-        keys = list(headers.dtype.names)
-        keys.remove(&#34;data&#34;)
-        for k in keys:
-            if headers[k].min() == 0 and headers[k].max() == 0:
-                remove.add(k)
-
-    return rfn.drop_fields(headers, remove, usemask=False, asrecarray=False)</code></pre>
-</details>
 </dd>
 <dt id="seisio.tools.rename_mnemonic"><code class="name flex">
 <span>def <span class="ident">rename_mnemonic</span></span>(<span>headers, mapping=None)</span>
@@ -573,34 +114,6 @@ mnemonic in the corresponding Numpy structured array.</p>
 <dt><code>Numpy structured array</code></dt>
 <dd>The original header array with the specified mnemonics renamed.</dd>
 </dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def rename_mnemonic(headers, mapping=None):
-    &#34;&#34;&#34;
-    Rename mnemonic(s) in structured array.
-
-    This function can be used to rename, for instance, a trace header
-    mnemonic in the corresponding Numpy structured array.
-
-    Parameters
-    ----------
-    headers : Numpy structured array
-        The header structure (e.g., trace headers).
-    namemap : dict
-        Dictionary mapping old name(s) to new name(s).
-
-    Returns
-    -------
-    Numpy structured array
-        The original header array with the specified mnemonics renamed.
-    &#34;&#34;&#34;
-    if mapping is None:
-        raise ValueError(&#34;Need a dictionary to map old names to new names.&#34;)
-
-    return rfn.rename_fields(headers, mapping)</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -608,7 +121,6 @@ mnemonic in the corresponding Numpy structured array.</p>
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -629,9 +141,7 @@ mnemonic in the corresponding Numpy structured array.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>

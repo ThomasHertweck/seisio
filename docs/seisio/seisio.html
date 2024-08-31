@@ -2,16 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>seisio.seisio API documentation</title>
-<meta name="description" content="SeisIO abstract base class." />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="SeisIO abstract base class.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -21,350 +26,6 @@
 </header>
 <section id="section-intro">
 <p>SeisIO abstract base class.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;SeisIO abstract base class.&#34;&#34;&#34;
-
-import abc
-import json
-import logging
-import numpy as np
-import pandas as pd
-import pathlib
-
-from dataclasses import dataclass, field
-
-from . import tools
-from . import _txtheader
-
-log = logging.getLogger(__name__)
-
-
-class SeisIO(abc.ABC):
-    &#34;&#34;&#34;Abstract base class for I/O of seismic files.&#34;&#34;&#34;
-
-    @dataclass
-    class _FP():
-        &#34;&#34;&#34;File-related parameters.&#34;&#34;&#34;
-
-        file: pathlib.Path = None
-        filesize: int = 0
-        endian: str = None
-        mode: str = None
-        fixed: bool = True
-        skip: int = 0
-        datfmt: int = None
-        dtype: np.dtype = None
-
-    @dataclass
-    class _DP():
-        &#34;&#34;&#34;Data-related parameters.&#34;&#34;&#34;
-
-        nt: int = 0
-        ns: int = 0
-        si: int = 0
-        delay: int = 0
-
-    @dataclass
-    class _TR():
-        &#34;&#34;&#34;Trace-related parameters and objects.&#34;&#34;&#34;
-
-        thdict: dict = field(default_factory=dict)
-        thsize: int = 0
-        trsize: int = 0
-        thdtype: np.dtype = None
-        trdtype: np.dtype = None
-
-    @dataclass
-    class _SEGY():
-        &#34;&#34;&#34;SEG-Y-related parameters and objects.&#34;&#34;&#34;
-
-        major: int = 0
-        minor: int = 0
-        bhdict: dict = None
-        bhdtype: np.dtype = None
-        txthead: _txtheader.TxtHeader = None
-        binhead: np.ndarray = None
-        txtrec: list = field(default_factory=list)
-        txtrail: list = field(default_factory=list)
-
-    @dataclass
-    class _SEG2():
-        &#34;&#34;&#34;SEG2-related parameters and objects.&#34;&#34;&#34;
-
-        sterm: str = None
-        lterm: str = None
-        trcptr: np.ndarray = None
-        fheader: dict = field(default_factory=dict)
-        theader: dict = field(default_factory=dict)
-
-    @abc.abstractmethod
-    def __init__(self, file):
-        &#34;&#34;&#34;Initialize class SeisIO.&#34;&#34;&#34;
-        self._fp = self._FP()
-        self._dp = self._DP()
-        self._tr = self._TR()
-        self._sgy = None
-        self._sg2 = None
-        self._par = {}
-        self._fp.file = pathlib.Path(file)
-
-    @property
-    def endianess(self):
-        &#34;&#34;&#34;
-        Get endianess of file.
-
-        Returns
-        -------
-        char
-            &#34;&lt;&#34; (little endian), &#34;&gt;&#34; (big endian).
-        &#34;&#34;&#34;
-        return self._fp.endian
-
-    @property
-    def file(self):
-        &#34;&#34;&#34;
-        Get name of file.
-
-        Returns
-        -------
-        pathlib.Path
-            Name of file.
-        &#34;&#34;&#34;
-        return self._fp.file
-
-    @property
-    def fsize(self):
-        &#34;&#34;&#34;
-        Get the file size.
-
-        Returns
-        -------
-        int
-            Size of file in bytes
-        &#34;&#34;&#34;
-        return self._fp.filesize
-
-    @property
-    def thsize(self):
-        &#34;&#34;&#34;
-        Get the size of a trace header.
-
-        Returns
-        -------
-        int
-            Size of one trace header in bytes.
-        &#34;&#34;&#34;
-        return self._tr.thsize
-
-    @property
-    def trsize(self):
-        &#34;&#34;&#34;
-        Get the size of one complete trace (trace header plus data).
-
-        Returns
-        -------
-        int
-            Size of one complete trace in bytes.
-        &#34;&#34;&#34;
-        return self._tr.trsize
-
-    @property
-    def ns(self):
-        &#34;&#34;&#34;
-        Get the number of samples per trace.
-
-        Returns
-        -------
-        int
-            Number of samples.
-        &#34;&#34;&#34;
-        return self._dp.ns
-
-    @property
-    def nt(self):
-        &#34;&#34;&#34;
-        Get the total (current) number of traces in file.
-
-        Returns
-        -------
-        int
-            Number of traces.
-        &#34;&#34;&#34;
-        return self._dp.nt
-
-    @property
-    def mnemonics(self):
-        &#34;&#34;&#34;
-        Get the trace header mnemonics (keys).
-
-        Returns
-        -------
-        list : All trace header mnemonics (keys) as list.
-        &#34;&#34;&#34;
-        return list(self._tr.thdict.keys())
-
-    def log_thdef(self):
-        &#34;&#34;&#34;Log the used trace header definition.&#34;&#34;&#34;
-        msg = &#34;Trace header definition:&#34;
-
-        df = pd.DataFrame(self._tr.thdict).T
-        df[&#34;byte&#34;] = df[&#34;byte&#34;]-1
-        df.rename(columns={&#34;desc&#34;: &#34;description&#34;}, inplace=True)
-        if self._sg2 is not None:
-            df.rename(columns={&#34;byte&#34;: &#34;no.&#34;}, inplace=True)
-
-        try:
-            from tabulate import tabulate
-            log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
-        except ImportError:
-            log.info(&#34;%s&#34;, msg)
-            log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
-            log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
-
-    def _log_bhdef(self):
-        &#34;&#34;&#34;Log the SEG-Y binary file header definition.&#34;&#34;&#34;
-        msg = &#34;SEG-Y binary file header definition:&#34;
-        if self._sgy is None or self._sgy.bhdict is None:
-            log.warning(&#34;Cannot log binary file header definition, no header available.&#34;)
-            return
-
-        df = pd.DataFrame(self._sgy.bhdict).T
-        df[&#34;byte&#34;] = df[&#34;byte&#34;]-1
-        df.rename(columns={&#34;desc&#34;: &#34;description&#34;}, inplace=True)
-
-        try:
-            from tabulate import tabulate
-            log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
-        except ImportError:
-            log.info(&#34;%s&#34;, msg)
-            log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
-            log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
-
-    def _log_binhead(self, binhead=None, zero=False):
-        &#34;&#34;&#34;
-        Log the SEG-Y binary file header.
-
-        Parameters
-        ----------
-        binhead : Numpy structured array, optional (default: None)
-            The binary header. If &#39;None&#39;, the internally stored binary header
-            (if available) is used.
-        zero : boolean, optional (default: False)
-            Whether to print binary header entries that are zero or not.
-        &#34;&#34;&#34;
-        msg = &#34;SEG-Y binary file header:&#34;
-
-        if binhead is None:
-            if self._sgy is not None and self._sgy.binhead is not None:
-                binhead = self._sgy.binhead
-            else:
-                log.warning(&#34;Cannot log binary file header, no header available.&#34;)
-                return
-
-        keys = binhead.dtype.names
-        bdict = {}
-        for k in keys:
-            tpl = binhead.dtype.fields[k]
-            bdict[k] = {&#39;value&#39;: binhead[k][0], &#39;description&#39;: tpl[2]}
-
-        df = pd.DataFrame(bdict).T
-        if not zero:
-            df = df[df[&#34;value&#34;] != 0]
-
-        try:
-            from tabulate import tabulate
-            log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
-        except ImportError:
-            log.info(&#34;%s&#34;, msg)
-            log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
-            log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
-
-        return binhead
-
-    def _log_txthead(self, txthead=None, info=None):
-        &#34;&#34;&#34;
-        Log the (primary) textual file header.
-
-        txthead : list of strings or string, optional (default: None)
-            The textual header. If &#39;None&#39;, the internally stored textual
-            header (if available) is used.
-        info : str, optional (default: None)
-            A verbal description of this textual header. Only used if an
-            external textual header is provided.
-        &#34;&#34;&#34;
-        if txthead is not None:
-            if info is None:
-                info = &#34;User-supplied textual header&#34;
-            txh = _txtheader.TxtHeader(encoding=&#34;ebcdic&#34;, info=info)
-            txh.set_header(txthead, silent=True)
-            txh.log_txthead()
-            return txthead
-        else:
-            if self._sgy is None:
-                log.warning(&#34;Cannot log textual file header, no header available.&#34;)
-                return
-            self._sgy.txthead.log_txthead()
-            return self._sgy.txthead.header
-
-    def _set_segy_dtypes(self):
-        &#34;&#34;&#34;Set various dtypes.&#34;&#34;&#34;
-        self._fp.dtype = np.dtype(f&#34;{self._fp.endian}{tools._DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
-
-        with open(self._par[&#34;thdef&#34;], &#34;r&#34;) as io:
-            thdict = json.load(io)
-
-        th_k, th_f, th_t = tools._parse_hdef(thdict, endian=self._fp.endian)
-
-        if self._par[&#34;thext1&#34;]:
-            if self._par[&#34;thdef1&#34;] is None:
-                self._par[&#34;thdef1&#34;] = pathlib.Path(__file__).parent/&#34;json/segy_traceheader_ext1.json&#34;
-            with open(self._par[&#34;thdef1&#34;], &#34;r&#34;) as io:
-                th1dict = json.load(io)
-            th1_k, th1_f, th1_t = tools._parse_hdef(th1dict)
-            th_k += th1_k
-            th_f += th1_f
-            th_t += th1_t
-
-        if self._par[&#34;nthuser&#34;] &gt; 0:
-            if self._par[&#34;thdefu&#34;] is None:
-                raise ValueError(&#34;User-defined trace headers present but no &#39;thdefu&#39; &#34;
-                                 &#34;argument given.&#34;)
-            thud = tools._check(self._par[&#34;thdefu&#34;])
-            if len(thud) != self._par[&#34;nthuser&#34;]:
-                raise ValueError(f&#34;Number of user-defined trace headers ({self._par[&#39;nthuser&#39;]}) &#34;
-                                 f&#34;and provided number of JSONs ({len(thud)}) do not match.&#34;)
-            for hd in thud:
-                with open(hd, &#34;r&#34;) as io:
-                    hdict = json.load(io)
-                k, f, t = tools._parse_hdef(hdict)
-                th_k += k
-                th_f += f
-                th_t += t
-        else:
-            if self._par[&#34;thdefu&#34;] is not None:
-                log.warning(&#34;Argument &#39;thdefu&#39; ignored as no user-defined headers present.&#34;)
-
-        self._tr.thdtype = tools._create_dtype(th_k, th_f, th_t)
-        self._tr.thsize = self._tr.thdtype.itemsize
-
-        for k in self._tr.thdtype.names:
-            tpl = self._tr.thdtype.fields[k]
-            t = tpl[0].char
-            b = tpl[1]+1
-            d = tpl[2]
-            self._tr.thdict[k] = {&#39;byte&#39;: b, &#39;type&#39;: t, &#39;desc&#39;: d}
-
-        th_k.append(&#34;data&#34;)
-        th_f.append(f&#34;({self._dp.ns},){self._fp.endian}&#34;
-                    f&#34;{tools._DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
-        th_t.append(&#34;Seismic data&#34;)
-
-        self._tr.trdtype = tools._create_dtype(th_k, th_f, th_t)
-        self._tr.trsize = self._tr.trdtype.itemsize</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -528,7 +189,31 @@ class SeisIO(abc.ABC):
         return self._dp.ns
 
     @property
+    def nsamples(self):
+        &#34;&#34;&#34;
+        Get the number of samples per trace.
+
+        Returns
+        -------
+        int
+            Number of samples.
+        &#34;&#34;&#34;
+        return self._dp.ns
+
+    @property
     def nt(self):
+        &#34;&#34;&#34;
+        Get the total (current) number of traces in file.
+
+        Returns
+        -------
+        int
+            Number of traces.
+        &#34;&#34;&#34;
+        return self._dp.nt
+
+    @property
+    def ntraces(self):
         &#34;&#34;&#34;
         Get the total (current) number of traces in file.
 
@@ -721,7 +406,7 @@ class SeisIO(abc.ABC):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="seisio.seisio.SeisIO.endianess"><code class="name">var <span class="ident">endianess</span></code></dt>
+<dt id="seisio.seisio.SeisIO.endianess"><code class="name">prop <span class="ident">endianess</span></code></dt>
 <dd>
 <div class="desc"><p>Get endianess of file.</p>
 <h2 id="returns">Returns</h2>
@@ -746,7 +431,7 @@ def endianess(self):
     return self._fp.endian</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.file"><code class="name">var <span class="ident">file</span></code></dt>
+<dt id="seisio.seisio.SeisIO.file"><code class="name">prop <span class="ident">file</span></code></dt>
 <dd>
 <div class="desc"><p>Get name of file.</p>
 <h2 id="returns">Returns</h2>
@@ -771,7 +456,7 @@ def file(self):
     return self._fp.file</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.fsize"><code class="name">var <span class="ident">fsize</span></code></dt>
+<dt id="seisio.seisio.SeisIO.fsize"><code class="name">prop <span class="ident">fsize</span></code></dt>
 <dd>
 <div class="desc"><p>Get the file size.</p>
 <h2 id="returns">Returns</h2>
@@ -796,7 +481,7 @@ def fsize(self):
     return self._fp.filesize</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.mnemonics"><code class="name">var <span class="ident">mnemonics</span></code></dt>
+<dt id="seisio.seisio.SeisIO.mnemonics"><code class="name">prop <span class="ident">mnemonics</span></code></dt>
 <dd>
 <div class="desc"><p>Get the trace header mnemonics (keys).</p>
 <h2 id="returns">Returns</h2>
@@ -817,7 +502,7 @@ def mnemonics(self):
     return list(self._tr.thdict.keys())</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.ns"><code class="name">var <span class="ident">ns</span></code></dt>
+<dt id="seisio.seisio.SeisIO.ns"><code class="name">prop <span class="ident">ns</span></code></dt>
 <dd>
 <div class="desc"><p>Get the number of samples per trace.</p>
 <h2 id="returns">Returns</h2>
@@ -842,7 +527,32 @@ def ns(self):
     return self._dp.ns</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.nt"><code class="name">var <span class="ident">nt</span></code></dt>
+<dt id="seisio.seisio.SeisIO.nsamples"><code class="name">prop <span class="ident">nsamples</span></code></dt>
+<dd>
+<div class="desc"><p>Get the number of samples per trace.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Number of samples.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def nsamples(self):
+    &#34;&#34;&#34;
+    Get the number of samples per trace.
+
+    Returns
+    -------
+    int
+        Number of samples.
+    &#34;&#34;&#34;
+    return self._dp.ns</code></pre>
+</details>
+</dd>
+<dt id="seisio.seisio.SeisIO.nt"><code class="name">prop <span class="ident">nt</span></code></dt>
 <dd>
 <div class="desc"><p>Get the total (current) number of traces in file.</p>
 <h2 id="returns">Returns</h2>
@@ -867,7 +577,32 @@ def nt(self):
     return self._dp.nt</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.thsize"><code class="name">var <span class="ident">thsize</span></code></dt>
+<dt id="seisio.seisio.SeisIO.ntraces"><code class="name">prop <span class="ident">ntraces</span></code></dt>
+<dd>
+<div class="desc"><p>Get the total (current) number of traces in file.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Number of traces.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ntraces(self):
+    &#34;&#34;&#34;
+    Get the total (current) number of traces in file.
+
+    Returns
+    -------
+    int
+        Number of traces.
+    &#34;&#34;&#34;
+    return self._dp.nt</code></pre>
+</details>
+</dd>
+<dt id="seisio.seisio.SeisIO.thsize"><code class="name">prop <span class="ident">thsize</span></code></dt>
 <dd>
 <div class="desc"><p>Get the size of a trace header.</p>
 <h2 id="returns">Returns</h2>
@@ -892,7 +627,7 @@ def thsize(self):
     return self._tr.thsize</code></pre>
 </details>
 </dd>
-<dt id="seisio.seisio.SeisIO.trsize"><code class="name">var <span class="ident">trsize</span></code></dt>
+<dt id="seisio.seisio.SeisIO.trsize"><code class="name">prop <span class="ident">trsize</span></code></dt>
 <dd>
 <div class="desc"><p>Get the size of one complete trace (trace header plus data).</p>
 <h2 id="returns">Returns</h2>
@@ -925,28 +660,6 @@ def trsize(self):
 </code></dt>
 <dd>
 <div class="desc"><p>Log the used trace header definition.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def log_thdef(self):
-    &#34;&#34;&#34;Log the used trace header definition.&#34;&#34;&#34;
-    msg = &#34;Trace header definition:&#34;
-
-    df = pd.DataFrame(self._tr.thdict).T
-    df[&#34;byte&#34;] = df[&#34;byte&#34;]-1
-    df.rename(columns={&#34;desc&#34;: &#34;description&#34;}, inplace=True)
-    if self._sg2 is not None:
-        df.rename(columns={&#34;byte&#34;: &#34;no.&#34;}, inplace=True)
-
-    try:
-        from tabulate import tabulate
-        log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
-    except ImportError:
-        log.info(&#34;%s&#34;, msg)
-        log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
-        log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -954,7 +667,6 @@ def trsize(self):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -975,7 +687,9 @@ def trsize(self):
 <li><code><a title="seisio.seisio.SeisIO.log_thdef" href="#seisio.seisio.SeisIO.log_thdef">log_thdef</a></code></li>
 <li><code><a title="seisio.seisio.SeisIO.mnemonics" href="#seisio.seisio.SeisIO.mnemonics">mnemonics</a></code></li>
 <li><code><a title="seisio.seisio.SeisIO.ns" href="#seisio.seisio.SeisIO.ns">ns</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.nsamples" href="#seisio.seisio.SeisIO.nsamples">nsamples</a></code></li>
 <li><code><a title="seisio.seisio.SeisIO.nt" href="#seisio.seisio.SeisIO.nt">nt</a></code></li>
+<li><code><a title="seisio.seisio.SeisIO.ntraces" href="#seisio.seisio.SeisIO.ntraces">ntraces</a></code></li>
 <li><code><a title="seisio.seisio.SeisIO.thsize" href="#seisio.seisio.SeisIO.thsize">thsize</a></code></li>
 <li><code><a title="seisio.seisio.SeisIO.trsize" href="#seisio.seisio.SeisIO.trsize">trsize</a></code></li>
 </ul>
@@ -986,9 +700,7 @@ def trsize(self):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>
