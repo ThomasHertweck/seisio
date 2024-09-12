@@ -771,7 +771,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         headers : Numpy structured array, optional (default: None)
             The trace header values. If None, then all trace headers will
-            be read from disk.
+            be read from disk. If a structured array contains the data as
+            well, they will be dropped before calculating the statistics.
         ntmax : int, optional (default: None)
             Maximum number of traces to take into consideration to build
             statistics. Default is None, i.e., all traces are considered.
@@ -780,12 +781,20 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         if headers is None:
             if ntmax is None:
-                headers = self.read_all_headers()
+                h = self.read_all_headers()
             else:
-                headers = self.read_batch_of_headers(0, ntmax)
+                h = self.read_batch_of_headers(0, ntmax)
+        else:
+            if headers.dtype.names is not None:
+                keys = list(headers.dtype.names)
+                if "data" in keys:
+                    keys.remove("data")
+                h = headers[keys]
+            else:
+                raise ValueError("No structured array with trace headers given.")
 
-        summary = pd.DataFrame(headers).describe().transpose().loc[:, ['min', 'max', 'mean',
-                                                                       'std', '25%', '75%']]
+        summary = pd.DataFrame(h).describe().transpose().loc[:, ['min', 'max', 'mean',
+                                                                 'std', '25%', '75%']]
 
         return summary
 
