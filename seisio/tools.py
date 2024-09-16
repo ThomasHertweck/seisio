@@ -7,6 +7,7 @@ from collections.abc import Iterable
 from numpy.lib import recfunctions as rfn
 from sys import byteorder
 
+
 log = logging.getLogger(__name__)
 
 # (SEG-Y) data formats
@@ -317,3 +318,99 @@ def rename_mnemonic(headers, mapping=None):
         raise ValueError("Need a dictionary to map old names to new names.")
 
     return rfn.rename_fields(headers, mapping)
+
+
+def ensemble2cube(ensemble, idef="xline", jdef="iline", header_trid="trid"):
+    """
+    Convert a 2D ensemble to a 3D cube.
+
+    The cube's dimensions are defined by the header mnemonics 'idef' and
+    'jdef' (plus the vertical axis, usually time or depth). If the input data
+    are regular and there are no holes in the trace coverage, then using
+    numpy.sort() in combination with numpy.reshape() will be faster. This
+    function should be called if the new shape of the cube is not consistent
+    with the original dimensions of the data, i.e., "ni" times "nj" of the
+    cube does not equal the original trace number - this function will pad
+    traces as required to form a regular cube. This can (and definitely will)
+    happen when your data cover an area of non-rectangular shape. Keep in
+    mind that for strangely shaped areas a lot of padding can occur.
+
+    Parameters
+    ----------
+    ensemble : Numpy structured array
+        The 2D ensemble to reshape into a cube.
+    idef : str, optional (default: 'xline')
+        The header mnemonic present in the ensemble's trace headers that
+        remains constant along the i-axis.
+    jdef : str, optional (default: 'iline')
+        The header mnemonic present in the ensemble's trace headers that
+        remains constant along the j-axis.
+    header_trid : str, optional (default: 'trid')
+        Trace header mnemonic to use in order to flag padded traces.
+        If set to None, padded traces won't be flagged, otherwise the trace
+        identification is set to 3 ('dummy').
+
+    Returns
+    -------
+    Numpy structured array
+        The data reshaped and possibly padded. If requested, padded traces
+        have a trace identification of 3; they contain NaN as data values.
+        The cube's dimensions ('idef', 'jdef') will be in ascending order.
+    """
+    keys = ensemble.dtype.names
+    if keys is None:
+       raise ValueError("No structured array with trace headers given.")
+    keys = list(keys)
+    if idef is None or jdef is None:
+        raise ValueError("Need 'idef' and 'jdef' parameters to form cube.")
+    if idef not in keys:
+        raise KeyError(f"Mnemonic '{idef}' not found in ensemble's trace headers.")
+    if jdef not in keys:
+        raise KeyError(f"Mnemonic '{jdef}' not found in ensemble's trace headers.")
+    if header_trid is not None and header_trid not in keys:
+        raise KeyError(f"Mnemonic '{header_trid}' not found in ensemble's trace headers.")
+
+    nt, ns = ensemble["data"].shape
+    if nt < 3:
+        log.warning("Reshaping an ensemble with only %d trace(s) is not meaningful.")
+        if nt == 0:
+            raise ValueError("Input structured array contains no traces.")
+
+    ens = np.sort(ensemble, order=[idef, jdef])
+    xuniq = np.unique(ens[idef])
+    yuniq = np.unique(ens[jdef])
+    nx = len(xuniq)
+    ny = len(yuniq)
+    stepx = 1
+    if nx > 1:
+        stepx = np.min(np.diff(xuniq))
+    stepy = 1
+    if ny > 1:
+        stepy = np.min(np.diff(yuniq))
+
+    log.info("Cube dimensions: (%d, %d, %d)", nx, ny, ns)
+    log.info("I defined by: '%s' (%d to %d, increment %d)", idef, xuniq[0], xuniq[-1], stepx)
+    log.info("J defined by: '%s' (%d to %d, increment %d)", jdef, yuniq[0], yuniq[-1], stepy)
+
+    cube = np.zeros(shape=(nx, ny), dtype=ensemble.dtype)
+    # pre-fill data values with NaN
+    cube["data"] = np.nan
+    # if required, pre-fill trace identification with value 3
+    if header_trid is not None:
+        cube[header_trid] = 3
+    xrange = np.arange(xuniq[0], xuniq[-1]+0.5, stepx)
+    yrange = np.arange(yuniq[0], yuniq[-1]+0.5, stepy)
+
+    for ix, x in enumerate(xrange):
+        # pre-fill xdef and ydef headers
+        cube[ix, :][idef] = x
+        cube[ix, :][jdef] = yrange
+        # find global indices of relevant input data
+        ensidx = np.where(ens[idef] == x)[0]
+        if len(ensidx) > 0:
+            # find y-indices where to put input data
+            yidx = (ens[ensidx][jdef]-yuniq[0])//stepy
+            # assign input data
+            cube[ix, yidx] = ens[ensidx].copy()
+
+    return cube

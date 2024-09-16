@@ -70,6 +70,44 @@ single data type will be used for all new mnemonics.</dd>
 initialized.</dd>
 </dl></div>
 </dd>
+<dt id="seisio.tools.ensemble2cube"><code class="name flex">
+<span>def <span class="ident">ensemble2cube</span></span>(<span>ensemble, idef='xline', jdef='iline', header_trid='trid')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert a 2D ensemble to a 3D cube.</p>
+<p>The cube's dimensions are defined by the header mnemonics 'idef' and
+'jdef' (plus the vertical axis, usually time or depth). If the input data
+are regular and there are no holes in the trace coverage, then using
+numpy.sort() in combination with numpy.reshape() will be faster. This
+function should be called if the new shape of the cube is not consistent
+with the original dimensions of the data, i.e., "ni" times "nj" of the
+cube does not equal the original trace number - this function will pad
+traces as required to form a regular cube. This can (and definitely will)
+happen when your data cover an area of non-rectangular shape. Keep in
+mind that for strangely shaped areas a lot of padding can occur.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ensemble</code></strong> :&ensp;<code>Numpy structured array</code></dt>
+<dd>The 2D ensemble to reshape into a cube.</dd>
+<dt><strong><code>idef</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'xline')</code></dt>
+<dd>The header mnemonic present in the ensemble's trace headers that
+remains constant along the i-axis.</dd>
+<dt><strong><code>jdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'iline')</code></dt>
+<dd>The header mnemonic present in the ensemble's trace headers that
+remains constant along the j-axis.</dd>
+<dt><strong><code>header_trid</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'trid')</code></dt>
+<dd>Trace header mnemonic to use in order to flag padded traces.
+If set to None, padded traces won't be flagged, otherwise the trace
+identification is set to 3 ('dummy').</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>The data reshaped and possibly padded. If requested, padded traces
+have a trace identification of 3; they contain NaN as data values.
+The cube's dimensions ('idef', 'jdef') will be in ascending order.</dd>
+</dl></div>
+</dd>
 <dt id="seisio.tools.remove_mnemonic"><code class="name flex">
 <span>def <span class="ident">remove_mnemonic</span></span>(<span>headers, names=None, allzero=False)</span>
 </code></dt>
@@ -133,6 +171,7 @@ mnemonic in the corresponding Numpy structured array.</p>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="seisio.tools.add_mnemonic" href="#seisio.tools.add_mnemonic">add_mnemonic</a></code></li>
+<li><code><a title="seisio.tools.ensemble2cube" href="#seisio.tools.ensemble2cube">ensemble2cube</a></code></li>
 <li><code><a title="seisio.tools.remove_mnemonic" href="#seisio.tools.remove_mnemonic">remove_mnemonic</a></code></li>
 <li><code><a title="seisio.tools.rename_mnemonic" href="#seisio.tools.rename_mnemonic">rename_mnemonic</a></code></li>
 </ul>

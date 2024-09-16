@@ -700,7 +700,11 @@ hljs.highlightAll();
         return np.max(self.nte)
 
     def _get_eidx(self, key):
-        return self._idx.head[self._idx.head[self._idx.grp_by] == key][&#34;index&#34;]
+        if type(key) == np.void:
+            key_cmp = key
+        else:
+            key_cmp = np.asarray(key, dtype=self._idx.head[self._idx.grp_by].dtype)
+        return self._idx.head[self._idx.head[self._idx.grp_by] == key_cmp][&#34;index&#34;]
 
     def read_ensemble(self, *idx_keys, silent=False):
         &#34;&#34;&#34;
@@ -766,7 +770,8 @@ hljs.highlightAll();
         ----------
         headers : Numpy structured array, optional (default: None)
             The trace header values. If None, then all trace headers will
-            be read from disk.
+            be read from disk. If a structured array contains the data as
+            well, they will be dropped before calculating the statistics.
         ntmax : int, optional (default: None)
             Maximum number of traces to take into consideration to build
             statistics. Default is None, i.e., all traces are considered.
@@ -775,12 +780,20 @@ hljs.highlightAll();
 
         if headers is None:
             if ntmax is None:
-                headers = self.read_all_headers()
+                h = self.read_all_headers()
             else:
-                headers = self.read_batch_of_headers(0, ntmax)
+                h = self.read_batch_of_headers(0, ntmax)
+        else:
+            if headers.dtype.names is not None:
+                keys = list(headers.dtype.names)
+                if &#34;data&#34; in keys:
+                    keys.remove(&#34;data&#34;)
+                h = headers[keys]
+            else:
+                raise ValueError(&#34;No structured array with trace headers given.&#34;)
 
-        summary = pd.DataFrame(headers).describe().transpose().loc[:, [&#39;min&#39;, &#39;max&#39;, &#39;mean&#39;,
-                                                                       &#39;std&#39;, &#39;25%&#39;, &#39;75%&#39;]]
+        summary = pd.DataFrame(h).describe().transpose().loc[:, [&#39;min&#39;, &#39;max&#39;, &#39;mean&#39;,
+                                                                 &#39;std&#39;, &#39;25%&#39;, &#39;75%&#39;]]
 
         return summary
 
@@ -1415,7 +1428,8 @@ block=10, stride=480, and count=500.</p>
 <dl>
 <dt><strong><code>headers</code></strong> :&ensp;<code>Numpy structured array</code>, optional <code>(default: None)</code></dt>
 <dd>The trace header values. If None, then all trace headers will
-be read from disk.</dd>
+be read from disk. If a structured array contains the data as
+well, they will be dropped before calculating the statistics.</dd>
 <dt><strong><code>ntmax</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
 <dd>Maximum number of traces to take into consideration to build
 statistics. Default is None, i.e., all traces are considered.</dd>

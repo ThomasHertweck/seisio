@@ -705,7 +705,11 @@ class Reader(seisio.SeisIO, abc.ABC):
         return np.max(self.nte)
 
     def _get_eidx(self, key):
-        return self._idx.head[self._idx.head[self._idx.grp_by] == key]["index"]
+        if type(key) == np.void:
+            key_cmp = key
+        else:
+            key_cmp = np.asarray(key, dtype=self._idx.head[self._idx.grp_by].dtype)
+        return self._idx.head[self._idx.head[self._idx.grp_by] == key_cmp]["index"]
 
     def read_ensemble(self, *idx_keys, silent=False):
         """
