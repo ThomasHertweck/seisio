@@ -67,5 +67,5 @@ package-dir = { "" = "./" }
 
 "docs" = [ "*.html" ]
 
-"examples" = [ "*.ipynb", "data/README", "data/shot1.seg2" ]
+"examples" = [ "*.ipynb", "data/README", "data/shot1.seg2", "data/cube.npy" ]
 
