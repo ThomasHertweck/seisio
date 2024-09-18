@@ -71,20 +71,18 @@ initialized.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.tools.ensemble2cube"><code class="name flex">
-<span>def <span class="ident">ensemble2cube</span></span>(<span>ensemble, idef='xline', jdef='iline', header_trid='trid')</span>
+<span>def <span class="ident">ensemble2cube</span></span>(<span>ensemble, idef='xline', jdef='iline', is_sorted=False, header_trid='trid')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert a 2D ensemble to a 3D cube.</p>
 <p>The cube's dimensions are defined by the header mnemonics 'idef' and
-'jdef' (plus the vertical axis, usually time or depth). If the input data
-are regular and there are no holes in the trace coverage, then using
-numpy.sort() in combination with numpy.reshape() will be faster. This
-function should be called if the new shape of the cube is not consistent
-with the original dimensions of the data, i.e., "ni" times "nj" of the
-cube does not equal the original trace number - this function will pad
-traces as required to form a regular cube. This can (and definitely will)
-happen when your data cover an area of non-rectangular shape. Keep in
-mind that for strangely shaped areas a lot of padding can occur.</p>
+'jdef' (plus the vertical axis, usually time or depth). This function will
+pad traces as required to form a regular cube. This can (and definitely
+will) happen when your data cover an area of non-rectangular shape, or in
+case your data coverage has holes. Keep in mind that for strangely shaped
+areas a lot of padding can occur. It is assumed that there are no
+duplicate trace positions in the input data, i.e., each idef/jdef position
+has only one trace.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>ensemble</code></strong> :&ensp;<code>Numpy structured array</code></dt>
@@ -95,6 +93,10 @@ remains constant along the i-axis.</dd>
 <dt><strong><code>jdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'iline')</code></dt>
 <dd>The header mnemonic present in the ensemble's trace headers that
 remains constant along the j-axis.</dd>
+<dt><strong><code>is_sorted</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>If the ensemble is already sorted by order=[idef, jdef], set this
+parameter to True to avoid an additional sort (copy). There is no
+check performed whether the ensemble is sorted correctly.</dd>
 <dt><strong><code>header_trid</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'trid')</code></dt>
 <dd>Trace header mnemonic to use in order to flag padded traces.
 If set to None, padded traces won't be flagged, otherwise the trace
