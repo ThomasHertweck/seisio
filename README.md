@@ -59,6 +59,8 @@ aren't directly located next to each other on disk.
 * For reading ensembles, arbitrary filter functions can be applied. For 
 instance, you can easily exclude dead traces (trace header mnemonic "trid" 
 equals 2) or read only data with offsets in the range 1000 to 3000 meters.
+* Reshaping of 2D ensembles to 3D cubes based on available trace headers, 
+including the potential padding of traces to fill holes.
 
 Note: As it stands, SEG-Y or SU data need to have a constant trace length. 
 The SEG-Y standard allows for the number of samples to vary trace by trace - 
@@ -151,8 +153,8 @@ parameters can be obtained as soon as the seisio object is established, for
 instance:
 
 ```
-ntraces = sio.nt
-nsamples = sio.ns
+ntraces = sio.nt               # or sio.ntraces
+nsamples = sio.ns              # or sio.nsamples
 sampling_interval = sio.vsi
 ```
 
@@ -312,6 +314,7 @@ with I/O of seismic data:
 * [segysak](https://github.com/trhallam/segysak) - based on segyio for the actual I/O
 * [obspy](https://github.com/obspy/obspy)
 * [segpy](https://github.com/sixty-north/segpy)
+* [segfast](https://github.com/analysiscenter/segfast)
 * [cigsegy](https://github.com/JintaoLee-Roger/cigsegy)
 * [segypy](https://github.com/cultpenguin/segypy)
 * [segy-lite](https://github.com/adclose/segy_lite)
