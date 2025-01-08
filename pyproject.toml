@@ -20,7 +20,7 @@ description = "I/O of seismic data"
 
 readme = "README.md"
 
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -63,9 +63,10 @@ include-package-data = true
 package-dir = { "" = "./" }
 
 [tool.setuptools.package-data]
-"seisio.json" = [ "*.json" ] 
+"seisio.json" = [ "*.json" ]
 
 "docs" = [ "*.html" ]
 
-"examples" = [ "*.ipynb", "data/README", "data/shot1.seg2", "data/cube.npy" ]
+"examples" = [ "*.ipynb", "data/README", "data/shot1.seg2", "data/cube.npy",
+               "data/three_traces.sgy", "data/three_traces_thdef.json" ]
 

@@ -23,11 +23,14 @@ License: GNU Lesser General Public License, Version 3
          https://www.gnu.org/licenses/lgpl-3.0.html
 """
 
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __author__ = "Thomas Hertweck"
-__copyright__ = "(c) 2024 Thomas Hertweck"
+__copyright__ = "(c) 2025 Thomas Hertweck"
 __license__ = "GNU Lesser General Public License, Version 3"
 
+# requires Python v3.9+
+
+import json
 import logging
 import numpy as np
 import pandas as pd
@@ -38,6 +41,7 @@ from pathlib import Path
 from . import seg2
 from . import segy
 from . import su
+from . import tools
 from . import _txtheader
 
 log = logging.getLogger(__name__)
@@ -254,3 +258,85 @@ def log_thstat(traces, zero=False):
         log.info("%s", "--------- END ---------")
 
     return df
+
+
+def log_sgy_default_thdef():
+    """
+    Print default SEG-Y trace header definition table.
+
+    Returns
+    -------
+    list
+        A list of the trace header mnemonics.
+    """
+    default_thdef = Path(__file__).parent/"json/segy_traceheader.json"
+    thdict = _log_default_thdef(default_thdef)
+    return list(thdict.keys())
+
+def log_su_default_thdef():
+    """
+    Print default SU trace header definition table.
+
+    Returns
+    -------
+    list
+        A list of the trace header mnemonics.
+    """
+    default_thdef = Path(__file__).parent/"json/su_traceheader.json"
+    thdict = _log_default_thdef(default_thdef)
+    return list(thdict.keys())
+
+def check_thdef_validity(file):
+    """
+    Check the validity of a custom trace header definition table.
+
+    Parameters
+    ----------
+    file : str
+        The name of the trace header definition JSON file to be checked.
+
+    Returns
+    -------
+    bool
+        True if definition file is valid, otherwise False.
+    """
+    with open(file, "r") as io:
+        thdict = json.load(io)
+    # try to parse and check thdict
+    try:
+        nn, ff, tt = tools._parse_hdef(thdict, endian=tools._native_endian())
+    except ValueError as err:
+        log.info("Trace header definition file %s is invalid.", file)
+        log.info("Error: %s", err)
+        return False
+
+    # try to create dtype
+    try:
+        dtp = tools._create_dtype(nn, ff, titles=tt)
+    except Exception as err:
+        log.info("Trace header definition file %s causes problems when "
+                 "creating the custom dtype.", file)
+        log.info("Error: %s", err)
+        return False
+
+    log.info("Trace header definition file %s is valid. Size: %d bytes.",
+             file, dtp.itemsize)
+    return True
+
+def _log_default_thdef(thdef):
+    """Log default trace header definition."""
+    with open(thdef, "r") as io:
+        thdict = json.load(io)
+    tools._parse_hdef(thdict, endian=tools._native_endian())
+    msg = "Trace header definition:"
+    df = pd.DataFrame(thdict).T
+    df["byte"] = df["byte"]-1
+    df.rename(columns={"desc": "description"}, inplace=True)
+    try:
+        from tabulate import tabulate
+        log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
+    except ImportError:
+        log.info("%s", msg)
+        log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
+        log.info("%s", "--------- END ---------")
+    return thdict

@@ -82,6 +82,22 @@ available in the Python ecosystem.</p>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="seisio.check_thdef_validity"><code class="name flex">
+<span>def <span class="ident">check_thdef_validity</span></span>(<span>file)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check the validity of a custom trace header definition table.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the trace header definition JSON file to be checked.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if definition file is valid, otherwise False.</dd>
+</dl></div>
+</dd>
 <dt id="seisio.input"><code class="name flex">
 <span>def <span class="ident">input</span></span>(<span>file, *args, **kwargs)</span>
 </code></dt>
@@ -96,6 +112,28 @@ available in the Python ecosystem.</p>
 </dl>
 <p>All other arguments are passed to the underlying class once
 the type of input file is determined.</p></div>
+</dd>
+<dt id="seisio.log_sgy_default_thdef"><code class="name flex">
+<span>def <span class="ident">log_sgy_default_thdef</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Print default SEG-Y trace header definition table.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>A list of the trace header mnemonics.</dd>
+</dl></div>
+</dd>
+<dt id="seisio.log_su_default_thdef"><code class="name flex">
+<span>def <span class="ident">log_su_default_thdef</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Print default SU trace header definition table.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>A list of the trace header mnemonics.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.log_thstat"><code class="name flex">
 <span>def <span class="ident">log_thstat</span></span>(<span>traces, zero=False)</span>
@@ -226,7 +264,10 @@ trace header definition table.</p>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="seisio.check_thdef_validity" href="#seisio.check_thdef_validity">check_thdef_validity</a></code></li>
 <li><code><a title="seisio.input" href="#seisio.input">input</a></code></li>
+<li><code><a title="seisio.log_sgy_default_thdef" href="#seisio.log_sgy_default_thdef">log_sgy_default_thdef</a></code></li>
+<li><code><a title="seisio.log_su_default_thdef" href="#seisio.log_su_default_thdef">log_su_default_thdef</a></code></li>
 <li><code><a title="seisio.log_thstat" href="#seisio.log_thstat">log_thstat</a></code></li>
 <li><code><a title="seisio.output" href="#seisio.output">output</a></code></li>
 <li><code><a title="seisio.segy_bhdef_template" href="#seisio.segy_bhdef_template">segy_bhdef_template</a></code></li>

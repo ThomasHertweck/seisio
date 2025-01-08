@@ -347,6 +347,8 @@ hljs.highlightAll();
 
         th_k, th_f, th_t = tools._parse_hdef(thdict, endian=self._fp.endian)
 
+        self._tr.thdict = thdict
+
         if self._par[&#34;thext1&#34;]:
             if self._par[&#34;thdef1&#34;] is None:
                 self._par[&#34;thdef1&#34;] = pathlib.Path(__file__).parent/&#34;json/segy_traceheader_ext1.json&#34;
@@ -356,6 +358,7 @@ hljs.highlightAll();
             th_k += th1_k
             th_f += th1_f
             th_t += th1_t
+            self._tr.thdict |= th1dict
 
         if self._par[&#34;nthuser&#34;] &gt; 0:
             if self._par[&#34;thdefu&#34;] is None:
@@ -372,26 +375,20 @@ hljs.highlightAll();
                 th_k += k
                 th_f += f
                 th_t += t
+                self._tr.thdict |= hdict
         else:
             if self._par[&#34;thdefu&#34;] is not None:
                 log.warning(&#34;Argument &#39;thdefu&#39; ignored as no user-defined headers present.&#34;)
 
-        self._tr.thdtype = tools._create_dtype(th_k, th_f, th_t)
+        self._tr.thdtype = tools._create_dtype(th_k, th_f, titles=th_t)
         self._tr.thsize = self._tr.thdtype.itemsize
-
-        for k in self._tr.thdtype.names:
-            tpl = self._tr.thdtype.fields[k]
-            t = tpl[0].char
-            b = tpl[1]+1
-            d = tpl[2]
-            self._tr.thdict[k] = {&#39;byte&#39;: b, &#39;type&#39;: t, &#39;desc&#39;: d}
 
         th_k.append(&#34;data&#34;)
         th_f.append(f&#34;({self._dp.ns},){self._fp.endian}&#34;
                     f&#34;{tools._DATAFORMAT[self._fp.datfmt][&#39;type&#39;]}&#34;)
         th_t.append(&#34;Seismic data&#34;)
 
-        self._tr.trdtype = tools._create_dtype(th_k, th_f, th_t)
+        self._tr.trdtype = tools._create_dtype(th_k, th_f, titles=th_t)
         self._tr.trsize = self._tr.trdtype.itemsize</code></pre>
 </details>
 <h3>Ancestors</h3>

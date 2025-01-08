@@ -152,8 +152,8 @@ def _parse_hdef(hdict, endian="="):
         keysize = _DATAENCODING[keytype]["size"]
         hformats.append(f"{endian}{keytype}")
         if bytepos != hdict[key]["byte"]:
-            raise ValueError(f"JSON has gaps or overlaps in byte positions at mnemonic {key}, "
-                             f"bytepos {bytepos}, expected {hdict[key]['byte']}.")
+            raise ValueError("JSON has duplicates, gaps or overlaps in byte positions at "
+                             f"mnemonic {key}, bytepos {hdict[key]['byte']}, expected {bytepos}.")
         bytepos += keysize
 
     htitles = [hdict[k]["desc"] for k in hkeys]
@@ -166,7 +166,12 @@ def _create_dtype(names, formats, titles=None):
     if titles is None:
         dtype = np.dtype({"names": names, "formats": formats}, align=False)
     else:
-        dtype = np.dtype({"names": names, "formats": formats, "titles": titles}, align=False)
+        try:
+            dtype = np.dtype({"names": names, "formats": formats, "titles": titles}, align=False)
+        except ValueError as err:
+            log.warning("Creating numpy dtype with titles caused an error, re-trying without titles.")
+            log.warning("Error was '%s'", err)
+            dtype = np.dtype({"names": names, "formats": formats}, align=False)
 
     return dtype
 

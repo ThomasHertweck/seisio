@@ -315,6 +315,8 @@ class SeisIO(abc.ABC):
 
         th_k, th_f, th_t = tools._parse_hdef(thdict, endian=self._fp.endian)
 
+        self._tr.thdict = thdict
+
         if self._par["thext1"]:
             if self._par["thdef1"] is None:
                 self._par["thdef1"] = pathlib.Path(__file__).parent/"json/segy_traceheader_ext1.json"
@@ -324,6 +326,7 @@ class SeisIO(abc.ABC):
             th_k += th1_k
             th_f += th1_f
             th_t += th1_t
+            self._tr.thdict |= th1dict
 
         if self._par["nthuser"] > 0:
             if self._par["thdefu"] is None:
@@ -340,24 +343,18 @@ class SeisIO(abc.ABC):
                 th_k += k
                 th_f += f
                 th_t += t
+                self._tr.thdict |= hdict
         else:
             if self._par["thdefu"] is not None:
                 log.warning("Argument 'thdefu' ignored as no user-defined headers present.")
 
-        self._tr.thdtype = tools._create_dtype(th_k, th_f, th_t)
+        self._tr.thdtype = tools._create_dtype(th_k, th_f, titles=th_t)
         self._tr.thsize = self._tr.thdtype.itemsize
-
-        for k in self._tr.thdtype.names:
-            tpl = self._tr.thdtype.fields[k]
-            t = tpl[0].char
-            b = tpl[1]+1
-            d = tpl[2]
-            self._tr.thdict[k] = {'byte': b, 'type': t, 'desc': d}
 
         th_k.append("data")
         th_f.append(f"({self._dp.ns},){self._fp.endian}"
                     f"{tools._DATAFORMAT[self._fp.datfmt]['type']}")
         th_t.append("Seismic data")
 
-        self._tr.trdtype = tools._create_dtype(th_k, th_f, th_t)
+        self._tr.trdtype = tools._create_dtype(th_k, th_f, titles=th_t)
         self._tr.trsize = self._tr.trdtype.itemsize
