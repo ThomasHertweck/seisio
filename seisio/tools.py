@@ -259,7 +259,7 @@ def add_mnemonic(headers, names=None, data=None, dtypes=None):
                 newv.append(v*np.ones(nt))
 
     if not headers.dtype.isnative:
-        headers = headers.newbyteorder().byteswap()
+        headers = headers.view(headers.dtype.newbyteorder()).byteswap()
 
     return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)
 
