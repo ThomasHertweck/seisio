@@ -6,6 +6,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "seisio"
 
+license = "LGPL-3.0-or-later"
+
 dynamic = ["version"]
 
 authors = [
@@ -24,7 +26,6 @@ requires-python = ">=3.9"
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
     "Operating System :: OS Independent",
 ]
 
@@ -65,7 +66,7 @@ package-dir = { "" = "./" }
 [tool.setuptools.package-data]
 "seisio.json" = [ "*.json" ]
 
-"docs" = [ "*.html" ]
+"docs.seisio" = [ "*.html" ]
 
 "examples" = [ "*.ipynb", "data/README", "data/shot1.seg2", "data/cube.npy",
                "data/three_traces.sgy", "data/three_traces_thdef.json" ]
