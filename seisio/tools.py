@@ -336,7 +336,8 @@ def rename_mnemonic(headers, mapping=None):
 
 
 def ensemble2cube(ensemble, idef="xline", jdef="iline",
-                  is_sorted=False, header_trid="trid"):
+                  is_sorted=False, header_trid="trid",
+                  fill_value=np.nan):
     """
     Convert a 2D ensemble to a 3D cube.
 
@@ -367,13 +368,16 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
         Trace header mnemonic to use in order to flag padded traces.
         If set to None, padded traces won't be flagged, otherwise the trace
         identification is set to 3 ('dummy').
+    fill_value : numeric value, optional (default: np.nan)
+        Fill value for traces that get padded.
 
     Returns
     -------
     Numpy structured array
         The data reshaped and possibly padded. If requested, padded traces
-        have a trace identification of 3; they contain NaN as data values.
-        The cube's dimensions ('idef', 'jdef') will be in ascending order.
+        have a trace identification of 3; they contain NaN as data values
+        (unless changed using the fill_value parameter). The cube's dimensions
+        ('idef', 'jdef') will be in ascending order.
     """
     keys = ensemble.dtype.names
     if keys is None:
@@ -422,8 +426,8 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
         log.info("Ensemble2cube is padding %d trace(s).", nx_req*ny_req-nt)
 
     cube = np.zeros(shape=(nx_req, ny_req), dtype=ensemble.dtype)
-    # pre-fill data values with NaN
-    cube["data"] = np.nan
+    # pre-fill data values with fill_value (NaN by default)
+    cube["data"] = fill_value
     # set other values if standard mnemonics are available
     if "ns" in keys:
         cube["ns"] = ns
