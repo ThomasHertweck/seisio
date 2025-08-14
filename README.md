@@ -71,6 +71,18 @@ number of samples per trace and the byte offset within the file at which each
 trace starts. Such an approach would be similar to reading SEG2 data where trace 
 pointers are stored explicitly.
 
+## Performance
+
+The following performance comparison is based on reading a 3D seismic poststack volume in SEG-Y format (rev. 1) from local disk. The file size is about 5 GB, there are about 1.5 million traces in total. The entire data set is read into memory (unstructured access); trace headers are decoded as returning generators would simply defer the actual work to a later time and falsify the comparison. The comparison also includes the time to convert from IBM floats to IEEE floats. The cache is cleared after every single run, and each module is tested at least 10 times to obtain reliable I/O numbers. After reading the data into memory, various headers and trace amplitude values are checked to ensure all modules read the data correctly and provide identical headers and amplitude values (all listed modules actually pass this test and give identical results). All I/O times are given in seconds:
+
+* segfast: 5.8083 +- 0.0290
+* seisio: 7.1055 +- 0.0228
+* segyio: 8.1640 +- 0.0306
+* segy_lite: 34.6420 +- 0.4106
+* obspy: 103.1666 +- 0.5145
+
+Obviously, the comparison might look different when only reading subsets of the data (for instance, an inline), or when the data have to be provided in a different order compared to how the data are stored on disk, or when only one or two trace headers are required rather than all of them, or when the data are stored in IEEE instead of IBM format (the conversion is a significant portion of the overall runtime), or... Having said that, above performance comparison should at least give you an idea about the relative speed of these seismic I/O modules.
+
 ## Getting Started
 
 ### Dependencies
