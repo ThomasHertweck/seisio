@@ -2,6 +2,16 @@
 
 import numpy as np
 
+try:
+    from numba import jit
+except ImportError:
+    def jit(*args, **kwargs):
+        """Create dummy decorator."""
+        def decorator(func):
+            return func
+        return decorator
+
+
 # IBM/IEEE conversion bit masks
 _EXPMASK = 0x7f800000
 _SIGNMASK = 0x80000000
@@ -33,10 +43,14 @@ def ibm2ieee32(ibm, endian):
         from ibm2ieee import ibm2float32
         return ibm2float32(ibm).astype(f"{endian}f")
     except ImportError:
-        sign = np.int32(ibm >> 31 & 0x01)
-        exponent = np.int32(ibm >> 24 & 0x7f)
-        mantissa = np.float64(ibm & 0x00ffffff)/16777216
-        return ((1-2*sign)*mantissa*np.power(16.0, exponent-64)).astype(f"{endian}f")
+        return _numba_ibm2ieee(ibm.astype("<u4")).astype(f"{endian}f")
+
+
+@jit(nopython=True)
+def _numba_ibm2ieee(ibm):
+    return ((1-2*(ibm >> 31 & 0x01).astype(np.int32)) *
+            ((ibm & 0x00ffffff)/16777216).astype(np.float64) *
+            np.power(16.0, (ibm >> 24 & 0x7f).astype(np.int32)-64))
 
 
 def ieee2ibm32(ieee, endian):
