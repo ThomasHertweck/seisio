@@ -71,7 +71,7 @@ initialized.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.tools.ensemble2cube"><code class="name flex">
-<span>def <span class="ident">ensemble2cube</span></span>(<span>ensemble, idef='xline', jdef='iline', is_sorted=False, header_trid='trid')</span>
+<span>def <span class="ident">ensemble2cube</span></span>(<span>ensemble, idef='xline', jdef='iline', is_sorted=False, header_trid='trid', fill_value=nan)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert a 2D ensemble to a 3D cube.</p>
@@ -101,13 +101,16 @@ check performed whether the ensemble is sorted correctly.</dd>
 <dd>Trace header mnemonic to use in order to flag padded traces.
 If set to None, padded traces won't be flagged, otherwise the trace
 identification is set to 3 ('dummy').</dd>
+<dt><strong><code>fill_value</code></strong> :&ensp;<code>numeric value</code>, optional <code>(default: np.nan)</code></dt>
+<dd>Fill value for traces that get padded.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>Numpy structured array</code></dt>
 <dd>The data reshaped and possibly padded. If requested, padded traces
-have a trace identification of 3; they contain NaN as data values.
-The cube's dimensions ('idef', 'jdef') will be in ascending order.</dd>
+have a trace identification of 3; they contain NaN as data values
+(unless changed using the fill_value parameter). The cube's dimensions
+('idef', 'jdef') will be in ascending order.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.tools.remove_mnemonic"><code class="name flex">

@@ -299,11 +299,11 @@ hljs.highlightAll();
         self._tr.thdict[&#34;NSAMPLES&#34;] = {&#34;byte&#34;: i+1, &#34;type&#34;: &#34;str&#34;, &#34;desc&#34;: &#34;Number of samples&#34;}
         self._dp.si = float(self._sg2.theader[tools._SEG2TRACEDESCSTR[25]])
 
-    def read_dataset(self, silent=False):
+    def read_dataset(self, silent=False, history=None):
         &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
-        return self.read_all_traces(silent=silent)
+        return self.read_all_traces(silent=silent, history=history)
 
-    def read_all_traces(self, silent=False):
+    def read_all_traces(self, silent=False, history=None):
         &#34;&#34;&#34;
         Get all traces (e.g., read the entire file).
 
@@ -311,6 +311,8 @@ hljs.highlightAll();
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -364,6 +366,10 @@ hljs.highlightAll();
                 log.info(&#34;Reading all traces took %.3f seconds.&#34;, et-st)
             else:
                 log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
+
+        if history is not None:
+            history.append(f&#34;SEISIO: read entire data set &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;ntraces={self.nt:d}, nsamples={self.ns:d}.&#34;)
 
         return data, df
 
@@ -548,7 +554,7 @@ def vsi(self):
 </dl></div>
 </dd>
 <dt id="seisio.seg2.Reader.read_all_traces"><code class="name flex">
-<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get all traces (e.g., read the entire file).</p>
@@ -556,6 +562,8 @@ def vsi(self):
 <dl>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -564,7 +572,7 @@ def vsi(self):
 </dl></div>
 </dd>
 <dt id="seisio.seg2.Reader.read_dataset"><code class="name flex">
-<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get all traces - an alias for read_all_traces().</p></div>

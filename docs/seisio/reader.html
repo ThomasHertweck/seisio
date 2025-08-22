@@ -275,11 +275,11 @@ hljs.highlightAll();
 
         return h
 
-    def read_dataset(self, silent=False):
+    def read_dataset(self, silent=False, history=None):
         &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
-        return self.read_all_traces(silent=silent)
+        return self.read_all_traces(silent=silent, history=history)
 
-    def read_all_traces(self, silent=False):
+    def read_all_traces(self, silent=False, history=None):
         &#34;&#34;&#34;
         Get all traces (e.g., read the entire file).
 
@@ -287,6 +287,8 @@ hljs.highlightAll();
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -314,12 +316,15 @@ hljs.highlightAll();
             if not silent:
                 log.info(&#34;Converting IBM floats to IEEE floats.&#34;)
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d[&#34;data&#34;] = new_data
+            d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f&#34;SEISIO: read entire data set &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.&#34;)
 
         return d
 
-    def read_traces(self, *trcno, silent=False):
+    def read_traces(self, *trcno, silent=False, history=None):
         &#34;&#34;&#34;
         Get one or more traces.
 
@@ -329,6 +334,8 @@ hljs.highlightAll();
             The trace numbers (zero-based) to read from disk.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -354,12 +361,16 @@ hljs.highlightAll();
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d[&#34;data&#34;] = new_data
+            d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;trace numbers=[{&#39;, &#39;.join(str(x) for x in trcs)}], &#34;
+                           f&#34;ntraces={nt:d}, nsamples={self._dp.ns:d}.&#34;)
 
         return d
 
-    def read_batch_of_traces(self, start=0, ntraces=100, silent=False):
+    def read_batch_of_traces(self, start=0, ntraces=100, silent=False, history=None):
         &#34;&#34;&#34;
         Get a certain number of traces starting at a specific trace.
 
@@ -371,6 +382,8 @@ hljs.highlightAll();
             The number of subsequent traces to read, including &#39;start&#39; itself.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -391,13 +404,17 @@ hljs.highlightAll();
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d[&#34;data&#34;] = new_data
+            d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;first trace={start:d}, ntraces={ntraces:d}, &#34;
+                           f&#34;nsamples={self._dp.ns:d}.&#34;)
 
         return d
 
     def read_multibatch_of_traces(self, start=0, count=None, stride=None,
-                                  block=None, silent=False):
+                                  block=None, silent=False, history=None):
         &#34;&#34;&#34;
         Get multiple batches of traces from the seismic file.
 
@@ -415,6 +432,8 @@ hljs.highlightAll();
             The size of each block.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -444,8 +463,13 @@ hljs.highlightAll();
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d[&#34;data&#34;] = new_data
+            d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;first trace={start:d}, block size={block:d}, &#34;
+                           f&#34;number of blocks={count:d}, stride={stride:d}, &#34;
+                           f&#34;ntraces={ntraces:d}, nsamples={self._dp.ns:d}.&#34;)
 
         return d
 
@@ -472,7 +496,7 @@ hljs.highlightAll();
         for start, ntraces in _create_batches(nt, bs):
             yield self.read_batch_of_headers(start, ntraces, silent=silent)
 
-    def batches(self, batch_size=100, silent=False):
+    def batches(self, batch_size=100, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all traces in blocks (using a generator).
 
@@ -482,6 +506,8 @@ hljs.highlightAll();
             The batch size, i.e., number of traces to read in one go.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -493,9 +519,9 @@ hljs.highlightAll();
             raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_traces(start, ntraces, silent=silent)
+            yield self.read_batch_of_traces(start, ntraces, silent=silent, history=history)
 
-    def traces(self, silent=False):
+    def traces(self, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all traces of the file (using a generator).
 
@@ -503,6 +529,8 @@ hljs.highlightAll();
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -511,7 +539,7 @@ hljs.highlightAll();
         &#34;&#34;&#34;
         counter = 0
         while counter &lt; self._dp.nt:
-            yield self.read_traces(counter, silent=silent)
+            yield self.read_traces(counter, silent=silent, history=history)
             counter += 1
 
     def headers(self, silent=False):
@@ -614,7 +642,7 @@ hljs.highlightAll();
         # potentially remove entire entries and the buffer slot would no
         # longer match the trace index
         nt = len(h)
-        h = tools.add_mnemonic(h, names=&#34;index&#34;, data=[np.arange(nt)], dtypes=np.uint32)
+        h = tools.add_mnemonic(h, names=&#34;index&#34;, data=[np.arange(nt)], dtypes=int)
 
         if filt is not None:
             log.info(&#34;Ensemble lookup index has filter applied.&#34;)
@@ -700,13 +728,13 @@ hljs.highlightAll();
         return np.max(self.nte)
 
     def _get_eidx(self, key):
-        if type(key) == np.void:
+        if type(key) is np.void:
             key_cmp = key
         else:
             key_cmp = np.asarray(key, dtype=self._idx.head[self._idx.grp_by].dtype)
         return self._idx.head[self._idx.head[self._idx.grp_by] == key_cmp][&#34;index&#34;]
 
-    def read_ensemble(self, *idx_keys, silent=False):
+    def read_ensemble(self, *idx_keys, silent=False, history=None):
         &#34;&#34;&#34;
         Get one or more ensembles (groups of traces) from a seismic file.
 
@@ -716,6 +744,8 @@ hljs.highlightAll();
             The keys used to identify ensembles.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -730,7 +760,7 @@ hljs.highlightAll();
             if i == 0:
                 traces_to_read = trc
             else:
-                traces_to_read = traces_to_read.union(trc, sort=None)
+                traces_to_read = np.union1d(traces_to_read, trc)
 
         if not silent:
             log.info(&#34;Reading ensemble(s) &#39;%s&#39;.&#34;, idx_keys[0])
@@ -740,9 +770,14 @@ hljs.highlightAll();
         else:
             d = self.read_traces(*traces_to_read, silent=silent)
 
+        if history is not None:
+            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+                           f&#34;ensembles=[{&#39;, &#39;.join(str(x) for x in tools._check(idx_keys))}], &#34;
+                           f&#34;ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.&#34;)
+
         return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]
 
-    def ensembles(self, silent=False):
+    def ensembles(self, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all ensembles.
 
@@ -750,6 +785,8 @@ hljs.highlightAll();
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -758,7 +795,7 @@ hljs.highlightAll();
         &#34;&#34;&#34;
         if self._idx.keys is not None:
             for e in self._idx.keys:
-                yield self.read_ensemble(e, silent=silent)
+                yield self.read_ensemble(e, silent=silent, history=history)
         else:
             raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)
 
@@ -1077,7 +1114,7 @@ def vsi(self):
 <h3>Methods</h3>
 <dl>
 <dt id="seisio.reader.Reader.batches"><code class="name flex">
-<span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, silent=False)</span>
+<span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Loop through all traces in blocks (using a generator).</p>
@@ -1087,6 +1124,8 @@ def vsi(self):
 <dd>The batch size, i.e., number of traces to read in one go.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="yields">Yields</h2>
 <dl>
@@ -1176,7 +1215,7 @@ application of the filter function. The resulting ensembles will
 therefore not contain any offsets larger than 3000 m.</p></div>
 </dd>
 <dt id="seisio.reader.Reader.ensembles"><code class="name flex">
-<span>def <span class="ident">ensembles</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">ensembles</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Loop through all ensembles.</p>
@@ -1184,6 +1223,8 @@ therefore not contain any offsets larger than 3000 m.</p></div>
 <dl>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="yields">Yields</h2>
 <dl>
@@ -1247,7 +1288,7 @@ Only relevant if df=None.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_all_traces"><code class="name flex">
-<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get all traces (e.g., read the entire file).</p>
@@ -1255,6 +1296,8 @@ Only relevant if df=None.</dd>
 <dl>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1283,7 +1326,7 @@ Only relevant if df=None.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_batch_of_traces"><code class="name flex">
-<span>def <span class="ident">read_batch_of_traces</span></span>(<span>self, start=0, ntraces=100, silent=False)</span>
+<span>def <span class="ident">read_batch_of_traces</span></span>(<span>self, start=0, ntraces=100, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get a certain number of traces starting at a specific trace.</p>
@@ -1295,6 +1338,8 @@ Only relevant if df=None.</dd>
 <dd>The number of subsequent traces to read, including 'start' itself.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1303,13 +1348,13 @@ Only relevant if df=None.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_dataset"><code class="name flex">
-<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get all traces - an alias for read_all_traces().</p></div>
 </dd>
 <dt id="seisio.reader.Reader.read_ensemble"><code class="name flex">
-<span>def <span class="ident">read_ensemble</span></span>(<span>self, *idx_keys, silent=False)</span>
+<span>def <span class="ident">read_ensemble</span></span>(<span>self, *idx_keys, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get one or more ensembles (groups of traces) from a seismic file.</p>
@@ -1319,6 +1364,8 @@ Only relevant if df=None.</dd>
 <dd>The keys used to identify ensembles.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1377,7 +1424,7 @@ block=10, stride=480, and count=500.</p>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_multibatch_of_traces"><code class="name flex">
-<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self, start=0, count=None, stride=None, block=None, silent=False)</span>
+<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self, start=0, count=None, stride=None, block=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get multiple batches of traces from the seismic file.</p>
@@ -1394,6 +1441,8 @@ block=10, stride=480, and count=500.</p>
 <dd>The size of each block.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1402,7 +1451,7 @@ block=10, stride=480, and count=500.</p>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_traces"><code class="name flex">
-<span>def <span class="ident">read_traces</span></span>(<span>self, *trcno, silent=False)</span>
+<span>def <span class="ident">read_traces</span></span>(<span>self, *trcno, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get one or more traces.</p>
@@ -1412,6 +1461,8 @@ block=10, stride=480, and count=500.</p>
 <dd>The trace numbers (zero-based) to read from disk.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1436,7 +1487,7 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.traces"><code class="name flex">
-<span>def <span class="ident">traces</span></span>(<span>self, silent=False)</span>
+<span>def <span class="ident">traces</span></span>(<span>self, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Loop through all traces of the file (using a generator).</p>
@@ -1444,6 +1495,8 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 <dl>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
 </dl>
 <h2 id="yields">Yields</h2>
 <dl>

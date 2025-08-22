@@ -280,11 +280,11 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return h
 
-    def read_dataset(self, silent=False):
+    def read_dataset(self, silent=False, history=None):
         """Get all traces - an alias for read_all_traces()."""
-        return self.read_all_traces(silent=silent)
+        return self.read_all_traces(silent=silent, history=history)
 
-    def read_all_traces(self, silent=False):
+    def read_all_traces(self, silent=False, history=None):
         """
         Get all traces (e.g., read the entire file).
 
@@ -292,6 +292,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -319,12 +321,15 @@ class Reader(seisio.SeisIO, abc.ABC):
             if not silent:
                 log.info("Converting IBM floats to IEEE floats.")
             data = d["data"].view(f"{self._fp.endian}u4")
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d["data"] = new_data
+            d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f"SEISIO: read entire data set '{self._fp.file}', "
+                           f"ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.")
 
         return d
 
-    def read_traces(self, *trcno, silent=False):
+    def read_traces(self, *trcno, silent=False, history=None):
         """
         Get one or more traces.
 
@@ -334,6 +339,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             The trace numbers (zero-based) to read from disk.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -359,12 +366,16 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d["data"] = new_data
+            d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+                           f"trace numbers=[{', '.join(str(x) for x in trcs)}], "
+                           f"ntraces={nt:d}, nsamples={self._dp.ns:d}.")
 
         return d
 
-    def read_batch_of_traces(self, start=0, ntraces=100, silent=False):
+    def read_batch_of_traces(self, start=0, ntraces=100, silent=False, history=None):
         """
         Get a certain number of traces starting at a specific trace.
 
@@ -376,6 +387,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             The number of subsequent traces to read, including 'start' itself.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -396,13 +409,17 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d["data"] = new_data
+            d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+                           f"first trace={start:d}, ntraces={ntraces:d}, "
+                           f"nsamples={self._dp.ns:d}.")
 
         return d
 
     def read_multibatch_of_traces(self, start=0, count=None, stride=None,
-                                  block=None, silent=False):
+                                  block=None, silent=False, history=None):
         """
         Get multiple batches of traces from the seismic file.
 
@@ -420,6 +437,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             The size of each block.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -449,8 +468,13 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
-            new_data = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-            d["data"] = new_data
+            d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+
+        if history is not None:
+            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+                           f"first trace={start:d}, block size={block:d}, "
+                           f"number of blocks={count:d}, stride={stride:d}, "
+                           f"ntraces={ntraces:d}, nsamples={self._dp.ns:d}.")
 
         return d
 
@@ -477,7 +501,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         for start, ntraces in _create_batches(nt, bs):
             yield self.read_batch_of_headers(start, ntraces, silent=silent)
 
-    def batches(self, batch_size=100, silent=False):
+    def batches(self, batch_size=100, silent=False, history=None):
         """
         Loop through all traces in blocks (using a generator).
 
@@ -487,6 +511,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             The batch size, i.e., number of traces to read in one go.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -498,9 +524,9 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Parameter 'batch_size' cannot be zero or negative.")
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_traces(start, ntraces, silent=silent)
+            yield self.read_batch_of_traces(start, ntraces, silent=silent, history=history)
 
-    def traces(self, silent=False):
+    def traces(self, silent=False, history=None):
         """
         Loop through all traces of the file (using a generator).
 
@@ -508,6 +534,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -516,7 +544,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         counter = 0
         while counter < self._dp.nt:
-            yield self.read_traces(counter, silent=silent)
+            yield self.read_traces(counter, silent=silent, history=history)
             counter += 1
 
     def headers(self, silent=False):
@@ -619,7 +647,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         # potentially remove entire entries and the buffer slot would no
         # longer match the trace index
         nt = len(h)
-        h = tools.add_mnemonic(h, names="index", data=[np.arange(nt)], dtypes=np.uint32)
+        h = tools.add_mnemonic(h, names="index", data=[np.arange(nt)], dtypes=int)
 
         if filt is not None:
             log.info("Ensemble lookup index has filter applied.")
@@ -705,13 +733,13 @@ class Reader(seisio.SeisIO, abc.ABC):
         return np.max(self.nte)
 
     def _get_eidx(self, key):
-        if type(key) == np.void:
+        if type(key) is np.void:
             key_cmp = key
         else:
             key_cmp = np.asarray(key, dtype=self._idx.head[self._idx.grp_by].dtype)
         return self._idx.head[self._idx.head[self._idx.grp_by] == key_cmp]["index"]
 
-    def read_ensemble(self, *idx_keys, silent=False):
+    def read_ensemble(self, *idx_keys, silent=False, history=None):
         """
         Get one or more ensembles (groups of traces) from a seismic file.
 
@@ -721,6 +749,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             The keys used to identify ensembles.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -735,7 +765,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             if i == 0:
                 traces_to_read = trc
             else:
-                traces_to_read = traces_to_read.union(trc, sort=None)
+                traces_to_read = np.union1d(traces_to_read, trc)
 
         if not silent:
             log.info("Reading ensemble(s) '%s'.", idx_keys[0])
@@ -745,9 +775,14 @@ class Reader(seisio.SeisIO, abc.ABC):
         else:
             d = self.read_traces(*traces_to_read, silent=silent)
 
+        if history is not None:
+            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+                           f"ensembles=[{', '.join(str(x) for x in tools._check(idx_keys))}], "
+                           f"ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.")
+
         return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]
 
-    def ensembles(self, silent=False):
+    def ensembles(self, silent=False, history=None):
         """
         Loop through all ensembles.
 
@@ -755,6 +790,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Yields
         ------
@@ -763,7 +800,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         if self._idx.keys is not None:
             for e in self._idx.keys:
-                yield self.read_ensemble(e, silent=silent)
+                yield self.read_ensemble(e, silent=silent, history=history)
         else:
             raise RuntimeError("No index available. You need to call create_index() first.")
 

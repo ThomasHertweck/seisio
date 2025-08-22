@@ -260,11 +260,11 @@ class Reader(seisio.SeisIO):
         self._tr.thdict["NSAMPLES"] = {"byte": i+1, "type": "str", "desc": "Number of samples"}
         self._dp.si = float(self._sg2.theader[tools._SEG2TRACEDESCSTR[25]])
 
-    def read_dataset(self, silent=False):
+    def read_dataset(self, silent=False, history=None):
         """Get all traces - an alias for read_all_traces()."""
-        return self.read_all_traces(silent=silent)
+        return self.read_all_traces(silent=silent, history=history)
 
-    def read_all_traces(self, silent=False):
+    def read_all_traces(self, silent=False, history=None):
         """
         Get all traces (e.g., read the entire file).
 
@@ -272,6 +272,8 @@ class Reader(seisio.SeisIO):
         ----------
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
 
         Returns
         -------
@@ -325,6 +327,10 @@ class Reader(seisio.SeisIO):
                 log.info("Reading all traces took %.3f seconds.", et-st)
             else:
                 log.info("Reading all traces took %.1f seconds.", et-st)
+
+        if history is not None:
+            history.append(f"SEISIO: read entire data set '{self._fp.file}', "
+                           f"ntraces={self.nt:d}, nsamples={self.ns:d}.")
 
         return data, df
 
