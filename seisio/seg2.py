@@ -9,6 +9,7 @@ from struct import unpack_from
 
 from . import seisio
 from . import tools
+from . import __version__
 
 log = logging.getLogger(__name__)
 
@@ -329,7 +330,7 @@ class Reader(seisio.SeisIO):
                 log.info("Reading all traces took %.1f seconds.", et-st)
 
         if history is not None:
-            history.append(f"SEISIO: read entire data set '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read entire data set '{self._fp.file.absolute()}', "
                            f"ntraces={self.nt:d}, nsamples={self.ns:d}.")
 
         return data, df

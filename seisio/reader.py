@@ -13,6 +13,7 @@ from numpy.lib import recfunctions as rfn
 from . import _ibm2ieee
 from . import seisio
 from . import tools
+from . import __version__
 
 log = logging.getLogger(__name__)
 
@@ -324,7 +325,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"SEISIO: read entire data set '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read entire data set '{self._fp.file.absolute()}', "
                            f"ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.")
 
         return d
@@ -369,7 +370,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
                            f"trace numbers=[{', '.join(str(x) for x in trcs)}], "
                            f"ntraces={nt:d}, nsamples={self._dp.ns:d}.")
 
@@ -412,7 +413,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
                            f"first trace={start:d}, ntraces={ntraces:d}, "
                            f"nsamples={self._dp.ns:d}.")
 
@@ -471,7 +472,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
                            f"first trace={start:d}, block size={block:d}, "
                            f"number of blocks={count:d}, stride={stride:d}, "
                            f"ntraces={ntraces:d}, nsamples={self._dp.ns:d}.")
@@ -776,7 +777,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d = self.read_traces(*traces_to_read, silent=silent)
 
         if history is not None:
-            history.append(f"SEISIO: read traces from '{self._fp.file}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
                            f"ensembles=[{', '.join(str(x) for x in tools._check(idx_keys))}], "
                            f"ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.")
 
