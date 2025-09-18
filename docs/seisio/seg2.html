@@ -368,7 +368,7 @@ hljs.highlightAll();
                 log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read entire data set &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read entire data set &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;ntraces={self.nt:d}, nsamples={self.ns:d}.&#34;)
 
         return data, df

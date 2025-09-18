@@ -319,7 +319,7 @@ hljs.highlightAll();
             d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read entire data set &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read entire data set &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.&#34;)
 
         return d
@@ -364,7 +364,7 @@ hljs.highlightAll();
             d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;trace numbers=[{&#39;, &#39;.join(str(x) for x in trcs)}], &#34;
                            f&#34;ntraces={nt:d}, nsamples={self._dp.ns:d}.&#34;)
 
@@ -407,7 +407,7 @@ hljs.highlightAll();
             d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;first trace={start:d}, ntraces={ntraces:d}, &#34;
                            f&#34;nsamples={self._dp.ns:d}.&#34;)
 
@@ -466,7 +466,7 @@ hljs.highlightAll();
             d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;first trace={start:d}, block size={block:d}, &#34;
                            f&#34;number of blocks={count:d}, stride={stride:d}, &#34;
                            f&#34;ntraces={ntraces:d}, nsamples={self._dp.ns:d}.&#34;)
@@ -771,7 +771,7 @@ hljs.highlightAll();
             d = self.read_traces(*traces_to_read, silent=silent)
 
         if history is not None:
-            history.append(f&#34;SEISIO: read traces from &#39;{self._fp.file}&#39;, &#34;
+            history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;ensembles=[{&#39;, &#39;.join(str(x) for x in tools._check(idx_keys))}], &#34;
                            f&#34;ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.&#34;)
 
