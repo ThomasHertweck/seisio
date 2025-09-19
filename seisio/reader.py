@@ -1,6 +1,8 @@
 """Abstract reader for seismic files."""
 
 import abc
+import decorator
+import inspect
 import logging
 import mmap
 import numpy as np
@@ -26,6 +28,31 @@ except ImportError:
         def decorator(func):
             return func
         return decorator
+
+
+@decorator.decorator
+def _addhist(func, *args, **kwargs):
+    """
+    This is a decorator that stores information about a function call.
+    """
+    callargs = inspect.getcallargs(func, *args, **kwargs)
+    callargs.pop("self")
+    info = f"{func.__name__}(%s)"
+    my_kwargs = callargs.pop("kwargs", {})
+    arguments = []
+    for k, v in callargs.items():
+         if isinstance(v, str):
+             arguments.append(f"{k}='{v}'")
+         else:
+             arguments.append(f"{k}={v}")
+    for k, v in my_kwargs.items():
+         if isinstance(v, str):
+             arguments.append(f"{k}='{v}'")
+         else:
+             arguments.append(f"{k}={v}")
+    self = args[0]
+    self._idx.hist = info % "::".join(arguments)
+    return func(*args, **kwargs)
 
 
 @jit(["(int64,int64,int64,int64)"], nopython=True)
@@ -69,6 +96,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         ne: int = 0
         nte: np.array = None
         maxnte: int = 0
+        hist: str = None
 
     @abc.abstractmethod
     def __init__(self, file):
@@ -567,6 +595,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             yield self.read_headers(hcounter, silent=silent)
             hcounter += 1
 
+    @_addhist
     def create_index(self, group_by=None, sort_by=None, group_order=">", sort_order=">",
                      headers=None, filt=None):
         """
@@ -779,7 +808,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         if history is not None:
             history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
                            f"ensembles=[{', '.join(str(x) for x in tools._check(idx_keys))}], "
-                           f"ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.")
+                           f"ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}; "
+                           f"{self._idx.hist}.")
 
         return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]
 

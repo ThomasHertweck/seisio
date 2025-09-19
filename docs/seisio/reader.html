@@ -63,6 +63,7 @@ hljs.highlightAll();
         ne: int = 0
         nte: np.array = None
         maxnte: int = 0
+        hist: str = None
 
     @abc.abstractmethod
     def __init__(self, file):
@@ -561,6 +562,7 @@ hljs.highlightAll();
             yield self.read_headers(hcounter, silent=silent)
             hcounter += 1
 
+    @_addhist
     def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, sort_order=&#34;&gt;&#34;,
                      headers=None, filt=None):
         &#34;&#34;&#34;
@@ -773,7 +775,8 @@ hljs.highlightAll();
         if history is not None:
             history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
                            f&#34;ensembles=[{&#39;, &#39;.join(str(x) for x in tools._check(idx_keys))}], &#34;
-                           f&#34;ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}.&#34;)
+                           f&#34;ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}; &#34;
+                           f&#34;{self._idx.hist}.&#34;)
 
         return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]
 
