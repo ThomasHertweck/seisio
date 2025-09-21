@@ -3,7 +3,7 @@
 import logging
 import numpy as np
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from numpy.lib import recfunctions as rfn
 from sys import byteorder
 
@@ -183,6 +183,9 @@ def add_mnemonic(headers, names=None, data=None, dtypes=None):
     This function can be used to add, for instance, a trace header
     mnemonic to the corresponding Numpy structured array.
 
+    Note that this function won't work if the mnemonic to be added
+    contains multidimensional data.
+
     Parameters
     ----------
     headers : Numpy structured array
@@ -216,52 +219,82 @@ def add_mnemonic(headers, names=None, data=None, dtypes=None):
     if dtypes is None:
         raise ValueError("Need to specify dtypes for the new header mnemonic(s).")
 
-    nt = len(headers)
-
-    if isinstance(names, (tuple, list)):
-        keys = names
+    if headers.ndim == 0:
+        nt = 1
     else:
-        keys = [names, ]
+        nt = len(headers)
+
+    if isinstance(names, str):
+        keys = [s.strip() for s in names.split(sep=",")]
+    elif isinstance(names, Sequence):
+        keys = names
+    elif isinstance(names, np.ndarray):
+        keys = names.tolist()
+    else:
+        raise TypeError(f"type(names)={type(names)} as input argument not supported.")
     nk = len(keys)
 
-    dt = np.atleast_1d(dtypes)
+    if isinstance(dtypes, str):
+        dt = [s.strip() for s in dtypes.split(sep=":")]
+    elif isinstance(dtypes, Sequence):
+        dt = dtypes
+    elif isinstance(dtypes, np.ndarray):
+        dt = dtypes.tolist()
+    else:
+        dt = [np.dtype(dtypes), ]
     ndt = len(dt)
+
     if nk != ndt:
         if ndt == 1:
-            for i in np.arange(nk-ndt):
-                dt = np.append(dt, dt[0])
+            fill = dt[0]
+            dt = [fill for i in np.arange(nk)]
         else:
             raise ValueError("Parameter dtypes must be a single dtype or a list "
                              "of dtypes that matches the number of new mnemonics.")
+    ndt = len(dt)
 
-    val = np.atleast_1d(data)
-    nv = len(val)
-    if val is None:
-        newv = [np.zeros(nt) for i in np.arange(nk)]
-    elif nk != nv:
-        if nv == 1:
-            if isinstance(val[0], Iterable):
-                if len(val[0]) != nt:
-                    raise ValueError("Length of data does not match number of traces.")
-                newv = [val[0] for i in np.arange(nk)]
-            else:
-                newv = [val[0]*np.ones(nt) for i in np.arange(nk)]
+    val = []
+    if data is not None:
+        if isinstance(data, np.ndarray):
+            val = [data, ]
+        elif isinstance(data, Sequence):
+            val = data
+        elif isinstance(data, str):
+            val = [data, ]
         else:
-            raise ValueError("Number of data entries does not match number of new mnemonics.")
-    else:
+            val = [data, ]
+    nv = len(val)
+
+    if nv == 0:
+        newv = [np.zeros((nt, ), dtype=dt[i]) for i in np.arange(nk)]
+    elif nk == nv:
         newv = []
-        for v in val:
-            if isinstance(v, Iterable):
+        for i, v in enumerate(val):
+            if isinstance(v, (Iterable, np.ndarray)):
                 if len(v) != nt:
                     raise ValueError("Length of data does not match number of traces.")
                 newv.append(v)
             else:
-                newv.append(v*np.ones(nt))
+                newv.append(v*np.ones((nt, ), dtype=dt[i]))
+    else:
+        if nv == 1:
+            fill = val[0]
+            if isinstance(fill, (Iterable, np.ndarray)):
+                if len(fill) != nt:
+                    raise ValueError("Length of data does not match number of traces.")
+                newv = [fill for i in np.arange(nk)]
+            else:
+                newv = [fill*np.ones((nt, ), dtype=dt[i]) for i in np.arange(nk)]
+        else:
+            raise ValueError("Number of data entries does not match number of new mnemonics.")
+    nv = len(newv)
+
+    log.debug("keys=%s; data=%s, dtypes=%s", keys, newv, dt)
 
     if not headers.dtype.isnative:
         headers = headers.view(headers.dtype.newbyteorder()).byteswap()
 
-    return rfn.append_fields(headers, keys, data=newv, dtypes=dt.tolist(), usemask=False)
+    return rfn.append_fields(headers, keys, newv, dtypes=dt, usemask=False)
 
 
 def remove_mnemonic(headers, names=None, allzero=False):
