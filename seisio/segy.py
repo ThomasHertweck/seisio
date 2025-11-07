@@ -65,7 +65,7 @@ class Reader(reader.Reader):
             The name of the SEG-Y trace header extension 1 definition JSON file.
             Defaults to the standard SEG-Y header extension 1 provided by the
             seisio package.
-        nthuser : int, optional (default: 0)
+        nthuser : int, optional (default: None)
             The number of additional 240-byte user-defined trace headers. If
             set, this number must match the number of trace header definition
             files specified as 'thdefu'. Note that trace header extension 1
@@ -138,7 +138,7 @@ class Reader(reader.Reader):
         self._par["thdef1"] = kwargs.pop("thdef1", None)
         self._par["thdefu"] = kwargs.pop("thdefu", None)
         self._par["txtenc"] = kwargs.pop("txtenc", None)
-        self._par["nthuser"] = kwargs.pop("nthuser", 0)
+        self._par["nthuser"] = kwargs.pop("nthuser", None)
         self._par["ntxtrec"] = kwargs.pop("ntxtrec", None)
         self._par["ntxtrail"] = kwargs.pop("ntxtrail", None)
 
@@ -719,7 +719,21 @@ class Reader(reader.Reader):
         number for a given trace may be supplied in bytes 157–158 of SEG-Y
         Trace Header Extension 1.
         """
-        segy_num_trhead = int(self._sgy.binhead[self._par["bin_maxtrhead"]])
+        if self._sgy.major < 2:
+            if self._par["nthuser"] is None:
+                self._par["nthuser"] = 0
+            segy_num_trhead = self._par["nthuser"]
+            if self._par["thext1"]:
+                segy_num_trhead += 1
+        else:
+            if self._par["nthuser"] is None:
+                self._par["nthuser"] = 0
+                segy_num_trhead = int(self._sgy.binhead[self._par["bin_maxtrhead"]])
+            else:
+                segy_num_trhead = self._par["nthuser"]
+                if self._par["thext1"]:
+                    segy_num_trhead += 1
+
         if segy_num_trhead == 0:
             # no additional trace headers present
             if self._par["thext1"]:
@@ -747,7 +761,7 @@ class Reader(reader.Reader):
                             "of additional %d user-defined trace headers.", self._par["nthuser"])
                 log.warning("User-supplied parameter overturns binary header value.")
         else:
-            # binary header indicated >=2 additonal trace headers
+            # binary header indicated >=2 additional trace headers
             self._par["thext1"] = True
             self._par["nthuser"] = segy_num_trhead-1
 

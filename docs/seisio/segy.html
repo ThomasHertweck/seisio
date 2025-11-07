@@ -82,7 +82,7 @@ textual file header is determined automatically.</dd>
 <dd>The name of the SEG-Y trace header extension 1 definition JSON file.
 Defaults to the standard SEG-Y header extension 1 provided by the
 seisio package.</dd>
-<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
 <dd>The number of additional 240-byte user-defined trace headers. If
 set, this number must match the number of trace header definition
 files specified as 'thdefu'. Note that trace header extension 1
@@ -192,7 +192,7 @@ time.</dd>
             The name of the SEG-Y trace header extension 1 definition JSON file.
             Defaults to the standard SEG-Y header extension 1 provided by the
             seisio package.
-        nthuser : int, optional (default: 0)
+        nthuser : int, optional (default: None)
             The number of additional 240-byte user-defined trace headers. If
             set, this number must match the number of trace header definition
             files specified as &#39;thdefu&#39;. Note that trace header extension 1
@@ -265,7 +265,7 @@ time.</dd>
         self._par[&#34;thdef1&#34;] = kwargs.pop(&#34;thdef1&#34;, None)
         self._par[&#34;thdefu&#34;] = kwargs.pop(&#34;thdefu&#34;, None)
         self._par[&#34;txtenc&#34;] = kwargs.pop(&#34;txtenc&#34;, None)
-        self._par[&#34;nthuser&#34;] = kwargs.pop(&#34;nthuser&#34;, 0)
+        self._par[&#34;nthuser&#34;] = kwargs.pop(&#34;nthuser&#34;, None)
         self._par[&#34;ntxtrec&#34;] = kwargs.pop(&#34;ntxtrec&#34;, None)
         self._par[&#34;ntxtrail&#34;] = kwargs.pop(&#34;ntxtrail&#34;, None)
 
@@ -846,7 +846,21 @@ time.</dd>
         number for a given trace may be supplied in bytes 157–158 of SEG-Y
         Trace Header Extension 1.
         &#34;&#34;&#34;
-        segy_num_trhead = int(self._sgy.binhead[self._par[&#34;bin_maxtrhead&#34;]])
+        if self._sgy.major &lt; 2:
+            if self._par[&#34;nthuser&#34;] is None:
+                self._par[&#34;nthuser&#34;] = 0
+            segy_num_trhead = self._par[&#34;nthuser&#34;]
+            if self._par[&#34;thext1&#34;]:
+                segy_num_trhead += 1
+        else:
+            if self._par[&#34;nthuser&#34;] is None:
+                self._par[&#34;nthuser&#34;] = 0
+                segy_num_trhead = int(self._sgy.binhead[self._par[&#34;bin_maxtrhead&#34;]])
+            else:
+                segy_num_trhead = self._par[&#34;nthuser&#34;]
+                if self._par[&#34;thext1&#34;]:
+                    segy_num_trhead += 1
+
         if segy_num_trhead == 0:
             # no additional trace headers present
             if self._par[&#34;thext1&#34;]:
@@ -874,7 +888,7 @@ time.</dd>
                             &#34;of additional %d user-defined trace headers.&#34;, self._par[&#34;nthuser&#34;])
                 log.warning(&#34;User-supplied parameter overturns binary header value.&#34;)
         else:
-            # binary header indicated &gt;=2 additonal trace headers
+            # binary header indicated &gt;=2 additional trace headers
             self._par[&#34;thext1&#34;] = True
             self._par[&#34;nthuser&#34;] = segy_num_trhead-1
 
