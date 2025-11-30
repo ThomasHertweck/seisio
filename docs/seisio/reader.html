@@ -317,7 +317,15 @@ hljs.highlightAll();
             if not silent:
                 log.info(&#34;Converting IBM floats to IEEE floats.&#34;)
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
+            st = time.time()
             d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+            et = time.time()
+            if not silent:
+                diff = et-st
+                if diff &lt; 0.1:
+                    log.info(&#34;Converting all traces took %.3f seconds.&#34;, et-st)
+                else:
+                    log.info(&#34;Converting all traces took %.1f seconds.&#34;, et-st)
 
         if history is not None:
             history.append(f&#34;seisio {__version__}: read entire data set &#39;{self._fp.file.absolute()}&#39;, &#34;

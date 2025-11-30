@@ -10,6 +10,7 @@ import pandas as pd
 import time
 
 from dataclasses import dataclass
+from numba import jit
 from numpy.lib import recfunctions as rfn
 
 from . import _ibm2ieee
@@ -18,16 +19,6 @@ from . import tools
 from . import __version__
 
 log = logging.getLogger(__name__)
-
-try:
-    from numba import jit
-except ImportError:
-    # log.warning("Numba not installed. Using non-optimized code.")
-    def jit(*args, **kwargs):
-        """Create dummy decorator."""
-        def decorator(func):
-            return func
-        return decorator
 
 
 @decorator.decorator
@@ -55,7 +46,7 @@ def _addhist(func, *args, **kwargs):
     return func(*args, **kwargs)
 
 
-@jit(["(int64,int64,int64,int64)"], nopython=True)
+@jit("(int64,int64,int64,int64)", nopython=True)
 def _calc_blocks(start, stride, count, block):
     """Calculate parameters for multi block reads."""
     indices = np.empty((count*block,), dtype=np.int64)
@@ -70,7 +61,7 @@ def _calc_blocks(start, stride, count, block):
     return indices
 
 
-@jit(["(int64,int64)"], nopython=True)
+@jit("(int64,int64)", nopython=True)
 def _create_batches(nt, batch_size):
     """Calculate parameters for batch reads."""
     for ii in np.arange(0, nt, batch_size, dtype=np.int64):
@@ -350,7 +341,15 @@ class Reader(seisio.SeisIO, abc.ABC):
             if not silent:
                 log.info("Converting IBM floats to IEEE floats.")
             data = d["data"].view(f"{self._fp.endian}u4")
+            st = time.time()
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+            et = time.time()
+            if not silent:
+                diff = et-st
+                if diff < 0.1:
+                    log.info("Converting all traces took %.3f seconds.", et-st)
+                else:
+                    log.info("Converting all traces took %.1f seconds.", et-st)
 
         if history is not None:
             history.append(f"seisio {__version__}: read entire data set '{self._fp.file.absolute()}', "

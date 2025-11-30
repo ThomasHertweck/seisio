@@ -64,9 +64,9 @@ class Writer(seisio.SeisIO, abc.ABC):
             An empty header table.
         """
         if headers_only:
-            return np.zeros((nt, ), dtype=self._tr.thdtype).squeeze()
+            return np.zeros((nt, ), dtype=self._tr.thdtype) #.squeeze()
         else:
-            return np.zeros((nt, ), dtype=self._tr.trdtype).squeeze()
+            return np.zeros((nt, ), dtype=self._tr.trdtype) #.squeeze()
 
     def headers_template(self, nt=0, pandas=False):
         """

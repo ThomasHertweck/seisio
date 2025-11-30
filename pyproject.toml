@@ -24,7 +24,7 @@ description = "I/O of seismic data"
 
 readme = "README.md"
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -34,6 +34,7 @@ classifiers = [
 dependencies = [
   "numpy",
   "pandas",
+  "numba",
 ]
 
 keywords = [
@@ -52,9 +53,7 @@ Repository = "https://gitlab.kit.edu/thomas.hertweck/seisio"
 
 [project.optional-dependencies]
 opt = [
-  "ibm2ieee",
   "tabulate",
-  "numba",
 ]
 
 [tool.setuptools.dynamic]

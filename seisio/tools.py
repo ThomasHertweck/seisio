@@ -4,18 +4,9 @@ import logging
 import numpy as np
 
 from collections.abc import Iterable, Sequence
+# from numba import jit
 from numpy.lib import recfunctions as rfn
 from sys import byteorder
-
-# try:
-#     from numba import jit
-# except ImportError:
-#     # log.warning("Numba not installed. Using non-optimized code.")
-#     def jit(*args, **kwargs):
-#         """Create dummy decorator."""
-#         def decorator(func):
-#             return func
-#         return decorator
 
 
 log = logging.getLogger(__name__)
