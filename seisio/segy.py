@@ -413,7 +413,7 @@ class Reader(reader.Reader):
         Returns
         -------
         char
-            Eendianess, either "<" (little), ">" (big).
+            Endianess, either "<" (little), ">" (big).
         """
         from sys import byteorder
 
@@ -434,16 +434,16 @@ class Reader(reader.Reader):
         # field. The byte ordering of all other portions (the Extended Textual
         # Header and Data Trailer) of the SEG-Y file is not affected by this
         # field.
-        iconst_le = binhead_le[self._par["bin_iconst"]]
-        iconst_be = binhead_be[self._par["bin_iconst"]]
+        iconst_le = binhead_le[self._par["bin_iconst"]].item()
+        iconst_be = binhead_be[self._par["bin_iconst"]].item()
         if iconst_be == 67305985 or iconst_le == 67305985:
             # need to swap, iconst should be 16909060
             # if host is big endian, data are small endian and vice versa
             return "<" if byteorder == "big" else ">"
 
         # check format
-        format_le = binhead_le[self._par["bin_format"]]
-        format_be = binhead_be[self._par["bin_format"]]
+        format_le = binhead_le[self._par["bin_format"]].item()
+        format_be = binhead_be[self._par["bin_format"]].item()
         if (format_be >= 1) and (format_be <= 16) and (format_le > 16):
             # likely big endian
             return ">"
@@ -452,10 +452,10 @@ class Reader(reader.Reader):
             return "<"
 
         # check dt and ns
-        dt_le = binhead_le[self._par["bin_dt"]]
-        dt_be = binhead_be[self._par["bin_dt"]]
-        ns_le = binhead_le[self._par["bin_ns"]]
-        ns_be = binhead_be[self._par["bin_ns"]]
+        dt_le = binhead_le[self._par["bin_dt"]].item()
+        dt_be = binhead_be[self._par["bin_dt"]].item()
+        ns_le = binhead_le[self._par["bin_ns"]].item()
+        ns_be = binhead_be[self._par["bin_ns"]].item()
         if (dt_be <= 10000) and (ns_be <= 20000):
             # likely big endian but less sure
             return ">"
@@ -496,8 +496,8 @@ class Reader(reader.Reader):
         Revision 2.0, this will be recorded as 00_16. This field is mandatory
         for all versions of SEG-Y.
         """
-        self._sgy.major = int(self._sgy.binhead[self._par["bin_segymaj"]])
-        self._sgy.minor = int(self._sgy.binhead[self._par["bin_segymin"]])
+        self._sgy.major = int(self._sgy.binhead[self._par["bin_segymaj"]].item())
+        self._sgy.minor = int(self._sgy.binhead[self._par["bin_segymin"]].item())
         if self._sgy.major == 0:
             log.info("SEG-Y revision: original SEG-Y conforming to 1975 standard.")
         else:
@@ -523,7 +523,7 @@ class Reader(reader.Reader):
         15 = 3-byte, unsigned integer
         16 = 1-byte, unsigned integer
         """
-        dformat = int(self._sgy.binhead[self._par["bin_format"]])
+        dformat = int(self._sgy.binhead[self._par["bin_format"]].item())
 
         if self._fp.datfmt is None:
             self._fp.datfmt = dformat
@@ -558,7 +558,7 @@ class Reader(reader.Reader):
         number of samples per trace and sample interval appear in the
         appropriate trace Trace Header locations.
         """
-        segy_fixed = int(self._sgy.binhead[self._par["bin_fixed"]])
+        segy_fixed = int(self._sgy.binhead[self._par["bin_fixed"]].item())
 
         if segy_fixed == 0:
             log.warning("SEG-Y fixed-trace-length flag is not set in binary header.")
@@ -606,7 +606,7 @@ class Reader(reader.Reader):
         SEG-Y Tape Label is present.
         """
         if self._par["ntxtrec"] is None:
-            segy_num_headrec = int(self._sgy.binhead[self._par["bin_ntxthead"]])
+            segy_num_headrec = int(self._sgy.binhead[self._par["bin_ntxthead"]].item())
         else:
             segy_num_headrec = self._par["ntxtrec"]
 
@@ -663,7 +663,7 @@ class Reader(reader.Reader):
         this makes reading more efficient.
         """
         if self._par["ntxtrail"] is None:
-            segy_num_trailer = int(self._sgy.binhead[self._par["bin_ntrailer"]])
+            segy_num_trailer = int(self._sgy.binhead[self._par["bin_ntrailer"]].item())
         else:
             segy_num_trailer = self._par["ntxtrail"]
 
@@ -728,7 +728,7 @@ class Reader(reader.Reader):
         else:
             if self._par["nthuser"] is None:
                 self._par["nthuser"] = 0
-                segy_num_trhead = int(self._sgy.binhead[self._par["bin_maxtrhead"]])
+                segy_num_trhead = int(self._sgy.binhead[self._par["bin_maxtrhead"]].item())
             else:
                 segy_num_trhead = self._par["nthuser"]
                 if self._par["thext1"]:
@@ -781,7 +781,7 @@ class Reader(reader.Reader):
         nonnegative number of Extended Textual Header records present in
         bytes 3505–3506.
         """
-        segy_byte_offset = int(self._sgy.binhead[self._par["bin_byteoff"]])
+        segy_byte_offset = int(self._sgy.binhead[self._par["bin_byteoff"]].item())
         byte_offset = self._fp.skip
         if segy_byte_offset > 0:
             self._fp.skip = segy_byte_offset
@@ -807,15 +807,15 @@ class Reader(reader.Reader):
         interval, IEEE double precision (64-bit). If nonzero, this overrides
         the sample interval in bytes 3217–3218 with the same units.
         """
-        self._dp.ns = int(self._sgy.binhead[self._par["bin_ns"]])
-        extended_ns = int(self._sgy.binhead[self._par["bin_ens"]])
+        self._dp.ns = int(self._sgy.binhead[self._par["bin_ns"]].item())
+        extended_ns = int(self._sgy.binhead[self._par["bin_ens"]].item())
         if extended_ns > 0:
             self._dp.ns = extended_ns
 
         log.info("Number of samples per data trace: %d.", self._dp.ns)
 
-        self._dp.si = int(self._sgy.binhead[self._par["bin_dt"]])
-        extended_dt = np.float64(self._sgy.binhead[self._par["bin_edt"]])
+        self._dp.si = int(self._sgy.binhead[self._par["bin_dt"]].item())
+        extended_dt = np.float64(self._sgy.binhead[self._par["bin_edt"]].item())
         if extended_dt != 0:
             self._dp.si = extended_dt
 
@@ -823,7 +823,7 @@ class Reader(reader.Reader):
 
     def _segy_nt_and_delay(self):
         """Determine number of traces and delay recording time."""
-        segy_num_traces = int(self._sgy.binhead[self._par["bin_ntfile"]])
+        segy_num_traces = int(self._sgy.binhead[self._par["bin_ntfile"]].item())
         non_data = self._fp.skip + self.ntxtrail * self._sgy.txthead.size
         num_traces = int((self.fsize-non_data)/self.trsize)
 
