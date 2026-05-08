@@ -46,6 +46,7 @@ keywords = [
   "read",
   "write",
   "radar", "GPR",
+  "geophysics",
 ]
 
 [project.urls]

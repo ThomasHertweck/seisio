@@ -92,6 +92,8 @@ $> cd seisio
 $> pip install -e .
 ```
 
+An alternative location of the source is https://github.com/ThomasHertweck/seisio.
+
 ## Brief tutorial
 
 For a demonstration of various features and much more, please visit the "examples" folder in the repository where several Jupyter notebooks (tutorials) are available.
@@ -130,7 +132,7 @@ If you would like to sort your data set in a certain way, this can be achieved b
 dataset_sorted = np.sort(dataset, order=["offset"])
 ```
 
-provided the Numpy module is imported as `np`.
+provided the Numpy module is imported as `np`. You could, however, also read the data set directly in a sorted way using an index (see below).
 
 Creating a file is also quite simple. If you would like to write data in big-endian byte order after (re-)calculating the offset header value from the source and receiver group x-coordinates (assuming here that we deal with a 2D seismic line and can ignore the y-components) simply requires:
 
@@ -221,6 +223,10 @@ The following list (by no means complete!) shows a few other packages dealing wi
 * [obspy](https://github.com/obspy/obspy)
 * [seg2_files](https://github.com/natstoik/seg2_files)
 
+## Testing
+
+The current version of the **seisio** module has primarily been tested on Linux-based computers using Python 3.10 to 3.14, including Numpy versions up to 2.4.3.
+
 ## Main author
 
 Dr. Thomas Hertweck, geophysics@email.de
@@ -229,20 +235,19 @@ Dr. Thomas Hertweck, geophysics@email.de
 
 If you use the **seisio** module and you find it useful, getting some feedback would be very much appreciated. If you would like to cite this module, please use, for instance:
 ```
-Hertweck, T. (2025). seisio: A Python library for I/O operations of seismic data. Version 1.2.2. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 08/20/2025).
+Hertweck, T. (2026). seisio: A Python library for I/O operations of seismic data. Version 1.4.1. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 05/08/2026).
 ```
 Adjust year, version and last visited date as required. Here's a BibTeX entry:
 ```
 @software{seisio,
   author  = {Hertweck, Thomas},
-  year    = {2025},
+  year    = {2026},
   title   = {seisio: A {P}ython library for {I/O} operations of seismic data},
   url     = {https://gitlab.kit.edu/thomas.hertweck/seisio/},
-  urldate = {2025-08-20},
-  version = {1.2.2}
+  urldate = {2026-05-08},
+  version = {1.4.1}
 }
 ```
-
 ## License
 
 This project is licensed under the LGPL v3.0 License - see the LICENSE.md file for details
