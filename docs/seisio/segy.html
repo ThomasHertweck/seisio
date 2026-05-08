@@ -540,7 +540,7 @@ time.</dd>
         Returns
         -------
         char
-            Eendianess, either &#34;&lt;&#34; (little), &#34;&gt;&#34; (big).
+            Endianess, either &#34;&lt;&#34; (little), &#34;&gt;&#34; (big).
         &#34;&#34;&#34;
         from sys import byteorder
 
@@ -561,16 +561,16 @@ time.</dd>
         # field. The byte ordering of all other portions (the Extended Textual
         # Header and Data Trailer) of the SEG-Y file is not affected by this
         # field.
-        iconst_le = binhead_le[self._par[&#34;bin_iconst&#34;]]
-        iconst_be = binhead_be[self._par[&#34;bin_iconst&#34;]]
+        iconst_le = binhead_le[self._par[&#34;bin_iconst&#34;]].item()
+        iconst_be = binhead_be[self._par[&#34;bin_iconst&#34;]].item()
         if iconst_be == 67305985 or iconst_le == 67305985:
             # need to swap, iconst should be 16909060
             # if host is big endian, data are small endian and vice versa
             return &#34;&lt;&#34; if byteorder == &#34;big&#34; else &#34;&gt;&#34;
 
         # check format
-        format_le = binhead_le[self._par[&#34;bin_format&#34;]]
-        format_be = binhead_be[self._par[&#34;bin_format&#34;]]
+        format_le = binhead_le[self._par[&#34;bin_format&#34;]].item()
+        format_be = binhead_be[self._par[&#34;bin_format&#34;]].item()
         if (format_be &gt;= 1) and (format_be &lt;= 16) and (format_le &gt; 16):
             # likely big endian
             return &#34;&gt;&#34;
@@ -579,10 +579,10 @@ time.</dd>
             return &#34;&lt;&#34;
 
         # check dt and ns
-        dt_le = binhead_le[self._par[&#34;bin_dt&#34;]]
-        dt_be = binhead_be[self._par[&#34;bin_dt&#34;]]
-        ns_le = binhead_le[self._par[&#34;bin_ns&#34;]]
-        ns_be = binhead_be[self._par[&#34;bin_ns&#34;]]
+        dt_le = binhead_le[self._par[&#34;bin_dt&#34;]].item()
+        dt_be = binhead_be[self._par[&#34;bin_dt&#34;]].item()
+        ns_le = binhead_le[self._par[&#34;bin_ns&#34;]].item()
+        ns_be = binhead_be[self._par[&#34;bin_ns&#34;]].item()
         if (dt_be &lt;= 10000) and (ns_be &lt;= 20000):
             # likely big endian but less sure
             return &#34;&gt;&#34;
@@ -623,8 +623,8 @@ time.</dd>
         Revision 2.0, this will be recorded as 00_16. This field is mandatory
         for all versions of SEG-Y.
         &#34;&#34;&#34;
-        self._sgy.major = int(self._sgy.binhead[self._par[&#34;bin_segymaj&#34;]])
-        self._sgy.minor = int(self._sgy.binhead[self._par[&#34;bin_segymin&#34;]])
+        self._sgy.major = int(self._sgy.binhead[self._par[&#34;bin_segymaj&#34;]].item())
+        self._sgy.minor = int(self._sgy.binhead[self._par[&#34;bin_segymin&#34;]].item())
         if self._sgy.major == 0:
             log.info(&#34;SEG-Y revision: original SEG-Y conforming to 1975 standard.&#34;)
         else:
@@ -650,7 +650,7 @@ time.</dd>
         15 = 3-byte, unsigned integer
         16 = 1-byte, unsigned integer
         &#34;&#34;&#34;
-        dformat = int(self._sgy.binhead[self._par[&#34;bin_format&#34;]])
+        dformat = int(self._sgy.binhead[self._par[&#34;bin_format&#34;]].item())
 
         if self._fp.datfmt is None:
             self._fp.datfmt = dformat
@@ -685,7 +685,7 @@ time.</dd>
         number of samples per trace and sample interval appear in the
         appropriate trace Trace Header locations.
         &#34;&#34;&#34;
-        segy_fixed = int(self._sgy.binhead[self._par[&#34;bin_fixed&#34;]])
+        segy_fixed = int(self._sgy.binhead[self._par[&#34;bin_fixed&#34;]].item())
 
         if segy_fixed == 0:
             log.warning(&#34;SEG-Y fixed-trace-length flag is not set in binary header.&#34;)
@@ -733,7 +733,7 @@ time.</dd>
         SEG-Y Tape Label is present.
         &#34;&#34;&#34;
         if self._par[&#34;ntxtrec&#34;] is None:
-            segy_num_headrec = int(self._sgy.binhead[self._par[&#34;bin_ntxthead&#34;]])
+            segy_num_headrec = int(self._sgy.binhead[self._par[&#34;bin_ntxthead&#34;]].item())
         else:
             segy_num_headrec = self._par[&#34;ntxtrec&#34;]
 
@@ -790,7 +790,7 @@ time.</dd>
         this makes reading more efficient.
         &#34;&#34;&#34;
         if self._par[&#34;ntxtrail&#34;] is None:
-            segy_num_trailer = int(self._sgy.binhead[self._par[&#34;bin_ntrailer&#34;]])
+            segy_num_trailer = int(self._sgy.binhead[self._par[&#34;bin_ntrailer&#34;]].item())
         else:
             segy_num_trailer = self._par[&#34;ntxtrail&#34;]
 
@@ -855,7 +855,7 @@ time.</dd>
         else:
             if self._par[&#34;nthuser&#34;] is None:
                 self._par[&#34;nthuser&#34;] = 0
-                segy_num_trhead = int(self._sgy.binhead[self._par[&#34;bin_maxtrhead&#34;]])
+                segy_num_trhead = int(self._sgy.binhead[self._par[&#34;bin_maxtrhead&#34;]].item())
             else:
                 segy_num_trhead = self._par[&#34;nthuser&#34;]
                 if self._par[&#34;thext1&#34;]:
@@ -908,7 +908,7 @@ time.</dd>
         nonnegative number of Extended Textual Header records present in
         bytes 3505–3506.
         &#34;&#34;&#34;
-        segy_byte_offset = int(self._sgy.binhead[self._par[&#34;bin_byteoff&#34;]])
+        segy_byte_offset = int(self._sgy.binhead[self._par[&#34;bin_byteoff&#34;]].item())
         byte_offset = self._fp.skip
         if segy_byte_offset &gt; 0:
             self._fp.skip = segy_byte_offset
@@ -934,15 +934,15 @@ time.</dd>
         interval, IEEE double precision (64-bit). If nonzero, this overrides
         the sample interval in bytes 3217–3218 with the same units.
         &#34;&#34;&#34;
-        self._dp.ns = int(self._sgy.binhead[self._par[&#34;bin_ns&#34;]])
-        extended_ns = int(self._sgy.binhead[self._par[&#34;bin_ens&#34;]])
+        self._dp.ns = int(self._sgy.binhead[self._par[&#34;bin_ns&#34;]].item())
+        extended_ns = int(self._sgy.binhead[self._par[&#34;bin_ens&#34;]].item())
         if extended_ns &gt; 0:
             self._dp.ns = extended_ns
 
         log.info(&#34;Number of samples per data trace: %d.&#34;, self._dp.ns)
 
-        self._dp.si = int(self._sgy.binhead[self._par[&#34;bin_dt&#34;]])
-        extended_dt = np.float64(self._sgy.binhead[self._par[&#34;bin_edt&#34;]])
+        self._dp.si = int(self._sgy.binhead[self._par[&#34;bin_dt&#34;]].item())
+        extended_dt = np.float64(self._sgy.binhead[self._par[&#34;bin_edt&#34;]].item())
         if extended_dt != 0:
             self._dp.si = extended_dt
 
@@ -950,7 +950,7 @@ time.</dd>
 
     def _segy_nt_and_delay(self):
         &#34;&#34;&#34;Determine number of traces and delay recording time.&#34;&#34;&#34;
-        segy_num_traces = int(self._sgy.binhead[self._par[&#34;bin_ntfile&#34;]])
+        segy_num_traces = int(self._sgy.binhead[self._par[&#34;bin_ntfile&#34;]].item())
         non_data = self._fp.skip + self.ntxtrail * self._sgy.txthead.size
         num_traces = int((self.fsize-non_data)/self.trsize)
 
