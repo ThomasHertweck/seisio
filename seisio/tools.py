@@ -24,6 +24,22 @@ _DATAFORMAT = {1: {"desc": "4-byte IBM floating-point", "type": "f", "dtype": np
                12: {"desc": "8-byte unsigned integer", "type": "Q", "dtype": np.uint64},
                16: {"desc": "1-byte unsigned integer", "type": "B", "dtype": np.uint8}}
 
+# from SEG-Y standard:
+# 1 = 4-byte IBM floating-point
+# 2 = 4-byte, two's complement integer
+# 3 = 2-byte, two's complement integer
+# 4 = 4-byte fixed-point with gain (obsolete)
+# 5 = 4-byte IEEE floating-point
+# 6 = 8-byte IEEE floating-point
+# 7 = 3-byte two’s complement integer
+# 8 = 1-byte, two's complement integer
+# 9 = 8-byte, two's complement integer
+# 10 = 4-byte, unsigned integer
+# 11 = 2-byte, unsigned integer
+# 12 = 8-byte, unsigned integer
+# 15 = 3-byte, unsigned integer
+# 16 = 1-byte, unsigned integer
+
 # encodings of different data types
 _DATAENCODING = {"b": {"dtype": "int8", "size": 1},
                  "B": {"dtype": "uint8", "size": 1},

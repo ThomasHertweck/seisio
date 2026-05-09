@@ -843,12 +843,15 @@ class Reader(reader.Reader):
 
         log.info("Number of data traces in file: %d.", self._dp.nt)
 
-        with open(self._fp.file, "rb") as fio:
-            fio.seek(self._fp.skip, 0)
-            headers = np.fromfile(fio, dtype=self._tr.thdtype, count=1)
-            self._dp.delay = headers[self._par["mnemonic_delrt"]][0]
-
-        log.info("Delay (on first trace): %s (unit as per SEG-Y standard).", str(self._dp.delay))
+        if self._dp.nt > 0:
+            with open(self._fp.file, "rb") as fio:
+                fio.seek(self._fp.skip, 0)
+                headers = np.fromfile(fio, dtype=self._tr.thdtype, count=1)
+                self._dp.delay = headers[self._par["mnemonic_delrt"]][0]
+            log.info("Delay (on first trace): %s (unit as per SEG-Y standard).", str(self._dp.delay))
+        else:
+            self._dp.delay = 0
+            log.info("No data traces, delay set to 0.")
 
 
 class Writer(writer.Writer):
