@@ -461,7 +461,7 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
     log.info("J defined by: '%s' (%d to %d, increment %d)", jdef, yrange[0], yrange[-1], stepy)
 
     if nx_req*ny_req == nt:
-        return np.reshape(ens, newshape=(nx_req, ny_req))
+        return np.reshape(ens, (nx_req, ny_req))
     else:
         log.info("Ensemble2cube is padding %d trace(s).", nx_req*ny_req-nt)
 
@@ -600,7 +600,7 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
 #     log.info("J defined by: '%s' (%d to %d, increment %d)", jdef, yrange[0], yrange[-1], stepy)
 
 #     if nx_req*ny_req == nt:
-#         return np.reshape(cube, newshape=(nx_req, ny_req))
+#         return np.reshape(cube, (nx_req, ny_req))
 #     else:
 #         log.info("Ensemble2cube is padding %d trace(s).", nx_req*ny_req-nt)
 
@@ -622,4 +622,4 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
 #     if header_trid is not None:
 #         values[:][header_trid] = 3
 
-#     return np.reshape(np.insert(cube, idx, values), newshape=(nx_req, ny_req))
+#     return np.reshape(np.insert(cube, idx, values), (nx_req, ny_req))
