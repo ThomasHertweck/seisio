@@ -300,7 +300,7 @@ def check_thdef_validity(file):
     bool
         True if definition file is valid, otherwise False.
     """
-    with open(file, "r") as io:
+    with open(file) as io:
         thdict = json.load(io)
     # try to parse and check thdict
     try:
@@ -325,7 +325,7 @@ def check_thdef_validity(file):
 
 def _log_default_thdef(thdef):
     """Log default trace header definition."""
-    with open(thdef, "r") as io:
+    with open(thdef) as io:
         thdict = json.load(io)
     tools._parse_hdef(thdict, endian=tools._native_endian())
     msg = "Trace header definition:"

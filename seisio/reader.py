@@ -667,6 +667,12 @@ class Reader(seisio.SeisIO, abc.ABC):
         self._idx.gord = 1 if group_order == ">" else -1
         self._idx.sord = 1 if sort_order == ">" else -1
 
+        # ensure specified mnemonics actually exist
+        if not set(self._idx.grp_by).issubset(self.mnemonics):
+            raise ValueError("At least one mnemonic in 'group_by' is invalid.")
+        if not set(self._idx.srt_by).issubset(self.mnemonics):
+            raise ValueError("At least one mnemonic in 'sort_by' is invalid.")
+
         if headers is None:
             h = self.read_all_headers()
         else:

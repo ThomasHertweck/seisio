@@ -183,7 +183,7 @@ class TxtHeader:
         else:
             if self._bytes is not None:
                 return self._bytes
-        return str("")
+        return ""
 
     def set_header(self, header, encode=True, silent=False):
         """

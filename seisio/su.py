@@ -73,7 +73,7 @@ class Reader(reader.Reader):
         if self._par["thdef"] is None:
             self._par["thdef"] = Path(__file__).parent/"json/su_traceheader.json"
 
-        with open(self._par["thdef"], "r") as io:
+        with open(self._par["thdef"]) as io:
             self._tr.thdict = json.load(io)
 
         log.info("Assuming fixed-length traces for SU data.")
@@ -219,7 +219,7 @@ class Writer(writer.Writer):
         if self._par["thdef"] is None:
             self._par["thdef"] = Path(__file__).parent/"json/su_traceheader.json"
 
-        with open(self._par["thdef"], "r") as io:
+        with open(self._par["thdef"]) as io:
             self._tr.thdict = json.load(io)
 
         keys, formats, titles = tools._parse_hdef(self._tr.thdict, endian=self._fp.endian)

@@ -310,7 +310,7 @@ class SeisIO(abc.ABC):
         """Set various dtypes."""
         self._fp.dtype = np.dtype(f"{self._fp.endian}{tools._DATAFORMAT[self._fp.datfmt]['type']}")
 
-        with open(self._par["thdef"], "r") as io:
+        with open(self._par["thdef"]) as io:
             thdict = json.load(io)
 
         th_k, th_f, th_t = tools._parse_hdef(thdict, endian=self._fp.endian)
@@ -320,7 +320,7 @@ class SeisIO(abc.ABC):
         if self._par["thext1"]:
             if self._par["thdef1"] is None:
                 self._par["thdef1"] = pathlib.Path(__file__).parent/"json/segy_traceheader_ext1.json"
-            with open(self._par["thdef1"], "r") as io:
+            with open(self._par["thdef1"]) as io:
                 th1dict = json.load(io)
             th1_k, th1_f, th1_t = tools._parse_hdef(th1dict)
             th_k += th1_k
@@ -337,7 +337,7 @@ class SeisIO(abc.ABC):
                 raise ValueError(f"Number of user-defined trace headers ({self._par['nthuser']}) "
                                  f"and provided number of JSONs ({len(thud)}) do not match.")
             for hd in thud:
-                with open(hd, "r") as io:
+                with open(hd) as io:
                     hdict = json.load(io)
                 k, f, t = tools._parse_hdef(hdict)
                 th_k += k

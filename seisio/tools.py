@@ -377,7 +377,7 @@ def rename_mnemonic(headers, mapping=None):
 
 def ensemble2cube(ensemble, idef="xline", jdef="iline",
                   is_sorted=False, header_trid="trid",
-                  fill_value=np.nan):
+                  fill_value=np.nan, silent=False):
     """
     Convert a 2D ensemble to a 3D cube.
 
@@ -410,6 +410,8 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
         identification is set to 3 ('dummy').
     fill_value : numeric value, optional (default: np.nan)
         Fill value for traces that get padded.
+    silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
 
     Returns
     -------
@@ -456,14 +458,16 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
     nx_req = len(xrange)
     ny_req = len(yrange)
 
-    log.info("Cube dimensions: (%d, %d, %d)", nx_req, ny_req, ns)
-    log.info("I defined by: '%s' (%d to %d, increment %d)", idef, xrange[0], xrange[-1], stepx)
-    log.info("J defined by: '%s' (%d to %d, increment %d)", jdef, yrange[0], yrange[-1], stepy)
+    if not silent:
+        log.info("Cube dimensions: (%d, %d, %d)", nx_req, ny_req, ns)
+        log.info("I defined by: '%s' (%d to %d, increment %d)", idef, xrange[0], xrange[-1], stepx)
+        log.info("J defined by: '%s' (%d to %d, increment %d)", jdef, yrange[0], yrange[-1], stepy)
 
     if nx_req*ny_req == nt:
         return np.reshape(ens, (nx_req, ny_req))
     else:
-        log.info("Ensemble2cube is padding %d trace(s).", nx_req*ny_req-nt)
+        if not silent:
+            log.info("Ensemble2cube is padding %d trace(s).", nx_req*ny_req-nt)
 
     cube = np.zeros(shape=(nx_req, ny_req), dtype=ensemble.dtype)
     # pre-fill data values with fill_value (NaN by default)

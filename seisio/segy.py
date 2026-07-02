@@ -177,7 +177,7 @@ class Reader(reader.Reader):
         if self._par["bhdef"] is None:
             self._par["bhdef"] = Path(__file__).parent/"json/segy_binaryheader.json"
 
-        with open(self._par["bhdef"], "r") as io:
+        with open(self._par["bhdef"]) as io:
             self._sgy.bhdict = json.load(io)
 
         if self._par["thext1"] is not None and not isinstance(self._par["thext1"], bool):
@@ -1096,7 +1096,7 @@ class Writer(writer.Writer):
         if self._par["bhdef"] is None:
             self._par["bhdef"] = Path(__file__).parent/"json/segy_binaryheader.json"
 
-        with open(self._par["bhdef"], "r") as io:
+        with open(self._par["bhdef"]) as io:
             self._sgy.bhdict = json.load(io)
 
         k, f, t = tools._parse_hdef(self._sgy.bhdict, endian=self._fp.endian)
