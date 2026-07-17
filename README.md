@@ -19,6 +19,7 @@ There are quite a few great Python packages available to read and/or write seism
 * Reads SEG2 data, including non-standard strings in the descriptor blocks.
 * Data are only read into memory on demand (lazy loading), not at the point of creating the reader object; also, the file (input or output) is not kept open all the time, i.e., **seisio** itself does not need a context manager. Files should always be in a consistent state.
 * Flexible and customizable header definitions via JSON parameter file. You need to pick up a "float" value at byte 32 in the trace header? Or you would like to name the SU header `cmp` instead of `cdp`? Or you have values of non-standard type "double" in the trace headers? No problem! You can also remap headers when outputting files and the current trace header table does not match the output trace header table.
+* Allows reading a subset of trace header mnemonics instead of all trace header mnemonics.
 * Good I/O performance (see below) and hardly any external dependencies.
 * Automatic detection of endian byte order. I/O of both little- and big-endian byte order possible.
 * Automatic detection of the SEG-Y textual header encoding (ASCII or EBCDIC).
@@ -30,7 +31,7 @@ Note: As it stands, SEG-Y or SU data need to have a constant trace length. The S
 
 ## Performance
 
-The following performance comparison is based on reading a 3D seismic poststack volume in SEG-Y format (rev. 1) from local disk. The file size is 4797 MB (about 5 GB), there are 1'550'400 traces in total. The entire data set is read into memory (unstructured access); trace headers are decoded as returning generators would simply defer the actual work to a later time and falsify the comparison. The comparison also includes the time to convert from IBM floats to IEEE floats. The cache is cleared after every single run, and each module is tested at least 10 times to obtain reliable I/O numbers. After reading the data into memory, various headers and trace amplitude values are checked to ensure all modules read the data correctly and provide identical headers and amplitude values (all listed modules actually pass this test and give identical results). All I/O times are given in seconds:
+The following performance comparison is based on reading a 3D seismic poststack volume in SEG-Y format (rev. 1) from local disk using version 1.4.0 of **seisio**. The file size is 4797 MB (about 5 GB), there are 1'550'400 traces in total. The entire data set is read into memory (unstructured access); trace headers are decoded as returning generators would simply defer the actual work to a later time and falsify the comparison. The comparison also includes the time to convert from IBM floats to IEEE floats. The cache is cleared after every single run, and each module is tested at least 10 times to obtain reliable I/O numbers. After reading the data into memory, various headers and trace amplitude values are checked to ensure all modules read the data correctly and provide identical headers and amplitude values (all listed modules actually pass this test and give identical results). All I/O times are given in seconds:
 
 * segfast: 4.7693 +- 0.0626
 * seisio: 5.7860 +- 0.0646
@@ -200,6 +201,12 @@ for batch in sio.batches(batch_size=1000):
 ```
 This would simply get you gathers of 1000 traces at the time, apart from perhaps the last gather which - dependent on the total number of traces in the file - could be smaller.
 
+All methods mentioned above allow reading a subset of trace header mnemonics by specifying the mnemonics you would like to read as parameter:
+```
+mnemonics=["fldr", "tracf", "cdp", "cdpt", "ns", "dt"]
+```
+Based on the trace header definition table, the code creates a custom np.dtype with offsets to read the data as efficiently as possible. The mnemonics can be specified in any order but obviously they need to exist, otherwise the code raises an exception.
+
 SEG2 data sets are often relatively small, or there are individual SEG2 files for the survey's shots. SEG2 strings in the descriptor blocks are often (at least in practical terms) not complying with the SEG2 standard (many companies add their own strings), i.e., reading of SEG2 data files into Numpy structured arrays with strict types or parsing SEG2 strings to put values (of a certain type) in a SEG-Y-like trace header table is complicated or sometimes not even possible, resulting in errors or loss of information. Therefore, when reading SEG2 data files, the **seisio** module returns the traces as standard 2D Numpy array with a separate Pandas dataframe with strings and values contained in the trace descriptor blocks.
 
 The trace lengths can vary, the module will scan for the maximum number of samples per trace and allocate a Numpy array accordingly, padding shorter traces with zeros where necessary. The actual number of samples per traces is stored as additional string in the Pandas dataframe. Example:
@@ -235,7 +242,7 @@ Dr. Thomas Hertweck, geophysics@email.de
 
 If you use the **seisio** module and you find it useful, getting some feedback would be very much appreciated. If you would like to cite this module, please use, for instance:
 ```
-Hertweck, T. (2026). seisio: A Python library for I/O operations of seismic data. Version 1.4.1. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 05/08/2026).
+Hertweck, T. (2026). seisio: A Python library for I/O operations of seismic data. Version 1.5.0. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 20/07/2026).
 ```
 Adjust year, version and last visited date as required. Here's a BibTeX entry:
 ```
@@ -244,8 +251,8 @@ Adjust year, version and last visited date as required. Here's a BibTeX entry:
   year    = {2026},
   title   = {seisio: A {P}ython library for {I/O} operations of seismic data},
   url     = {https://gitlab.kit.edu/thomas.hertweck/seisio/},
-  urldate = {2026-05-08},
-  version = {1.4.1}
+  urldate = {2026-07-20},
+  version = {1.5.0}
 }
 ```
 ## License

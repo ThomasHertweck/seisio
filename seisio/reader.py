@@ -139,26 +139,26 @@ class Reader(seisio.SeisIO, abc.ABC):
         end = beg + (self._dp.ns-1) * dt
         return np.arange(beg, end+dt/2, dt)
 
-    def _alter_dtype(self, select, trace=False):
+    def _alter_dtype(self, mnemonics, trace=False):
         """Alter an existing trace dtype to provide a subset of headers only."""
-        if isinstance(select, str):
-            select = [select]
+        if isinstance(mnemonics, str):
+            mnemonics = [mnemonics]
         # check mnemonic(s) exist
-        if not set(select).issubset(self.mnemonics):
-            raise ValueError("At least one mnemonic in 'select' is invalid.")
+        if not set(mnemonics).issubset(self.mnemonics):
+            raise ValueError("At least one mnemonic in 'mnemonics' is invalid.")
 
         if trace:
             # add data back in
-            select.append("data")
+            mnemonics.append("data")
             itemsize = self._tr.trsize
         else:
             itemsize = self._tr.thsize
 
-        formats = [self._tr.trdtype.fields[mn][0] for mn in select]
-        offsets = [self._tr.trdtype.fields[mn][1] for mn in select]
-        titles = [self._tr.trdtype.fields[name][2] if len(self._tr.trdtype.fields[name]) == 3 else None for name in select]
+        formats = [self._tr.trdtype.fields[mn][0] for mn in mnemonics]
+        offsets = [self._tr.trdtype.fields[mn][1] for mn in mnemonics]
+        titles = [self._tr.trdtype.fields[name][2] if len(self._tr.trdtype.fields[name]) == 3 else None for name in mnemonics]
 
-        return tools._create_custom_dtype(select, formats, offsets,
+        return tools._create_custom_dtype(mnemonics, formats, offsets,
                                           itemsize, titles=titles)
 
     def read_all_headers(self, mnemonics=None, silent=False):
