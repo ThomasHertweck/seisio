@@ -124,28 +124,35 @@ el.replaceWith(d);
         end = beg + (self._dp.ns-1) * dt
         return np.arange(beg, end+dt/2, dt)
 
-    def _header_subset(self, select):
-        &#34;&#34;&#34;Create a custom dtype for a certain trace header selection.&#34;&#34;&#34;
+    def _alter_dtype(self, select, trace=False):
+        &#34;&#34;&#34;Alter an existing trace dtype to provide a subset of headers only.&#34;&#34;&#34;
         if isinstance(select, str):
             select = [select]
         # check mnemonic(s) exist
         if not set(select).issubset(self.mnemonics):
             raise ValueError(&#34;At least one mnemonic in &#39;select&#39; is invalid.&#34;)
-        # build custom dtype
-        mn_list = [self._tr.thdict[s] for s in select]
-        formats = [f&#34;{self._fp.endian}{mn[&#39;type&#39;]}&#34; for mn in mn_list]
-        offsets = [mn[&#34;byte&#34;] - 1 for mn in mn_list]
-        titles  = [mn[&#34;desc&#34;] for mn in mn_list]
-        return tools._create_custom_dtype(select, formats, offsets,
-                                          self._tr.thsize, titles=titles)
 
-    def read_all_headers(self, select=None, silent=False):
+        if trace:
+            # add data back in
+            select.append(&#34;data&#34;)
+            itemsize = self._tr.trsize
+        else:
+            itemsize = self._tr.thsize
+
+        formats = [self._tr.trdtype.fields[mn][0] for mn in select]
+        offsets = [self._tr.trdtype.fields[mn][1] for mn in select]
+        titles = [self._tr.trdtype.fields[name][2] if len(self._tr.trdtype.fields[name]) == 3 else None for name in select]
+
+        return tools._create_custom_dtype(select, formats, offsets,
+                                          itemsize, titles=titles)
+
+    def read_all_headers(self, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Get trace headers for all traces.
 
         Parameters
         ----------
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -160,8 +167,8 @@ el.replaceWith(d);
         if not silent:
             log.info(&#34;Reading trace headers for all (%d) traces from disk...&#34;, self._dp.nt)
 
-        if select is not None:
-            dtype = self._header_subset(select)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics)
         else:
             dtype = self._tr.thdtype
 
@@ -181,7 +188,7 @@ el.replaceWith(d);
 
         return h
 
-    def read_headers(self, *trcno, select=None, silent=False):
+    def read_headers(self, *trcno, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Get trace headers for one or more traces.
 
@@ -189,7 +196,7 @@ el.replaceWith(d);
         ----------
         *trcno : int(s)
             The trace numbers (zero-based) to read from disk.
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -209,8 +216,8 @@ el.replaceWith(d);
         if not silent:
             log.info(&#34;Reading headers for %d specific traces from disk...&#34;, nt)
 
-        if select is not None:
-            dtype = self._header_subset(select)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics)
         else:
             dtype = self._tr.thdtype
 
@@ -225,7 +232,7 @@ el.replaceWith(d);
 
         return h
 
-    def read_batch_of_headers(self, start=0, nheaders=100, select=None, silent=False):
+    def read_batch_of_headers(self, start=0, nheaders=100, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Get trace headers for a certain number of traces starting at a specific trace.
 
@@ -235,7 +242,7 @@ el.replaceWith(d);
             The trace number (zero-based) to start reading from disk.
         nheaders : int, optional (default: 100)
             The number of subsequent traces to read, including &#39;start&#39; itself.
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -256,8 +263,8 @@ el.replaceWith(d);
             log.info(&#34;Reading headers for %d traces from disk starting at trace %d...&#34;,
                      nheaders, start)
 
-        if select is not None:
-            dtype = self._header_subset(select)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics)
         else:
             dtype = self._tr.thdtype
 
@@ -270,7 +277,7 @@ el.replaceWith(d);
         return h
 
     def read_multibatch_of_headers(self, start=0, count=None, stride=None,
-                                   block=None, select=None, silent=False):
+                                   block=None, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Get multiple batches of trace headers from the seismic file.
 
@@ -294,7 +301,7 @@ el.replaceWith(d);
             The stride between the first traces in each block.
         block : int
             The size of each block.
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -322,8 +329,8 @@ el.replaceWith(d);
                              f&#34;range [0,{self._dp.nt}).&#34;)
         nheaders = len(indices)
 
-        if select is not None:
-            dtype = self._header_subset(select)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics)
         else:
             dtype = self._tr.thdtype
 
@@ -336,16 +343,20 @@ el.replaceWith(d);
 
         return h
 
-    def read_dataset(self, silent=False, history=None):
+    def read_dataset(self, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
-        return self.read_all_traces(ilent=silent, history=history)
+        return self.read_all_traces(mnemonics=mnemonics, silent=silent, history=history)
 
-    def read_all_traces(self, silent=False, history=None):
+    def read_all_traces(self, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Get all traces (e.g., read the entire file).
 
         Parameters
         ----------
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -359,10 +370,15 @@ el.replaceWith(d);
         if not silent:
             log.info(&#34;Reading entire file (%d traces) from disk...&#34;, self._dp.nt)
 
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics, trace=True)
+        else:
+            dtype = self._tr.trdtype
+
         st = time.time()
         with open(self._fp.file, &#34;rb&#34;) as fio:
             with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                d = np.ndarray(shape=(self._dp.nt, ), dtype=self._tr.trdtype, buffer=mm,
+                d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
                                offset=self._fp.skip, order=&#39;F&#39;).copy()
         et = time.time()
 
@@ -393,7 +409,7 @@ el.replaceWith(d);
 
         return d
 
-    def read_traces(self, *trcno, silent=False, history=None):
+    def read_traces(self, *trcno, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Get one or more traces.
 
@@ -401,6 +417,10 @@ el.replaceWith(d);
         ----------
         *trcno : int(s)
             The trace numbers (zero-based) to read from disk.
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -419,14 +439,19 @@ el.replaceWith(d);
         if not silent:
             log.info(&#34;Reading %d specific trace(s) from disk...&#34;, nt)
 
-        d = np.ndarray((nt, ), dtype=self._tr.trdtype)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics, trace=True)
+        else:
+            dtype = self._tr.trdtype
+
+        d = np.ndarray((nt, ), dtype=dtype)
 
         with open(self._fp.file, &#34;rb&#34;) as fio:
             for i, trc in enumerate(trcs):
                 if trc &lt; 0 or trc &gt;= self._dp.nt:
                     raise ValueError(f&#34;Requested trace no. {trc} out of range [0,{self._dp.nt}).&#34;)
                 fio.seek(self._fp.skip+trc*self.trsize, 0)
-                d[i] = np.fromfile(fio, dtype=self._tr.trdtype, count=1, offset=0)
+                d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -439,7 +464,8 @@ el.replaceWith(d);
 
         return d
 
-    def read_batch_of_traces(self, start=0, ntraces=100, silent=False, history=None):
+    def read_batch_of_traces(self, start=0, ntraces=100, mnemonics=None,
+                             silent=False, history=None):
         &#34;&#34;&#34;
         Get a certain number of traces starting at a specific trace.
 
@@ -449,6 +475,10 @@ el.replaceWith(d);
             The trace number (zero-based) to start reading from disk.
         ntraces : int, optional (default: 100)
             The number of subsequent traces to read, including &#39;start&#39; itself.
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -467,9 +497,14 @@ el.replaceWith(d);
         if not silent:
             log.info(&#34;Reading %d trace(s) from disk starting at trace %d...&#34;, ntraces, start)
 
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics, trace=True)
+        else:
+            dtype = self._tr.trdtype
+
         with open(self._fp.file, &#34;rb&#34;) as fio:
             fio.seek(self._fp.skip+start*self.trsize, 0)
-            d = np.fromfile(fio, dtype=self._tr.trdtype, count=ntraces, offset=0)
+            d = np.fromfile(fio, dtype=dtype, count=ntraces, offset=0)
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -482,8 +517,8 @@ el.replaceWith(d);
 
         return d
 
-    def read_multibatch_of_traces(self, start=0, count=None, stride=None,
-                                  block=None, silent=False, history=None):
+    def read_multibatch_of_traces(self, start=0, count=None, stride=None, block=None,
+                                  mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Get multiple batches of traces from the seismic file.
 
@@ -499,6 +534,10 @@ el.replaceWith(d);
             The stride between the first traces in each block.
         block : int
             The size of each block.
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -523,12 +562,17 @@ el.replaceWith(d);
             raise ValueError(f&#34;Requested multibatch of traces out of range [0,{self._dp.nt}).&#34;)
         ntraces = len(indices)
 
-        d = np.zeros((ntraces, ), dtype=self._tr.trdtype)
+        if mnemonics is not None:
+            dtype = self._alter_dtype(mnemonics, trace=True)
+        else:
+            dtype = self._tr.trdtype
+
+        d = np.zeros((ntraces, ), dtype=dtype)
 
         with open(self._fp.file, &#34;rb&#34;) as fio:
             for i in np.arange(ntraces):
                 fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-                d[i] = np.fromfile(fio, dtype=self._tr.trdtype, count=1, offset=0)
+                d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
         if self._fp.datfmt == 1:
             data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -542,7 +586,7 @@ el.replaceWith(d);
 
         return d
 
-    def batches_of_headers(self, batch_size=100, select=None, silent=False):
+    def batches_of_headers(self, batch_size=100, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Loop through all headers in blocks (using a generator).
 
@@ -550,7 +594,7 @@ el.replaceWith(d);
         ----------
         batch_size : int, optional (default: 100)
             The batch size, i.e., number of trace headers to read in one go.
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -567,9 +611,10 @@ el.replaceWith(d);
             raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_headers(start, ntraces, select=select, silent=silent)
+            yield self.read_batch_of_headers(start, ntraces, mnemonics=mnemonics,
+                                             silent=silent)
 
-    def batches(self, batch_size=100, silent=False, history=None):
+    def batches(self, batch_size=100, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all traces in blocks (using a generator).
 
@@ -577,6 +622,10 @@ el.replaceWith(d);
         ----------
         batch_size : int, optional (default: 100)
             The batch size, i.e., number of traces to read in one go.
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -592,14 +641,19 @@ el.replaceWith(d);
             raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_traces(start, ntraces, silent=silent, history=history)
+            yield self.read_batch_of_traces(start, ntraces, mnemonics=mnemonics,
+                                            silent=silent, history=history)
 
-    def traces(self, silent=False, history=None):
+    def traces(self, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all traces of the file (using a generator).
 
         Parameters
         ----------
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -612,16 +666,17 @@ el.replaceWith(d);
         &#34;&#34;&#34;
         counter = 0
         while counter &lt; self._dp.nt:
-            yield self.read_traces(counter, silent=silent, history=history)
+            yield self.read_traces(counter, mnemonics=mnemonics, silent=silent,
+                                   history=history)
             counter += 1
 
-    def headers(self, select=None, silent=False):
+    def headers(self, mnemonics=None, silent=False):
         &#34;&#34;&#34;
         Loop through all headers of the file (using a generator).
 
         Parameters
         ----------
-        select : list of mnemonics (default: None)
+        mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
             table currently in use.
@@ -635,12 +690,12 @@ el.replaceWith(d);
         &#34;&#34;&#34;
         hcounter = 0
         while hcounter &lt; self._dp.nt:
-            yield self.read_headers(hcounter, select=select, silent=silent)
+            yield self.read_headers(hcounter, mnemonics=mnemonics, silent=silent)
             hcounter += 1
 
     @_addhist
-    def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, sort_order=&#34;&gt;&#34;,
-                     headers=None, filt=None):
+    def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;,
+                     sort_order=&#34;&gt;&#34;, headers=None, filt=None):
         &#34;&#34;&#34;
         Create a lookup index for the input file to read ensembles.
 
@@ -725,7 +780,7 @@ el.replaceWith(d);
                 else:
                     req = set()
                 req_head = [*req, *self._idx.grp_by]
-                h = self.read_all_headers(select=req_head)
+                h = self.read_all_headers(mnemonics=req_head)
             except Exception:
                 # try reading all headers if reading selected headers failed
                 h = self.read_all_headers()
@@ -828,7 +883,7 @@ el.replaceWith(d);
             key_cmp = np.asarray(key, dtype=self._idx.head[self._idx.grp_by].dtype)
         return self._idx.head[self._idx.head[self._idx.grp_by] == key_cmp][&#34;index&#34;]
 
-    def read_ensemble(self, *idx_keys, silent=False, history=None):
+    def read_ensemble(self, *idx_keys, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Get one or more ensembles (groups of traces) from a seismic file.
 
@@ -836,6 +891,10 @@ el.replaceWith(d);
         ----------
         *idx_keys : tuple(s)
             The keys used to identify ensembles.
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -856,13 +915,20 @@ el.replaceWith(d);
             else:
                 traces_to_read = np.union1d(traces_to_read, trc)
 
+        # ensure header mnemonic for sort is available
+        if mnemonics is not None:
+            if isinstance(mnemonics, str):
+                mnemonics = [mnemonics]
+            mnemonics = list(set(mnemonics + self._idx.srt_by))
+
         if not silent:
             log.info(&#34;Reading ensemble(s) &#39;%s&#39;.&#34;, idx_keys[0])
 
         if tools._check_if_contiguous(traces_to_read):
-            d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read), silent=silent)
+            d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read),
+                                          mnemonics=mnemonics, silent=silent)
         else:
-            d = self.read_traces(*traces_to_read, silent=silent)
+            d = self.read_traces(*traces_to_read, mnemonics=mnemonics, silent=silent)
 
         if history is not None:
             history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
@@ -872,12 +938,16 @@ el.replaceWith(d);
 
         return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]
 
-    def ensembles(self, silent=False, history=None):
+    def ensembles(self, mnemonics=None, silent=False, history=None):
         &#34;&#34;&#34;
         Loop through all ensembles.
 
         Parameters
         ----------
+        mnemonics : list of strings (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         history : list, optional (default: None)
@@ -890,7 +960,8 @@ el.replaceWith(d);
         &#34;&#34;&#34;
         if self._idx.keys is not None:
             for e in self._idx.keys:
-                yield self.read_ensemble(e, silent=silent, history=history)
+                yield self.read_ensemble(e, mnemonics=mnemonics, silent=silent,
+                                         history=history)
         else:
             raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)
 
@@ -1211,14 +1282,14 @@ def vsi(self):
 <h3>Methods</h3>
 <dl>
 <dt id="seisio.reader.Reader.batches"><code class="name flex">
-<span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, silent=False, history=None)</span>
+<span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def batches(self, batch_size=100, silent=False, history=None):
+<pre><code class="python">def batches(self, batch_size=100, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Loop through all traces in blocks (using a generator).
 
@@ -1226,6 +1297,10 @@ def vsi(self):
     ----------
     batch_size : int, optional (default: 100)
         The batch size, i.e., number of traces to read in one go.
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -1241,13 +1316,18 @@ def vsi(self):
         raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
     bs = np.int64(batch_size)
     for start, ntraces in _create_batches(nt, bs):
-        yield self.read_batch_of_traces(start, ntraces, silent=silent, history=history)</code></pre>
+        yield self.read_batch_of_traces(start, ntraces, mnemonics=mnemonics,
+                                        silent=silent, history=history)</code></pre>
 </details>
 <div class="desc"><p>Loop through all traces in blocks (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
 <dd>The batch size, i.e., number of traces to read in one go.</dd>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -1260,14 +1340,14 @@ def vsi(self):
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.batches_of_headers"><code class="name flex">
-<span>def <span class="ident">batches_of_headers</span></span>(<span>self, batch_size=100, select=None, silent=False)</span>
+<span>def <span class="ident">batches_of_headers</span></span>(<span>self, batch_size=100, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def batches_of_headers(self, batch_size=100, select=None, silent=False):
+<pre><code class="python">def batches_of_headers(self, batch_size=100, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Loop through all headers in blocks (using a generator).
 
@@ -1275,7 +1355,7 @@ def vsi(self):
     ----------
     batch_size : int, optional (default: 100)
         The batch size, i.e., number of trace headers to read in one go.
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -1292,14 +1372,15 @@ def vsi(self):
         raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
     bs = np.int64(batch_size)
     for start, ntraces in _create_batches(nt, bs):
-        yield self.read_batch_of_headers(start, ntraces, select=select, silent=silent)</code></pre>
+        yield self.read_batch_of_headers(start, ntraces, mnemonics=mnemonics,
+                                         silent=silent)</code></pre>
 </details>
 <div class="desc"><p>Loop through all headers in blocks (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
 <dd>The batch size, i.e., number of trace headers to read in one go.</dd>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -1321,8 +1402,8 @@ table currently in use.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@_addhist
-def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, sort_order=&#34;&gt;&#34;,
-                 headers=None, filt=None):
+def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;,
+                 sort_order=&#34;&gt;&#34;, headers=None, filt=None):
     &#34;&#34;&#34;
     Create a lookup index for the input file to read ensembles.
 
@@ -1407,7 +1488,7 @@ def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;, 
             else:
                 req = set()
             req_head = [*req, *self._idx.grp_by]
-            h = self.read_all_headers(select=req_head)
+            h = self.read_all_headers(mnemonics=req_head)
         except Exception:
             # try reading all headers if reading selected headers failed
             h = self.read_all_headers()
@@ -1493,19 +1574,23 @@ application of the filter function. The resulting ensembles will
 therefore not contain any offsets larger than 3000 m.</p></div>
 </dd>
 <dt id="seisio.reader.Reader.ensembles"><code class="name flex">
-<span>def <span class="ident">ensembles</span></span>(<span>self, silent=False, history=None)</span>
+<span>def <span class="ident">ensembles</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def ensembles(self, silent=False, history=None):
+<pre><code class="python">def ensembles(self, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Loop through all ensembles.
 
     Parameters
     ----------
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -1518,13 +1603,18 @@ therefore not contain any offsets larger than 3000 m.</p></div>
     &#34;&#34;&#34;
     if self._idx.keys is not None:
         for e in self._idx.keys:
-            yield self.read_ensemble(e, silent=silent, history=history)
+            yield self.read_ensemble(e, mnemonics=mnemonics, silent=silent,
+                                     history=history)
     else:
         raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)</code></pre>
 </details>
 <div class="desc"><p>Loop through all ensembles.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -1537,20 +1627,20 @@ therefore not contain any offsets larger than 3000 m.</p></div>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.headers"><code class="name flex">
-<span>def <span class="ident">headers</span></span>(<span>self, select=None, silent=False)</span>
+<span>def <span class="ident">headers</span></span>(<span>self, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def headers(self, select=None, silent=False):
+<pre><code class="python">def headers(self, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Loop through all headers of the file (using a generator).
 
     Parameters
     ----------
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -1564,13 +1654,13 @@ therefore not contain any offsets larger than 3000 m.</p></div>
     &#34;&#34;&#34;
     hcounter = 0
     while hcounter &lt; self._dp.nt:
-        yield self.read_headers(hcounter, select=select, silent=silent)
+        yield self.read_headers(hcounter, mnemonics=mnemonics, silent=silent)
         hcounter += 1</code></pre>
 </details>
 <div class="desc"><p>Loop through all headers of the file (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -1662,20 +1752,20 @@ Only relevant if df=None.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_all_headers"><code class="name flex">
-<span>def <span class="ident">read_all_headers</span></span>(<span>self, select=None, silent=False)</span>
+<span>def <span class="ident">read_all_headers</span></span>(<span>self, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_all_headers(self, select=None, silent=False):
+<pre><code class="python">def read_all_headers(self, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Get trace headers for all traces.
 
     Parameters
     ----------
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -1690,8 +1780,8 @@ Only relevant if df=None.</dd>
     if not silent:
         log.info(&#34;Reading trace headers for all (%d) traces from disk...&#34;, self._dp.nt)
 
-    if select is not None:
-        dtype = self._header_subset(select)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics)
     else:
         dtype = self._tr.thdtype
 
@@ -1714,7 +1804,7 @@ Only relevant if df=None.</dd>
 <div class="desc"><p>Get trace headers for all traces.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -1728,19 +1818,23 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_all_traces"><code class="name flex">
-<span>def <span class="ident">read_all_traces</span></span>(<span>self, silent=False, history=None)</span>
+<span>def <span class="ident">read_all_traces</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_all_traces(self, silent=False, history=None):
+<pre><code class="python">def read_all_traces(self, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Get all traces (e.g., read the entire file).
 
     Parameters
     ----------
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -1754,10 +1848,15 @@ table currently in use.</dd>
     if not silent:
         log.info(&#34;Reading entire file (%d traces) from disk...&#34;, self._dp.nt)
 
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics, trace=True)
+    else:
+        dtype = self._tr.trdtype
+
     st = time.time()
     with open(self._fp.file, &#34;rb&#34;) as fio:
         with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-            d = np.ndarray(shape=(self._dp.nt, ), dtype=self._tr.trdtype, buffer=mm,
+            d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
                            offset=self._fp.skip, order=&#39;F&#39;).copy()
     et = time.time()
 
@@ -1791,6 +1890,10 @@ table currently in use.</dd>
 <div class="desc"><p>Get all traces (e.g., read the entire file).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -1803,14 +1906,14 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_batch_of_headers"><code class="name flex">
-<span>def <span class="ident">read_batch_of_headers</span></span>(<span>self, start=0, nheaders=100, select=None, silent=False)</span>
+<span>def <span class="ident">read_batch_of_headers</span></span>(<span>self, start=0, nheaders=100, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_batch_of_headers(self, start=0, nheaders=100, select=None, silent=False):
+<pre><code class="python">def read_batch_of_headers(self, start=0, nheaders=100, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Get trace headers for a certain number of traces starting at a specific trace.
 
@@ -1820,7 +1923,7 @@ table currently in use.</dd>
         The trace number (zero-based) to start reading from disk.
     nheaders : int, optional (default: 100)
         The number of subsequent traces to read, including &#39;start&#39; itself.
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -1841,8 +1944,8 @@ table currently in use.</dd>
         log.info(&#34;Reading headers for %d traces from disk starting at trace %d...&#34;,
                  nheaders, start)
 
-    if select is not None:
-        dtype = self._header_subset(select)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics)
     else:
         dtype = self._tr.thdtype
 
@@ -1861,7 +1964,7 @@ table currently in use.</dd>
 <dd>The trace number (zero-based) to start reading from disk.</dd>
 <dt><strong><code>nheaders</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
 <dd>The number of subsequent traces to read, including 'start' itself.</dd>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -1875,14 +1978,15 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_batch_of_traces"><code class="name flex">
-<span>def <span class="ident">read_batch_of_traces</span></span>(<span>self, start=0, ntraces=100, silent=False, history=None)</span>
+<span>def <span class="ident">read_batch_of_traces</span></span>(<span>self, start=0, ntraces=100, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_batch_of_traces(self, start=0, ntraces=100, silent=False, history=None):
+<pre><code class="python">def read_batch_of_traces(self, start=0, ntraces=100, mnemonics=None,
+                         silent=False, history=None):
     &#34;&#34;&#34;
     Get a certain number of traces starting at a specific trace.
 
@@ -1892,6 +1996,10 @@ table currently in use.</dd>
         The trace number (zero-based) to start reading from disk.
     ntraces : int, optional (default: 100)
         The number of subsequent traces to read, including &#39;start&#39; itself.
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -1910,9 +2018,14 @@ table currently in use.</dd>
     if not silent:
         log.info(&#34;Reading %d trace(s) from disk starting at trace %d...&#34;, ntraces, start)
 
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics, trace=True)
+    else:
+        dtype = self._tr.trdtype
+
     with open(self._fp.file, &#34;rb&#34;) as fio:
         fio.seek(self._fp.skip+start*self.trsize, 0)
-        d = np.fromfile(fio, dtype=self._tr.trdtype, count=ntraces, offset=0)
+        d = np.fromfile(fio, dtype=dtype, count=ntraces, offset=0)
 
     if self._fp.datfmt == 1:
         data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -1932,6 +2045,10 @@ table currently in use.</dd>
 <dd>The trace number (zero-based) to start reading from disk.</dd>
 <dt><strong><code>ntraces</code></strong> :&ensp;<code>int</code>, optional <code>(default: 100)</code></dt>
 <dd>The number of subsequent traces to read, including 'start' itself.</dd>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -1944,28 +2061,28 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_dataset"><code class="name flex">
-<span>def <span class="ident">read_dataset</span></span>(<span>self, silent=False, history=None)</span>
+<span>def <span class="ident">read_dataset</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_dataset(self, silent=False, history=None):
+<pre><code class="python">def read_dataset(self, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
-    return self.read_all_traces(ilent=silent, history=history)</code></pre>
+    return self.read_all_traces(mnemonics=mnemonics, silent=silent, history=history)</code></pre>
 </details>
 <div class="desc"><p>Get all traces - an alias for read_all_traces().</p></div>
 </dd>
 <dt id="seisio.reader.Reader.read_ensemble"><code class="name flex">
-<span>def <span class="ident">read_ensemble</span></span>(<span>self, *idx_keys, silent=False, history=None)</span>
+<span>def <span class="ident">read_ensemble</span></span>(<span>self, *idx_keys, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_ensemble(self, *idx_keys, silent=False, history=None):
+<pre><code class="python">def read_ensemble(self, *idx_keys, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Get one or more ensembles (groups of traces) from a seismic file.
 
@@ -1973,6 +2090,10 @@ table currently in use.</dd>
     ----------
     *idx_keys : tuple(s)
         The keys used to identify ensembles.
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -1993,13 +2114,20 @@ table currently in use.</dd>
         else:
             traces_to_read = np.union1d(traces_to_read, trc)
 
+    # ensure header mnemonic for sort is available
+    if mnemonics is not None:
+        if isinstance(mnemonics, str):
+            mnemonics = [mnemonics]
+        mnemonics = list(set(mnemonics + self._idx.srt_by))
+
     if not silent:
         log.info(&#34;Reading ensemble(s) &#39;%s&#39;.&#34;, idx_keys[0])
 
     if tools._check_if_contiguous(traces_to_read):
-        d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read), silent=silent)
+        d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read),
+                                      mnemonics=mnemonics, silent=silent)
     else:
-        d = self.read_traces(*traces_to_read, silent=silent)
+        d = self.read_traces(*traces_to_read, mnemonics=mnemonics, silent=silent)
 
     if history is not None:
         history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
@@ -2014,6 +2142,10 @@ table currently in use.</dd>
 <dl>
 <dt><strong><code>*idx_keys</code></strong> :&ensp;<code>tuple(s)</code></dt>
 <dd>The keys used to identify ensembles.</dd>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -2026,14 +2158,14 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_headers"><code class="name flex">
-<span>def <span class="ident">read_headers</span></span>(<span>self, *trcno, select=None, silent=False)</span>
+<span>def <span class="ident">read_headers</span></span>(<span>self, *trcno, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_headers(self, *trcno, select=None, silent=False):
+<pre><code class="python">def read_headers(self, *trcno, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Get trace headers for one or more traces.
 
@@ -2041,7 +2173,7 @@ table currently in use.</dd>
     ----------
     *trcno : int(s)
         The trace numbers (zero-based) to read from disk.
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -2061,8 +2193,8 @@ table currently in use.</dd>
     if not silent:
         log.info(&#34;Reading headers for %d specific traces from disk...&#34;, nt)
 
-    if select is not None:
-        dtype = self._header_subset(select)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics)
     else:
         dtype = self._tr.thdtype
 
@@ -2082,7 +2214,7 @@ table currently in use.</dd>
 <dl>
 <dt><strong><code>*trcno</code></strong> :&ensp;<code>int(s)</code></dt>
 <dd>The trace numbers (zero-based) to read from disk.</dd>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -2096,7 +2228,7 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_multibatch_of_headers"><code class="name flex">
-<span>def <span class="ident">read_multibatch_of_headers</span></span>(<span>self, start=0, count=None, stride=None, block=None, select=None, silent=False)</span>
+<span>def <span class="ident">read_multibatch_of_headers</span></span>(<span>self, start=0, count=None, stride=None, block=None, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -2104,7 +2236,7 @@ table currently in use.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def read_multibatch_of_headers(self, start=0, count=None, stride=None,
-                               block=None, select=None, silent=False):
+                               block=None, mnemonics=None, silent=False):
     &#34;&#34;&#34;
     Get multiple batches of trace headers from the seismic file.
 
@@ -2128,7 +2260,7 @@ table currently in use.</dd>
         The stride between the first traces in each block.
     block : int
         The size of each block.
-    select : list of mnemonics (default: None)
+    mnemonics : list of strings (default: None)
         A list of trace header mnemonics to read. If None, all header
         mnemonics are read according to the trace header definition
         table currently in use.
@@ -2156,8 +2288,8 @@ table currently in use.</dd>
                          f&#34;range [0,{self._dp.nt}).&#34;)
     nheaders = len(indices)
 
-    if select is not None:
-        dtype = self._header_subset(select)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics)
     else:
         dtype = self._tr.thdtype
 
@@ -2189,7 +2321,7 @@ block=10, stride=480, and count=500.</p>
 <dd>The stride between the first traces in each block.</dd>
 <dt><strong><code>block</code></strong> :&ensp;<code>int</code></dt>
 <dd>The size of each block.</dd>
-<dt><strong><code>select</code></strong> :&ensp;<code>list</code> of <code>mnemonics (default: None)</code></dt>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
 <dd>A list of trace header mnemonics to read. If None, all header
 mnemonics are read according to the trace header definition
 table currently in use.</dd>
@@ -2203,15 +2335,15 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_multibatch_of_traces"><code class="name flex">
-<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self, start=0, count=None, stride=None, block=None, silent=False, history=None)</span>
+<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self,<br>start=0,<br>count=None,<br>stride=None,<br>block=None,<br>mnemonics=None,<br>silent=False,<br>history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_multibatch_of_traces(self, start=0, count=None, stride=None,
-                              block=None, silent=False, history=None):
+<pre><code class="python">def read_multibatch_of_traces(self, start=0, count=None, stride=None, block=None,
+                              mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Get multiple batches of traces from the seismic file.
 
@@ -2227,6 +2359,10 @@ table currently in use.</dd>
         The stride between the first traces in each block.
     block : int
         The size of each block.
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -2251,12 +2387,17 @@ table currently in use.</dd>
         raise ValueError(f&#34;Requested multibatch of traces out of range [0,{self._dp.nt}).&#34;)
     ntraces = len(indices)
 
-    d = np.zeros((ntraces, ), dtype=self._tr.trdtype)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics, trace=True)
+    else:
+        dtype = self._tr.trdtype
+
+    d = np.zeros((ntraces, ), dtype=dtype)
 
     with open(self._fp.file, &#34;rb&#34;) as fio:
         for i in np.arange(ntraces):
             fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-            d[i] = np.fromfile(fio, dtype=self._tr.trdtype, count=1, offset=0)
+            d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
     if self._fp.datfmt == 1:
         data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -2282,6 +2423,10 @@ table currently in use.</dd>
 <dd>The stride between the first traces in each block.</dd>
 <dt><strong><code>block</code></strong> :&ensp;<code>int</code></dt>
 <dd>The size of each block.</dd>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -2294,14 +2439,14 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_traces"><code class="name flex">
-<span>def <span class="ident">read_traces</span></span>(<span>self, *trcno, silent=False, history=None)</span>
+<span>def <span class="ident">read_traces</span></span>(<span>self, *trcno, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_traces(self, *trcno, silent=False, history=None):
+<pre><code class="python">def read_traces(self, *trcno, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Get one or more traces.
 
@@ -2309,6 +2454,10 @@ table currently in use.</dd>
     ----------
     *trcno : int(s)
         The trace numbers (zero-based) to read from disk.
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -2327,14 +2476,19 @@ table currently in use.</dd>
     if not silent:
         log.info(&#34;Reading %d specific trace(s) from disk...&#34;, nt)
 
-    d = np.ndarray((nt, ), dtype=self._tr.trdtype)
+    if mnemonics is not None:
+        dtype = self._alter_dtype(mnemonics, trace=True)
+    else:
+        dtype = self._tr.trdtype
+
+    d = np.ndarray((nt, ), dtype=dtype)
 
     with open(self._fp.file, &#34;rb&#34;) as fio:
         for i, trc in enumerate(trcs):
             if trc &lt; 0 or trc &gt;= self._dp.nt:
                 raise ValueError(f&#34;Requested trace no. {trc} out of range [0,{self._dp.nt}).&#34;)
             fio.seek(self._fp.skip+trc*self.trsize, 0)
-            d[i] = np.fromfile(fio, dtype=self._tr.trdtype, count=1, offset=0)
+            d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
     if self._fp.datfmt == 1:
         data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
@@ -2352,6 +2506,10 @@ table currently in use.</dd>
 <dl>
 <dt><strong><code>*trcno</code></strong> :&ensp;<code>int(s)</code></dt>
 <dd>The trace numbers (zero-based) to read from disk.</dd>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
@@ -2419,19 +2577,23 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.traces"><code class="name flex">
-<span>def <span class="ident">traces</span></span>(<span>self, silent=False, history=None)</span>
+<span>def <span class="ident">traces</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def traces(self, silent=False, history=None):
+<pre><code class="python">def traces(self, mnemonics=None, silent=False, history=None):
     &#34;&#34;&#34;
     Loop through all traces of the file (using a generator).
 
     Parameters
     ----------
+    mnemonics : list of strings (default: None)
+        A list of trace header mnemonics to read. If None, all header
+        mnemonics are read according to the trace header definition
+        table currently in use.
     silent : bool, optional (default: False)
         Whether to suppress all standard logging (True) or not (False).
     history : list, optional (default: None)
@@ -2444,12 +2606,17 @@ statistics. Default is None, i.e., all traces are considered.</dd>
     &#34;&#34;&#34;
     counter = 0
     while counter &lt; self._dp.nt:
-        yield self.read_traces(counter, silent=silent, history=history)
+        yield self.read_traces(counter, mnemonics=mnemonics, silent=silent,
+                               history=history)
         counter += 1</code></pre>
 </details>
 <div class="desc"><p>Loop through all traces of the file (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
+<dt><strong><code>mnemonics</code></strong> :&ensp;<code>list</code> of <code>strings (default: None)</code></dt>
+<dd>A list of trace header mnemonics to read. If None, all header
+mnemonics are read according to the trace header definition
+table currently in use.</dd>
 <dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
 <dd>Whether to suppress all standard logging (True) or not (False).</dd>
 <dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>

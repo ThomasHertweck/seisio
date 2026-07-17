@@ -184,6 +184,7 @@ def _create_dtype(names, formats, titles=None):
 
 
 def _create_custom_dtype(names, formats, offsets, itemsize, titles=None):
+    """Create custom Numpy dtype with skipped elements."""
     if titles is None:
         dtype = np.dtype({"names": names, "formats": formats, "offsets": offsets,
                           "itemsize": itemsize}, align=False)
