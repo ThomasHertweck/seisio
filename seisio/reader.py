@@ -139,12 +139,31 @@ class Reader(seisio.SeisIO, abc.ABC):
         end = beg + (self._dp.ns-1) * dt
         return np.arange(beg, end+dt/2, dt)
 
-    def read_all_headers(self, silent=False):
+    def _header_subset(self, select):
+        """Create a custom dtype for a certain trace header selection."""
+        if isinstance(select, str):
+            select = [select]
+        # check mnemonic(s) exist
+        if not set(select).issubset(self.mnemonics):
+            raise ValueError("At least one mnemonic in 'select' is invalid.")
+        # build custom dtype
+        mn_list = [self._tr.thdict[s] for s in select]
+        formats = [f"{self._fp.endian}{mn['type']}" for mn in mn_list]
+        offsets = [mn["byte"] - 1 for mn in mn_list]
+        titles  = [mn["desc"] for mn in mn_list]
+        return tools._create_custom_dtype(select, formats, offsets,
+                                          self._tr.thsize, titles=titles)
+
+    def read_all_headers(self, select=None, silent=False):
         """
-        Get all trace headers.
+        Get trace headers for all traces.
 
         Parameters
         ----------
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -154,32 +173,41 @@ class Reader(seisio.SeisIO, abc.ABC):
             Trace header table.
         """
         if not silent:
-            log.info("Reading all %d trace headers from disk...", self._dp.nt)
+            log.info("Reading trace headers for all (%d) traces from disk...", self._dp.nt)
+
+        if select is not None:
+            dtype = self._header_subset(select)
+        else:
+            dtype = self._tr.thdtype
 
         st = time.time()
         with open(self._fp.file, "rb") as fio:
             with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                h = np.ndarray(shape=(self._dp.nt, ), dtype=self._tr.thdtype, buffer=mm,
+                h = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
                                strides=(self.trsize, ), order='F', offset=self._fp.skip).copy()
         et = time.time()
 
         if not silent:
             diff = et-st
             if diff < 0.1:
-                log.info("Reading all headers took %.3f seconds.", et-st)
+                log.info("Reading headers for all traces took %.3f seconds.", et-st)
             else:
-                log.info("Reading all headers took %.1f seconds.", et-st)
+                log.info("Reading headers for all traces took %.1f seconds.", et-st)
 
         return h
 
-    def read_headers(self, *trcno, silent=False):
+    def read_headers(self, *trcno, select=None, silent=False):
         """
-        Get one or more trace headers.
+        Get trace headers for one or more traces.
 
         Parameters
         ----------
         *trcno : int(s)
             The trace numbers (zero-based) to read from disk.
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -194,22 +222,27 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("No trace numbers requested. Need at least one.")
 
         if not silent:
-            log.info("Reading %d specific trace header(s) from disk...", nt)
+            log.info("Reading headers for %d specific traces from disk...", nt)
 
-        h = np.ndarray((nt, ), dtype=self._tr.thdtype)
+        if select is not None:
+            dtype = self._header_subset(select)
+        else:
+            dtype = self._tr.thdtype
+
+        h = np.ndarray((nt, ), dtype=dtype)
 
         with open(self._fp.file, "rb") as fio:
             for i, trc in enumerate(trcs):
                 if trc < 0 or trc >= self._dp.nt:
                     raise ValueError(f"Requested trace no. {trc} out of range [0,{self._dp.nt}).")
                 fio.seek(self._fp.skip+trc*self.trsize, 0)
-                h[i] = np.fromfile(fio, dtype=self._tr.thdtype, count=1, offset=0)
+                h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
         return h
 
-    def read_batch_of_headers(self, start=0, nheaders=100, silent=False):
+    def read_batch_of_headers(self, start=0, nheaders=100, select=None, silent=False):
         """
-        Get a certain number of trace headers starting at a specific trace.
+        Get trace headers for a certain number of traces starting at a specific trace.
 
         Parameters
         ----------
@@ -217,6 +250,10 @@ class Reader(seisio.SeisIO, abc.ABC):
             The trace number (zero-based) to start reading from disk.
         nheaders : int, optional (default: 100)
             The number of subsequent traces to read, including 'start' itself.
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -231,19 +268,24 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError(f"Requested batch of headers out of range [0,{self._dp.nt}).")
 
         if not silent:
-            log.info("Reading %d trace header(s) from disk starting at trace %d...",
+            log.info("Reading headers for %d traces from disk starting at trace %d...",
                      nheaders, start)
+
+        if select is not None:
+            dtype = self._header_subset(select)
+        else:
+            dtype = self._tr.thdtype
 
         with open(self._fp.file, "rb") as fio:
             with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                h = np.ndarray(shape=(nheaders, ), dtype=self._tr.thdtype, buffer=mm,
+                h = np.ndarray(shape=(nheaders, ), dtype=dtype, buffer=mm,
                                strides=(self.trsize, ),
                                offset=self._fp.skip+start*self.trsize, order='F').copy()
 
         return h
 
     def read_multibatch_of_headers(self, start=0, count=None, stride=None,
-                                   block=None, silent=False):
+                                   block=None, select=None, silent=False):
         """
         Get multiple batches of trace headers from the seismic file.
 
@@ -267,6 +309,10 @@ class Reader(seisio.SeisIO, abc.ABC):
             The stride between the first traces in each block.
         block : int
             The size of each block.
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -291,18 +337,23 @@ class Reader(seisio.SeisIO, abc.ABC):
                              f"range [0,{self._dp.nt}).")
         nheaders = len(indices)
 
-        h = np.ndarray((nheaders, ), dtype=self._tr.thdtype)
+        if select is not None:
+            dtype = self._header_subset(select)
+        else:
+            dtype = self._tr.thdtype
+
+        h = np.ndarray((nheaders, ), dtype=dtype)
 
         with open(self._fp.file, "rb") as fio:
             for i in np.arange(nheaders):
                 fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-                h[i] = np.fromfile(fio, dtype=self._tr.thdtype, count=1, offset=0)
+                h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
 
         return h
 
     def read_dataset(self, silent=False, history=None):
         """Get all traces - an alias for read_all_traces()."""
-        return self.read_all_traces(silent=silent, history=history)
+        return self.read_all_traces(ilent=silent, history=history)
 
     def read_all_traces(self, silent=False, history=None):
         """
@@ -506,7 +557,7 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         return d
 
-    def batches_of_headers(self, batch_size=100, silent=False):
+    def batches_of_headers(self, batch_size=100, select=None, silent=False):
         """
         Loop through all headers in blocks (using a generator).
 
@@ -514,6 +565,10 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         batch_size : int, optional (default: 100)
             The batch size, i.e., number of trace headers to read in one go.
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -527,7 +582,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Parameter 'batch_size' cannot be zero or negative.")
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_headers(start, ntraces, silent=silent)
+            yield self.read_batch_of_headers(start, ntraces, select=select, silent=silent)
 
     def batches(self, batch_size=100, silent=False, history=None):
         """
@@ -575,12 +630,16 @@ class Reader(seisio.SeisIO, abc.ABC):
             yield self.read_traces(counter, silent=silent, history=history)
             counter += 1
 
-    def headers(self, silent=False):
+    def headers(self, select=None, silent=False):
         """
         Loop through all headers of the file (using a generator).
 
         Parameters
         ----------
+        select : list of mnemonics (default: None)
+            A list of trace header mnemonics to read. If None, all header
+            mnemonics are read according to the trace header definition
+            table currently in use.
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
 
@@ -591,7 +650,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         hcounter = 0
         while hcounter < self._dp.nt:
-            yield self.read_headers(hcounter, silent=silent)
+            yield self.read_headers(hcounter, select=select, silent=silent)
             hcounter += 1
 
     @_addhist
@@ -674,7 +733,17 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("At least one mnemonic in 'sort_by' is invalid.")
 
         if headers is None:
-            h = self.read_all_headers()
+            try:
+                # read only headers we are going to require
+                if filt is not None:
+                    req = tools._mnemonics_used(filt)
+                else:
+                    req = set()
+                req_head = [*req, *self._idx.grp_by]
+                h = self.read_all_headers(select=req_head)
+            except Exception:
+                # try reading all headers if reading selected headers failed
+                h = self.read_all_headers()
         else:
             h = headers
 

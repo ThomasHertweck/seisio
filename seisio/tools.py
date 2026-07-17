@@ -183,6 +183,23 @@ def _create_dtype(names, formats, titles=None):
     return dtype
 
 
+def _create_custom_dtype(names, formats, offsets, itemsize, titles=None):
+    if titles is None:
+        dtype = np.dtype({"names": names, "formats": formats, "offsets": offsets,
+                          "itemsize": itemsize}, align=False)
+    else:
+        try:
+            dtype = np.dtype({"names": names, "formats": formats, "offsets": offsets,
+                              "titles": titles, "itemsize": itemsize}, align=False)
+        except ValueError as err:
+            log.warning("Creating numpy dtype with titles caused an error, re-trying without titles.")
+            log.warning("Error was '%s'", err)
+            dtype = np.dtype({"names": names, "formats": formats, "offsets": offsets,
+                              "itemsize": itemsize}, align=False)
+
+    return dtype
+
+
 def add_mnemonic(headers, names=None, data=None, dtypes=None):
     """
     Add mnemonic(s) to structured array.
@@ -627,3 +644,25 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
 #         values[:][header_trid] = 3
 
 #     return np.reshape(np.insert(cube, idx, values), (nx_req, ny_req))
+
+###############################################################################
+
+
+class _MnemonicsTracker:
+    def __init__(self):
+        self.mnemonics = set()
+    def __getitem__(self, key):
+        # record the header mnemonic(s) the function tries to access
+        self.mnemonics.add(key)
+        # return a dummy value so the func doesn't immediately crash
+        return 0
+
+
+def _mnemonics_used(func):
+    """Check header mnemonics accessed in a numpy structured array."""
+    tracker = _MnemonicsTracker()
+    try:
+        func(tracker)
+    except Exception:
+        pass
+    return tracker.mnemonics
