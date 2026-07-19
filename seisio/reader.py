@@ -708,6 +708,110 @@ class Reader(seisio.SeisIO, abc.ABC):
             yield self.read_headers(hcounter, mnemonics=mnemonics, silent=silent)
             hcounter += 1
 
+    def read_vslice(self, n=None, reshape=True, idef="xline", jdef="iline",
+                    is_sorted=False, header_trid="trid", fill_value=np.nan,
+                    silent=False, history=None):
+        """
+        Get a time or depth slice.
+
+        For additional details on how the data read from disk might get
+        reshaped or padded, please check the ensemble2cube function.
+
+        Parameters
+        ----------
+        n : int, optional (default: None)
+            The vertical slice number to read. Value must be in range [0,ns).
+            If None, then ns//2 is chosen as default.
+        reshape : bool, optional (default: True)
+            Whether to reshape the data read from disk into a 2D time or depth
+            slice via function ensemble2cube.
+        idef : str, optional (default: 'xline')
+            The header mnemonic present in the ensemble's trace headers that
+            remains constant along the i-axis.
+        jdef : str, optional (default: 'iline')
+            The header mnemonic present in the ensemble's trace headers that
+            remains constant along the j-axis.
+        is_sorted : bool, optional (default: False)
+            If the ensemble is already sorted by order=[idef, jdef], set this
+            parameter to True to avoid an additional sort (copy). There is no
+            check performed whether the ensemble is sorted correctly.
+        header_trid : str, optional (default: 'trid')
+            Trace header mnemonic to use in order to flag padded traces.
+            If set to None, padded traces won't be flagged, otherwise the trace
+            identification is set to 3 ('dummy').
+        fill_value : numeric value, optional (default: np.nan)
+            Fill value for trace positions that get padded.
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
+
+        Returns
+        -------
+        Numpy structured array
+            Trace headers and tiome/depth slice data
+        """
+        if n is None:
+            n = self._dp.ns//2
+        if n < 0 or n >= self._dp.ns:
+            raise ValueError(f"Requested vertical slice {n} out of range [0,{self._dp.ns}).")
+
+        if not silent:
+            log.info("Reading vertical slice %d from disk...", n)
+
+        # construct cutom dtype
+        keys = self._tr.trdtype.names
+        formats = [self._tr.trdtype.fields[k][0] for k in keys]
+        # read only one sample per trace
+        formats[-1] = np.dtype((formats[-1].base, (1,)))
+        titles = [self._tr.trdtype.fields[k][2] if len(self._tr.trdtype.fields[k]) == 3 else None for k in keys]
+        offsets = [self._tr.trdtype.fields[k][1] for k in keys]
+        # offset of sample to read from each trace
+        offsets[-1] += n*self._fp.dtype.itemsize
+        # itemsize is full trace length
+        itemsize = self._tr.trsize
+        dtype = tools._create_custom_dtype(keys, formats, offsets, itemsize, titles=titles)
+
+        st = time.time()
+        with open(self._fp.file, "rb") as fio:
+            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
+                               offset=self._fp.skip, order='F').copy()
+        et = time.time()
+
+        if not silent:
+            diff = et-st
+            if diff < 0.1:
+                log.info("Reading vertical slice took %.3f seconds.", et-st)
+            else:
+                log.info("Reading vertical slice took %.1f seconds.", et-st)
+
+        if self._fp.datfmt == 1:
+            if not silent:
+                log.info("Converting IBM floats to IEEE floats.")
+            data = d["data"].view(f"{self._fp.endian}u4")
+            st = time.time()
+            d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+            et = time.time()
+            if not silent:
+                diff = et-st
+                if diff < 0.1:
+                    log.info("Converting vertical slice took %.3f seconds.", et-st)
+                else:
+                    log.info("Converting vertical slice took %.1f seconds.", et-st)
+
+        if history is not None:
+            history.append(f"seisio {__version__}: read vertical slice {n:d} from "
+                           f"data set '{self._fp.file.absolute()}', reshape={reshape}, "
+                           f"idef='{idef}', jdef='{jdef}'.")
+
+        if not reshape:
+            return d
+        else:
+            return tools.ensemble2cube(d, idef=idef, jdef=jdef, is_sorted=is_sorted,
+                                       header_trid=header_trid, fill_value=fill_value,
+                                       silent=silent)
+
     @_addhist
     def create_index(self, group_by=None, sort_by=None, group_order=">",
                      sort_order=">", headers=None, filt=None):
