@@ -3,30 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.6">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>seisio.reader API documentation</title>
 <meta name="description" content="Abstract reader for seismic files.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => {
 hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
 hljs.highlightAll();
-/* Collapse source docstrings */
-setTimeout(() => {
-[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
-.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
-.forEach(el => {
-let d = document.createElement('details');
-d.classList.add('hljs-string');
-d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
-el.replaceWith(d);
-});
-}, 100);
 })</script>
 </head>
 <body>
@@ -52,6 +41,8 @@ el.replaceWith(d);
 <span>(</span><span>file)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>An abstract Reader class for seismic data I/O.</p>
+<p>Initialize class Reader.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -693,6 +684,110 @@ el.replaceWith(d);
             yield self.read_headers(hcounter, mnemonics=mnemonics, silent=silent)
             hcounter += 1
 
+    def read_vslice(self, n=None, reshape=True, idef=&#34;xline&#34;, jdef=&#34;iline&#34;,
+                    is_sorted=False, header_trid=&#34;trid&#34;, fill_value=np.nan,
+                    silent=False, history=None):
+        &#34;&#34;&#34;
+        Get a time or depth slice.
+
+        For additional details on how the data read from disk might get
+        reshaped or padded, please check the ensemble2cube function.
+
+        Parameters
+        ----------
+        n : int, optional (default: None)
+            The vertical slice number to read. Value must be in range [0,ns).
+            If None, then ns//2 is chosen as default.
+        reshape : bool, optional (default: True)
+            Whether to reshape the data read from disk into a 2D time or depth
+            slice via function ensemble2cube.
+        idef : str, optional (default: &#39;xline&#39;)
+            The header mnemonic present in the ensemble&#39;s trace headers that
+            remains constant along the i-axis.
+        jdef : str, optional (default: &#39;iline&#39;)
+            The header mnemonic present in the ensemble&#39;s trace headers that
+            remains constant along the j-axis.
+        is_sorted : bool, optional (default: False)
+            If the ensemble is already sorted by order=[idef, jdef], set this
+            parameter to True to avoid an additional sort (copy). There is no
+            check performed whether the ensemble is sorted correctly.
+        header_trid : str, optional (default: &#39;trid&#39;)
+            Trace header mnemonic to use in order to flag padded traces.
+            If set to None, padded traces won&#39;t be flagged, otherwise the trace
+            identification is set to 3 (&#39;dummy&#39;).
+        fill_value : numeric value, optional (default: np.nan)
+            Fill value for trace positions that get padded.
+        silent : bool, optional (default: False)
+            Whether to suppress all standard logging (True) or not (False).
+        history : list, optional (default: None)
+            Processing history as list of strings.
+
+        Returns
+        -------
+        Numpy structured array
+            Trace headers and tiome/depth slice data
+        &#34;&#34;&#34;
+        if n is None:
+            n = self._dp.ns//2
+        if n &lt; 0 or n &gt;= self._dp.ns:
+            raise ValueError(f&#34;Requested vertical slice {n} out of range [0,{self._dp.ns}).&#34;)
+
+        if not silent:
+            log.info(&#34;Reading vertical slice %d from disk...&#34;, n)
+
+        # construct cutom dtype
+        keys = self._tr.trdtype.names
+        formats = [self._tr.trdtype.fields[k][0] for k in keys]
+        # read only one sample per trace
+        formats[-1] = np.dtype((formats[-1].base, (1,)))
+        titles = [self._tr.trdtype.fields[k][2] if len(self._tr.trdtype.fields[k]) == 3 else None for k in keys]
+        offsets = [self._tr.trdtype.fields[k][1] for k in keys]
+        # offset of sample to read from each trace
+        offsets[-1] += n*self._fp.dtype.itemsize
+        # itemsize is full trace length
+        itemsize = self._tr.trsize
+        dtype = tools._create_custom_dtype(keys, formats, offsets, itemsize, titles=titles)
+
+        st = time.time()
+        with open(self._fp.file, &#34;rb&#34;) as fio:
+            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
+                               offset=self._fp.skip, order=&#39;F&#39;).copy()
+        et = time.time()
+
+        if not silent:
+            diff = et-st
+            if diff &lt; 0.1:
+                log.info(&#34;Reading vertical slice took %.3f seconds.&#34;, et-st)
+            else:
+                log.info(&#34;Reading vertical slice took %.1f seconds.&#34;, et-st)
+
+        if self._fp.datfmt == 1:
+            if not silent:
+                log.info(&#34;Converting IBM floats to IEEE floats.&#34;)
+            data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
+            st = time.time()
+            d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
+            et = time.time()
+            if not silent:
+                diff = et-st
+                if diff &lt; 0.1:
+                    log.info(&#34;Converting vertical slice took %.3f seconds.&#34;, et-st)
+                else:
+                    log.info(&#34;Converting vertical slice took %.1f seconds.&#34;, et-st)
+
+        if history is not None:
+            history.append(f&#34;seisio {__version__}: read vertical slice {n:d} from &#34;
+                           f&#34;data set &#39;{self._fp.file.absolute()}&#39;, reshape={reshape}, &#34;
+                           f&#34;idef=&#39;{idef}&#39;, jdef=&#39;{jdef}&#39;.&#34;)
+
+        if not reshape:
+            return d
+        else:
+            return tools.ensemble2cube(d, idef=idef, jdef=jdef, is_sorted=is_sorted,
+                                       header_trid=header_trid, fill_value=fill_value,
+                                       silent=silent)
+
     @_addhist
     def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;,
                      sort_order=&#34;&gt;&#34;, headers=None, filt=None):
@@ -1051,8 +1146,6 @@ el.replaceWith(d);
 
         return df</code></pre>
 </details>
-<div class="desc"><p>An abstract Reader class for seismic data I/O.</p>
-<p>Initialize class Reader.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="seisio.seisio.SeisIO" href="seisio.html#seisio.seisio.SeisIO">SeisIO</a></li>
@@ -1067,6 +1160,12 @@ el.replaceWith(d);
 <dl>
 <dt id="seisio.reader.Reader.delay"><code class="name">prop <span class="ident">delay</span></code></dt>
 <dd>
+<div class="desc"><p>Get the delay (usually delay recording time) of the first trace.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Delay, usually in milliunits (e.g., milliseconds)</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1083,15 +1182,15 @@ def delay(self):
     &#34;&#34;&#34;
     return self._dp.delay</code></pre>
 </details>
-<div class="desc"><p>Get the delay (usually delay recording time) of the first trace.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Delay, usually in milliunits (e.g., milliseconds)</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.ensemble_keys"><code class="name">prop <span class="ident">ensemble_keys</span></code></dt>
 <dd>
+<div class="desc"><p>Get the ensemble keys (identifiers) for the current index.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy array</code></dt>
+<dd>Ensemble keys.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1111,15 +1210,15 @@ def ensemble_keys(self):
     log.warning(&#34;No index available. You need to call create_index() first.&#34;)
     return np.array([])</code></pre>
 </details>
-<div class="desc"><p>Get the ensemble keys (identifiers) for the current index.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Numpy array</code></dt>
-<dd>Ensemble keys.</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.maxnte"><code class="name">prop <span class="ident">maxnte</span></code></dt>
 <dd>
+<div class="desc"><p>Get the maximum number of traces found in all ensembles.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Size of largest ensemble.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1136,15 +1235,15 @@ def maxnte(self):
     &#34;&#34;&#34;
     return np.max(self.nte)</code></pre>
 </details>
-<div class="desc"><p>Get the maximum number of traces found in all ensembles.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Size of largest ensemble.</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.ne"><code class="name">prop <span class="ident">ne</span></code></dt>
 <dd>
+<div class="desc"><p>Get the number of ensembles (groups) for the current index.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Number of ensembles.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1164,15 +1263,15 @@ def ne(self):
     log.warning(&#34;No index available. You need to call create_index() first.&#34;)
     return 0</code></pre>
 </details>
+</dd>
+<dt id="seisio.reader.Reader.nensembles"><code class="name">prop <span class="ident">nensembles</span></code></dt>
+<dd>
 <div class="desc"><p>Get the number of ensembles (groups) for the current index.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
 <dd>Number of ensembles.</dd>
 </dl></div>
-</dd>
-<dt id="seisio.reader.Reader.nensembles"><code class="name">prop <span class="ident">nensembles</span></code></dt>
-<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1189,15 +1288,15 @@ def nensembles(self):
     &#34;&#34;&#34;
     return self.ne</code></pre>
 </details>
-<div class="desc"><p>Get the number of ensembles (groups) for the current index.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Number of ensembles.</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.nte"><code class="name">prop <span class="ident">nte</span></code></dt>
 <dd>
+<div class="desc"><p>Get the number of traces per ensemble key in this index.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy array</code></dt>
+<dd>Number of traces in each ensemble.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1218,15 +1317,15 @@ def nte(self):
     log.warning(&#34;No index available. You need to call create_index() first.&#34;)
     return np.array([0])</code></pre>
 </details>
-<div class="desc"><p>Get the number of traces per ensemble key in this index.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Numpy array</code></dt>
-<dd>Number of traces in each ensemble.</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.vaxis"><code class="name">prop <span class="ident">vaxis</span></code></dt>
 <dd>
+<div class="desc"><p>Get the sampling times or depths.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy array</code></dt>
+<dd>Sampling values of vertical axis, usually in units.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1246,15 +1345,15 @@ def vaxis(self):
     end = beg + (self._dp.ns-1) * dt
     return np.arange(beg, end+dt/2, dt)</code></pre>
 </details>
-<div class="desc"><p>Get the sampling times or depths.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Numpy array</code></dt>
-<dd>Sampling values of vertical axis, usually in units.</dd>
-</dl></div>
 </dd>
 <dt id="seisio.reader.Reader.vsi"><code class="name">prop <span class="ident">vsi</span></code></dt>
 <dd>
+<div class="desc"><p>Get the (vertical) sampling interval.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Sampling interval, usually in microunits (e.g., microseconds)</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1271,12 +1370,6 @@ def vsi(self):
     &#34;&#34;&#34;
     return self._dp.si</code></pre>
 </details>
-<div class="desc"><p>Get the (vertical) sampling interval.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Sampling interval, usually in microunits (e.g., microseconds)</dd>
-</dl></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -1285,40 +1378,6 @@ def vsi(self):
 <span>def <span class="ident">batches</span></span>(<span>self, batch_size=100, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def batches(self, batch_size=100, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Loop through all traces in blocks (using a generator).
-
-    Parameters
-    ----------
-    batch_size : int, optional (default: 100)
-        The batch size, i.e., number of traces to read in one go.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Yields
-    ------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    nt = np.int64(self._dp.nt)
-    if batch_size &lt;= 0:
-        raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
-    bs = np.int64(batch_size)
-    for start, ntraces in _create_batches(nt, bs):
-        yield self.read_batch_of_traces(start, ntraces, mnemonics=mnemonics,
-                                        silent=silent, history=history)</code></pre>
-</details>
 <div class="desc"><p>Loop through all traces in blocks (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1343,38 +1402,6 @@ table currently in use.</dd>
 <span>def <span class="ident">batches_of_headers</span></span>(<span>self, batch_size=100, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def batches_of_headers(self, batch_size=100, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Loop through all headers in blocks (using a generator).
-
-    Parameters
-    ----------
-    batch_size : int, optional (default: 100)
-        The batch size, i.e., number of trace headers to read in one go.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Yields
-    ------
-    Numpy structured array
-        Trace headers.
-    &#34;&#34;&#34;
-    nt = np.int64(self._dp.nt)
-    if batch_size &lt;= 0:
-        raise ValueError(&#34;Parameter &#39;batch_size&#39; cannot be zero or negative.&#34;)
-    bs = np.int64(batch_size)
-    for start, ntraces in _create_batches(nt, bs):
-        yield self.read_batch_of_headers(start, ntraces, mnemonics=mnemonics,
-                                         silent=silent)</code></pre>
-</details>
 <div class="desc"><p>Loop through all headers in blocks (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1394,126 +1421,9 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.create_index"><code class="name flex">
-<span>def <span class="ident">create_index</span></span>(<span>self,<br>group_by=None,<br>sort_by=None,<br>group_order=&#x27;&gt;&#x27;,<br>sort_order=&#x27;&gt;&#x27;,<br>headers=None,<br>filt=None)</span>
+<span>def <span class="ident">create_index</span></span>(<span>self, group_by=None, sort_by=None, group_order=&#x27;&gt;&#x27;, sort_order=&#x27;&gt;&#x27;, headers=None, filt=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@_addhist
-def create_index(self, group_by=None, sort_by=None, group_order=&#34;&gt;&#34;,
-                 sort_order=&#34;&gt;&#34;, headers=None, filt=None):
-    &#34;&#34;&#34;
-    Create a lookup index for the input file to read ensembles.
-
-    In order to form ensembles, i.e., common-midpoint gathers, common-shot
-    gathers, common-receiver gathers, etc., with possibly differing number
-    of traces, various traces that are not necessarily stored on disk in
-    the correct order have to be read and grouped together.
-
-    This method creates a lookup table (index) where groups of traces are
-    formed according to user-supplied trace header mnemonics. Each group
-    or ensemble can then be sorted by yet another set of user-supplied
-    trace header mnemonics. Before grouping takes place, a filter function
-    to restrict traces to be considered can be applied. The order in which
-    groups are formed as well as the order in which traces are sorted
-    within groups can be specified as either ascending or descending.
-
-    Parameters
-    ----------
-    group_by : string or iterable of strings
-        The header mnemonic(s) to form groups of traces (ensembles). At
-        least one mnemonic needs to be supplied, and it must be a valid
-        trace header key.
-    sort_by : string or iterable of strings, optional
-        The header mnemonic(s) by which to sort traces within an ensemble.
-        If None, then the traces within an ensemble are returned in the
-        order they are stored in the file.
-    group_order : char, optional (default: &#34;&gt;&#34;)
-        Sort order for groups, either &#34;&gt;&#34; for ascending or &#34;&lt;&#34; for
-        descending.
-    sort_order : char, optional (default: &#34;&gt;&#34;)
-        Sort order within groups. Either &#34;&gt;&#34; for ascending or &#34;&lt;&#34; for
-        descending.
-    headers : Numpy structured array or None (default: None)
-        The trace header table with values for the entire file. If you
-        have previously read headers *for all traces* from disk you can
-        supply a complete header array here. If none is available, the
-        (relevant) headers are read from the disk file.
-    filt:
-        Filter function to apply before grouping takes place. The filter
-        function can refer to all available trace header mnemonics.
-
-    Examples
-    --------
-    Simple example:
-        create index(headers=myheadertable,
-                     group_by=&#39;cdp&#39;,
-                     sort_by=&#39;offset&#39;)
-    This will create ensembles where each ensemble has the &#39;cdp&#39; trace
-    header menmonic in common (i.e., CMP gathers). The CMP gathers will
-    be sorted in ascending order. The traces within each ensemble will be
-    sorted by the &#39;offset&#39; trace header mnemonic in ascending order.
-
-    Example using a filter function:
-        def filt_func(x): return (x[&#39;offset&#39;] &lt;= 3000)
-        create_index(group_by=[&#34;sx&#34;, &#34;sy&#34;],
-                     sort_by=&#34;offset&#34;,
-                     sort_order=&#34;&lt;&#34;,
-                     filt=filt_func)
-    This will create ensembles where each ensemble has the same shot
-    coordinates (basically shot gathers) and traces within each ensemble
-    are sorted by offset in descending order. Before the groups are formed,
-    all traces with offsets larger than 3000 m are removed through the
-    application of the filter function. The resulting ensembles will
-    therefore not contain any offsets larger than 3000 m.
-    &#34;&#34;&#34;
-    self._idx.grp_by = tools._check(group_by)
-    self._idx.srt_by = tools._check(sort_by)
-    self._idx.gord = 1 if group_order == &#34;&gt;&#34; else -1
-    self._idx.sord = 1 if sort_order == &#34;&gt;&#34; else -1
-
-    # ensure specified mnemonics actually exist
-    if not set(self._idx.grp_by).issubset(self.mnemonics):
-        raise ValueError(&#34;At least one mnemonic in &#39;group_by&#39; is invalid.&#34;)
-    if not set(self._idx.srt_by).issubset(self.mnemonics):
-        raise ValueError(&#34;At least one mnemonic in &#39;sort_by&#39; is invalid.&#34;)
-
-    if headers is None:
-        try:
-            # read only headers we are going to require
-            if filt is not None:
-                req = tools._mnemonics_used(filt)
-            else:
-                req = set()
-            req_head = [*req, *self._idx.grp_by]
-            h = self.read_all_headers(mnemonics=req_head)
-        except Exception:
-            # try reading all headers if reading selected headers failed
-            h = self.read_all_headers()
-    else:
-        h = headers
-
-    # need to store trace index explicitly as filter function could
-    # potentially remove entire entries and the buffer slot would no
-    # longer match the trace index
-    nt = len(h)
-    h = tools.add_mnemonic(h, names=&#34;index&#34;, data=[np.arange(nt)], dtypes=int)
-
-    if filt is not None:
-        log.info(&#34;Ensemble lookup index has filter applied.&#34;)
-        h = h[np.nonzero(filt(h))]
-
-    filt_keys = self._idx.grp_by + [&#34;index&#34;]
-    self._idx.head = rfn.repack_fields(h[filt_keys], align=False)
-    self._idx.keys = np.sort(np.unique(self._idx.head[self._idx.grp_by]),
-                             order=self._idx.grp_by)[::self._idx.gord]
-
-    log.info(&#34;Created lookup index for %s (order &#39;%s&#39;).&#34;, self._idx.grp_by, group_order)
-    log.info(&#34;Each ensemble is sorted by %s (order &#39;%s&#39;).&#34;, self._idx.srt_by, sort_order)
-    log.info(&#34;Number of ensembles: %d&#34;, self.ne)</code></pre>
-</details>
 <div class="desc"><p>Create a lookup index for the input file to read ensembles.</p>
 <p>In order to form ensembles, i.e., common-midpoint gathers, common-shot
 gathers, common-receiver gathers, etc., with possibly differing number
@@ -1577,37 +1487,6 @@ therefore not contain any offsets larger than 3000 m.</p></div>
 <span>def <span class="ident">ensembles</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ensembles(self, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Loop through all ensembles.
-
-    Parameters
-    ----------
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Yields
-    ------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    if self._idx.keys is not None:
-        for e in self._idx.keys:
-            yield self.read_ensemble(e, mnemonics=mnemonics, silent=silent,
-                                     history=history)
-    else:
-        raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)</code></pre>
-</details>
 <div class="desc"><p>Loop through all ensembles.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1630,33 +1509,6 @@ table currently in use.</dd>
 <span>def <span class="ident">headers</span></span>(<span>self, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def headers(self, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Loop through all headers of the file (using a generator).
-
-    Parameters
-    ----------
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Yields
-    ------
-    Numpy structured array
-        Trace headers.
-    &#34;&#34;&#34;
-    hcounter = 0
-    while hcounter &lt; self._dp.nt:
-        yield self.read_headers(hcounter, mnemonics=mnemonics, silent=silent)
-        hcounter += 1</code></pre>
-</details>
 <div class="desc"><p>Loop through all headers of the file (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1677,61 +1529,6 @@ table currently in use.</dd>
 <span>def <span class="ident">log_thstat</span></span>(<span>self, thstat=None, traces=None, zero=False, ntmax=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def log_thstat(self, thstat=None, traces=None, zero=False, ntmax=None):
-    &#34;&#34;&#34;
-    Print statistics for each trace header mnemonic.
-
-    Parameters
-    ----------
-    thstat : Pandas dataframe, optional (default: None)
-        A Pandas dataframe as produced by the &#39;thstat&#39; function.
-        If None, this routine uses the &#39;headers&#39; argument or, if
-        no headers are provided, calls &#39;thstat&#39; itself.
-    traces : Numpy structured array, optional (default: None)
-        The seismic traces (trace headers plus data) or the seismic
-        trace headers (as provided by the &#39;read_all_headers&#39; function).
-    zero : bool, optional (default: False)
-        Do not print entries that have a value of zero (False) or print
-        all min/max entries, independent of values (True).
-    ntmax : int, optional (default: None)
-        Maximum number of traces to take into consideration to build
-        statistics. Default is None, i.e., all traces are considered.
-        Only relevant if df=None.
-    &#34;&#34;&#34;
-    if thstat is None and traces is None:
-        df = self.thstat(headers=None, ntmax=ntmax)
-    elif thstat is not None and traces is None:
-        df = thstat.copy()
-    elif thstat is None and traces is not None:
-        keys = list(traces.dtype.names)
-        if &#34;data&#34; in keys:
-            keys.remove(&#34;data&#34;)
-        df = self.thstat(headers=traces[keys], ntmax=ntmax)
-    else:
-        log.warning(&#34;Both &#39;thstat&#39; and &#39;traces&#39; provided. Using &#39;thstat&#39;.&#34;)
-        df = thstat.copy()
-
-    if zero is False:
-        msg = &#34;Summary of trace header statistics (zeros excluded):&#34;
-        mask = np.any([df[&#34;min&#34;] != 0, df[&#34;max&#34;] != 0], axis=0)
-        df = df.loc[mask, :]
-    else:
-        msg = &#34;Summary of trace header statistics (zeros included):&#34;
-
-    try:
-        from tabulate import tabulate
-        log.info(&#34;%s\n%s&#34;, msg, tabulate(df, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;))
-    except ImportError:
-        log.info(&#34;%s&#34;, msg)
-        log.info(&#34;%s\n%s&#34;, &#34;-------- BEGIN --------&#34;, df.to_markdown())
-        log.info(&#34;%s&#34;, &#34;--------- END ---------&#34;)
-
-    return df</code></pre>
-</details>
 <div class="desc"><p>Print statistics for each trace header mnemonic.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1755,52 +1552,6 @@ Only relevant if df=None.</dd>
 <span>def <span class="ident">read_all_headers</span></span>(<span>self, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_all_headers(self, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Get trace headers for all traces.
-
-    Parameters
-    ----------
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Returns
-    -------
-    Numpy structured array
-        Trace header table.
-    &#34;&#34;&#34;
-    if not silent:
-        log.info(&#34;Reading trace headers for all (%d) traces from disk...&#34;, self._dp.nt)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics)
-    else:
-        dtype = self._tr.thdtype
-
-    st = time.time()
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-            h = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
-                           strides=(self.trsize, ), order=&#39;F&#39;, offset=self._fp.skip).copy()
-    et = time.time()
-
-    if not silent:
-        diff = et-st
-        if diff &lt; 0.1:
-            log.info(&#34;Reading headers for all traces took %.3f seconds.&#34;, et-st)
-        else:
-            log.info(&#34;Reading headers for all traces took %.1f seconds.&#34;, et-st)
-
-    return h</code></pre>
-</details>
 <div class="desc"><p>Get trace headers for all traces.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1821,72 +1572,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_all_traces</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_all_traces(self, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Get all traces (e.g., read the entire file).
-
-    Parameters
-    ----------
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Returns
-    -------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    if not silent:
-        log.info(&#34;Reading entire file (%d traces) from disk...&#34;, self._dp.nt)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics, trace=True)
-    else:
-        dtype = self._tr.trdtype
-
-    st = time.time()
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-            d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
-                           offset=self._fp.skip, order=&#39;F&#39;).copy()
-    et = time.time()
-
-    if not silent:
-        diff = et-st
-        if diff &lt; 0.1:
-            log.info(&#34;Reading all traces took %.3f seconds.&#34;, et-st)
-        else:
-            log.info(&#34;Reading all traces took %.1f seconds.&#34;, et-st)
-
-    if self._fp.datfmt == 1:
-        if not silent:
-            log.info(&#34;Converting IBM floats to IEEE floats.&#34;)
-        data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-        st = time.time()
-        d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-        et = time.time()
-        if not silent:
-            diff = et-st
-            if diff &lt; 0.1:
-                log.info(&#34;Converting all traces took %.3f seconds.&#34;, et-st)
-            else:
-                log.info(&#34;Converting all traces took %.1f seconds.&#34;, et-st)
-
-    if history is not None:
-        history.append(f&#34;seisio {__version__}: read entire data set &#39;{self._fp.file.absolute()}&#39;, &#34;
-                       f&#34;ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.&#34;)
-
-    return d</code></pre>
-</details>
 <div class="desc"><p>Get all traces (e.g., read the entire file).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1909,54 +1594,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_batch_of_headers</span></span>(<span>self, start=0, nheaders=100, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_batch_of_headers(self, start=0, nheaders=100, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Get trace headers for a certain number of traces starting at a specific trace.
-
-    Parameters
-    ----------
-    start : int, optional (default: 0)
-        The trace number (zero-based) to start reading from disk.
-    nheaders : int, optional (default: 100)
-        The number of subsequent traces to read, including &#39;start&#39; itself.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Returns
-    -------
-    Numpy structured array
-        Trace header table.
-    &#34;&#34;&#34;
-    if nheaders &lt; 1:
-        raise ValueError(&#34;Parameter &#39;nheaders&#39; must be greater or equal 1.&#34;)
-    if start &lt; 0 or start+nheaders-1 &gt;= self._dp.nt:
-        raise ValueError(f&#34;Requested batch of headers out of range [0,{self._dp.nt}).&#34;)
-
-    if not silent:
-        log.info(&#34;Reading headers for %d traces from disk starting at trace %d...&#34;,
-                 nheaders, start)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics)
-    else:
-        dtype = self._tr.thdtype
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-            h = np.ndarray(shape=(nheaders, ), dtype=dtype, buffer=mm,
-                           strides=(self.trsize, ),
-                           offset=self._fp.skip+start*self.trsize, order=&#39;F&#39;).copy()
-
-    return h</code></pre>
-</details>
 <div class="desc"><p>Get trace headers for a certain number of traces starting at a specific trace.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1981,63 +1618,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_batch_of_traces</span></span>(<span>self, start=0, ntraces=100, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_batch_of_traces(self, start=0, ntraces=100, mnemonics=None,
-                         silent=False, history=None):
-    &#34;&#34;&#34;
-    Get a certain number of traces starting at a specific trace.
-
-    Parameters
-    ----------
-    start : int, optional (default: 0)
-        The trace number (zero-based) to start reading from disk.
-    ntraces : int, optional (default: 100)
-        The number of subsequent traces to read, including &#39;start&#39; itself.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Returns
-    -------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    if ntraces &lt; 1:
-        raise ValueError(&#34;Parameter &#39;ntraces&#39; must be greater or equal 1.&#34;)
-    if start &lt; 0 or start+ntraces-1 &gt;= self._dp.nt:
-        raise ValueError(f&#34;Requested batch of traces out of range [0,{self._dp.nt}).&#34;)
-
-    if not silent:
-        log.info(&#34;Reading %d trace(s) from disk starting at trace %d...&#34;, ntraces, start)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics, trace=True)
-    else:
-        dtype = self._tr.trdtype
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        fio.seek(self._fp.skip+start*self.trsize, 0)
-        d = np.fromfile(fio, dtype=dtype, count=ntraces, offset=0)
-
-    if self._fp.datfmt == 1:
-        data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-        d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-
-    if history is not None:
-        history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
-                       f&#34;first trace={start:d}, ntraces={ntraces:d}, &#34;
-                       f&#34;nsamples={self._dp.ns:d}.&#34;)
-
-    return d</code></pre>
-</details>
 <div class="desc"><p>Get a certain number of traces starting at a specific trace.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2064,79 +1644,12 @@ table currently in use.</dd>
 <span>def <span class="ident">read_dataset</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_dataset(self, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;Get all traces - an alias for read_all_traces().&#34;&#34;&#34;
-    return self.read_all_traces(mnemonics=mnemonics, silent=silent, history=history)</code></pre>
-</details>
 <div class="desc"><p>Get all traces - an alias for read_all_traces().</p></div>
 </dd>
 <dt id="seisio.reader.Reader.read_ensemble"><code class="name flex">
 <span>def <span class="ident">read_ensemble</span></span>(<span>self, *idx_keys, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_ensemble(self, *idx_keys, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Get one or more ensembles (groups of traces) from a seismic file.
-
-    Parameters
-    ----------
-    *idx_keys : tuple(s)
-        The keys used to identify ensembles.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Returns
-    -------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    if self._idx.head is None:
-        raise RuntimeError(&#34;No index available. You need to call create_index() first.&#34;)
-
-    for i, val in enumerate(idx_keys):
-        trc = self._get_eidx(val)
-        if i == 0:
-            traces_to_read = trc
-        else:
-            traces_to_read = np.union1d(traces_to_read, trc)
-
-    # ensure header mnemonic for sort is available
-    if mnemonics is not None:
-        if isinstance(mnemonics, str):
-            mnemonics = [mnemonics]
-        mnemonics = list(set(mnemonics + self._idx.srt_by))
-
-    if not silent:
-        log.info(&#34;Reading ensemble(s) &#39;%s&#39;.&#34;, idx_keys[0])
-
-    if tools._check_if_contiguous(traces_to_read):
-        d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read),
-                                      mnemonics=mnemonics, silent=silent)
-    else:
-        d = self.read_traces(*traces_to_read, mnemonics=mnemonics, silent=silent)
-
-    if history is not None:
-        history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
-                       f&#34;ensembles=[{&#39;, &#39;.join(str(x) for x in tools._check(idx_keys))}], &#34;
-                       f&#34;ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}; &#34;
-                       f&#34;{self._idx.hist}.&#34;)
-
-    return np.sort(d, order=self._idx.srt_by)[::self._idx.sord]</code></pre>
-</details>
 <div class="desc"><p>Get one or more ensembles (groups of traces) from a seismic file.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2161,54 +1674,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_headers</span></span>(<span>self, *trcno, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_headers(self, *trcno, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Get trace headers for one or more traces.
-
-    Parameters
-    ----------
-    *trcno : int(s)
-        The trace numbers (zero-based) to read from disk.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Returns
-    -------
-    Numpy structured array
-        Trace header table.
-    &#34;&#34;&#34;
-    trcs = tools._check(trcno)
-    nt = len(trcs)
-    if nt == 0:
-        raise ValueError(&#34;No trace numbers requested. Need at least one.&#34;)
-
-    if not silent:
-        log.info(&#34;Reading headers for %d specific traces from disk...&#34;, nt)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics)
-    else:
-        dtype = self._tr.thdtype
-
-    h = np.ndarray((nt, ), dtype=dtype)
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        for i, trc in enumerate(trcs):
-            if trc &lt; 0 or trc &gt;= self._dp.nt:
-                raise ValueError(f&#34;Requested trace no. {trc} out of range [0,{self._dp.nt}).&#34;)
-            fio.seek(self._fp.skip+trc*self.trsize, 0)
-            h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
-
-    return h</code></pre>
-</details>
 <div class="desc"><p>Get trace headers for one or more traces.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2231,77 +1696,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_multibatch_of_headers</span></span>(<span>self, start=0, count=None, stride=None, block=None, mnemonics=None, silent=False)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_multibatch_of_headers(self, start=0, count=None, stride=None,
-                               block=None, mnemonics=None, silent=False):
-    &#34;&#34;&#34;
-    Get multiple batches of trace headers from the seismic file.
-
-    For instance, start=1, count=3, stride=4, block=2 would get you the
-    following trace headers: 1, 2, 5, 6, 9, 10 - the start is 1, 2 traces
-    are within each block, the stride from the first trace of a block to
-    the first trace in the next block is 4 and in total 3 blocks are read.
-
-    For a data set with, for instance, a constant number of traces per
-    gather (say, 480) and 500 gathers in total, this function allows you
-    to read the first 10 trace headers within each gather using start=0,
-    block=10, stride=480, and count=500.
-
-    Parameters
-    ----------
-    start : int, optional (default: 0)
-        The trace number (zero-based) at which to start reading from disk.
-    count : int
-        The total number of blocks to read.
-    stride : int
-        The stride between the first traces in each block.
-    block : int
-        The size of each block.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-
-    Returns
-    -------
-    Numpy structured array
-        Trace header table.
-    &#34;&#34;&#34;
-    if start &lt; 0 or start &gt;= self._dp.nt:
-        raise ValueError(f&#34;Requested batch of trace headers out of range [0,{self._dp.nt}).&#34;)
-    if count is None or stride is None or block is None:
-        raise ValueError(&#34;Need to specify count, stride and block.&#34;)
-
-    if not silent:
-        log.info(&#34;Reading %d block(s) of %d trace header(s) from disk, &#34;
-                 &#34;starting at %d with stride %d...&#34;, count, block, start, stride)
-
-    indices = _calc_blocks(start, stride, count, block)
-
-    if np.max(indices) &gt;= self._dp.nt:
-        raise ValueError(&#34;Requested multibatch of trace headers out of &#34;
-                         f&#34;range [0,{self._dp.nt}).&#34;)
-    nheaders = len(indices)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics)
-    else:
-        dtype = self._tr.thdtype
-
-    h = np.ndarray((nheaders, ), dtype=dtype)
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        for i in np.arange(nheaders):
-            fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-            h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
-
-    return h</code></pre>
-</details>
 <div class="desc"><p>Get multiple batches of trace headers from the seismic file.</p>
 <p>For instance, start=1, count=3, stride=4, block=2 would get you the
 following trace headers: 1, 2, 5, 6, 9, 10 - the start is 1, 2 traces
@@ -2335,82 +1729,9 @@ table currently in use.</dd>
 </dl></div>
 </dd>
 <dt id="seisio.reader.Reader.read_multibatch_of_traces"><code class="name flex">
-<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self,<br>start=0,<br>count=None,<br>stride=None,<br>block=None,<br>mnemonics=None,<br>silent=False,<br>history=None)</span>
+<span>def <span class="ident">read_multibatch_of_traces</span></span>(<span>self, start=0, count=None, stride=None, block=None, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_multibatch_of_traces(self, start=0, count=None, stride=None, block=None,
-                              mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Get multiple batches of traces from the seismic file.
-
-    See method read_multibatch_of_headers() for some examples.
-
-    Parameters
-    ----------
-    start : int, optional (default: 0)
-        The trace number (zero-based) at which to start reading from disk.
-    count : int
-        The total number of blocks to read.
-    stride : int
-        The stride between the first traces in each block.
-    block : int
-        The size of each block.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Returns
-    -------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    if start &lt; 0 or start &gt;= self._dp.nt:
-        raise ValueError(f&#34;Requested multibatch of traces out of range [0,{self._dp.nt}).&#34;)
-    if count is None or stride is None or block is None:
-        raise ValueError(&#34;Need to specify count, stride and block.&#34;)
-
-    if not silent:
-        log.info(&#34;Reading %d block(s) of %d trace(s) from disk, &#34;
-                 &#34;starting at %d with stride %d...&#34;, count, block, start, stride)
-
-    indices = _calc_blocks(start, stride, count, block)
-    if np.max(indices) &gt;= self._dp.nt:
-        raise ValueError(f&#34;Requested multibatch of traces out of range [0,{self._dp.nt}).&#34;)
-    ntraces = len(indices)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics, trace=True)
-    else:
-        dtype = self._tr.trdtype
-
-    d = np.zeros((ntraces, ), dtype=dtype)
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        for i in np.arange(ntraces):
-            fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-            d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
-
-    if self._fp.datfmt == 1:
-        data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-        d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-
-    if history is not None:
-        history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
-                       f&#34;first trace={start:d}, block size={block:d}, &#34;
-                       f&#34;number of blocks={count:d}, stride={stride:d}, &#34;
-                       f&#34;ntraces={ntraces:d}, nsamples={self._dp.ns:d}.&#34;)
-
-    return d</code></pre>
-</details>
 <div class="desc"><p>Get multiple batches of traces from the seismic file.</p>
 <p>See method read_multibatch_of_headers() for some examples.</p>
 <h2 id="parameters">Parameters</h2>
@@ -2442,65 +1763,6 @@ table currently in use.</dd>
 <span>def <span class="ident">read_traces</span></span>(<span>self, *trcno, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_traces(self, *trcno, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Get one or more traces.
-
-    Parameters
-    ----------
-    *trcno : int(s)
-        The trace numbers (zero-based) to read from disk.
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Returns
-    -------
-    Numpy structured array
-        Trace headers and data
-    &#34;&#34;&#34;
-    trcs = tools._check(trcno)
-    nt = len(trcs)
-    if nt == 0:
-        raise ValueError(&#34;No trace numbers requested. Need at least one.&#34;)
-
-    if not silent:
-        log.info(&#34;Reading %d specific trace(s) from disk...&#34;, nt)
-
-    if mnemonics is not None:
-        dtype = self._alter_dtype(mnemonics, trace=True)
-    else:
-        dtype = self._tr.trdtype
-
-    d = np.ndarray((nt, ), dtype=dtype)
-
-    with open(self._fp.file, &#34;rb&#34;) as fio:
-        for i, trc in enumerate(trcs):
-            if trc &lt; 0 or trc &gt;= self._dp.nt:
-                raise ValueError(f&#34;Requested trace no. {trc} out of range [0,{self._dp.nt}).&#34;)
-            fio.seek(self._fp.skip+trc*self.trsize, 0)
-            d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
-
-    if self._fp.datfmt == 1:
-        data = d[&#34;data&#34;].view(f&#34;{self._fp.endian}u4&#34;)
-        d[&#34;data&#34;] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
-
-    if history is not None:
-        history.append(f&#34;seisio {__version__}: read traces from &#39;{self._fp.file.absolute()}&#39;, &#34;
-                       f&#34;trace numbers=[{&#39;, &#39;.join(str(x) for x in trcs)}], &#34;
-                       f&#34;ntraces={nt:d}, nsamples={self._dp.ns:d}.&#34;)
-
-    return d</code></pre>
-</details>
 <div class="desc"><p>Get one or more traces.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2521,49 +1783,52 @@ table currently in use.</dd>
 <dd>Trace headers and data</dd>
 </dl></div>
 </dd>
+<dt id="seisio.reader.Reader.read_vslice"><code class="name flex">
+<span>def <span class="ident">read_vslice</span></span>(<span>self, n=None, reshape=True, idef='xline', jdef='iline', is_sorted=False, header_trid='trid', fill_value=nan, silent=False, history=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a time or depth slice.</p>
+<p>For additional details on how the data read from disk might get
+reshaped or padded, please check the ensemble2cube function.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>n</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
+<dd>The vertical slice number to read. Value must be in range [0,ns).
+If None, then ns//2 is chosen as default.</dd>
+<dt><strong><code>reshape</code></strong> :&ensp;<code>bool</code>, optional <code>(default: True)</code></dt>
+<dd>Whether to reshape the data read from disk into a 2D time or depth
+slice via function ensemble2cube.</dd>
+<dt><strong><code>idef</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'xline')</code></dt>
+<dd>The header mnemonic present in the ensemble's trace headers that
+remains constant along the i-axis.</dd>
+<dt><strong><code>jdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'iline')</code></dt>
+<dd>The header mnemonic present in the ensemble's trace headers that
+remains constant along the j-axis.</dd>
+<dt><strong><code>is_sorted</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>If the ensemble is already sorted by order=[idef, jdef], set this
+parameter to True to avoid an additional sort (copy). There is no
+check performed whether the ensemble is sorted correctly.</dd>
+<dt><strong><code>header_trid</code></strong> :&ensp;<code>str</code>, optional <code>(default: 'trid')</code></dt>
+<dd>Trace header mnemonic to use in order to flag padded traces.
+If set to None, padded traces won't be flagged, otherwise the trace
+identification is set to 3 ('dummy').</dd>
+<dt><strong><code>fill_value</code></strong> :&ensp;<code>numeric value</code>, optional <code>(default: np.nan)</code></dt>
+<dd>Fill value for trace positions that get padded.</dd>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Whether to suppress all standard logging (True) or not (False).</dd>
+<dt><strong><code>history</code></strong> :&ensp;<code>list</code>, optional <code>(default: None)</code></dt>
+<dd>Processing history as list of strings.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>Trace headers and tiome/depth slice data</dd>
+</dl></div>
+</dd>
 <dt id="seisio.reader.Reader.thstat"><code class="name flex">
 <span>def <span class="ident">thstat</span></span>(<span>self, headers=None, ntmax=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def thstat(self, headers=None, ntmax=None):
-    &#34;&#34;&#34;
-    Determine statistics for each trace header mnemonic.
-
-    Parameters
-    ----------
-    headers : Numpy structured array, optional (default: None)
-        The trace header values. If None, then all trace headers will
-        be read from disk. If a structured array contains the data as
-        well, they will be dropped before calculating the statistics.
-    ntmax : int, optional (default: None)
-        Maximum number of traces to take into consideration to build
-        statistics. Default is None, i.e., all traces are considered.
-    &#34;&#34;&#34;
-    log.info(&#34;Calculating trace header statistics.&#34;)
-
-    if headers is None:
-        if ntmax is None:
-            h = self.read_all_headers()
-        else:
-            h = self.read_batch_of_headers(0, ntmax)
-    else:
-        if headers.dtype.names is not None:
-            keys = list(headers.dtype.names)
-            if &#34;data&#34; in keys:
-                keys.remove(&#34;data&#34;)
-            h = headers[keys]
-        else:
-            raise ValueError(&#34;No structured array with trace headers given.&#34;)
-
-    summary = pd.DataFrame(h).describe().transpose().loc[:, [&#39;min&#39;, &#39;max&#39;, &#39;mean&#39;,
-                                                             &#39;std&#39;, &#39;25%&#39;, &#39;75%&#39;]]
-
-    return summary</code></pre>
-</details>
 <div class="desc"><p>Determine statistics for each trace header mnemonic.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2580,36 +1845,6 @@ statistics. Default is None, i.e., all traces are considered.</dd>
 <span>def <span class="ident">traces</span></span>(<span>self, mnemonics=None, silent=False, history=None)</span>
 </code></dt>
 <dd>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def traces(self, mnemonics=None, silent=False, history=None):
-    &#34;&#34;&#34;
-    Loop through all traces of the file (using a generator).
-
-    Parameters
-    ----------
-    mnemonics : list of strings (default: None)
-        A list of trace header mnemonics to read. If None, all header
-        mnemonics are read according to the trace header definition
-        table currently in use.
-    silent : bool, optional (default: False)
-        Whether to suppress all standard logging (True) or not (False).
-    history : list, optional (default: None)
-        Processing history as list of strings.
-
-    Yields
-    ------
-    Numpy structured array
-        Trace headers and data.
-    &#34;&#34;&#34;
-    counter = 0
-    while counter &lt; self._dp.nt:
-        yield self.read_traces(counter, mnemonics=mnemonics, silent=silent,
-                               history=history)
-        counter += 1</code></pre>
-</details>
 <div class="desc"><p>Loop through all traces of the file (using a generator).</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2688,6 +1923,7 @@ table currently in use.</dd>
 <li><code><a title="seisio.reader.Reader.read_multibatch_of_headers" href="#seisio.reader.Reader.read_multibatch_of_headers">read_multibatch_of_headers</a></code></li>
 <li><code><a title="seisio.reader.Reader.read_multibatch_of_traces" href="#seisio.reader.Reader.read_multibatch_of_traces">read_multibatch_of_traces</a></code></li>
 <li><code><a title="seisio.reader.Reader.read_traces" href="#seisio.reader.Reader.read_traces">read_traces</a></code></li>
+<li><code><a title="seisio.reader.Reader.read_vslice" href="#seisio.reader.Reader.read_vslice">read_vslice</a></code></li>
 <li><code><a title="seisio.reader.Reader.thstat" href="#seisio.reader.Reader.thstat">thstat</a></code></li>
 <li><code><a title="seisio.reader.Reader.traces" href="#seisio.reader.Reader.traces">traces</a></code></li>
 <li><code><a title="seisio.reader.Reader.vaxis" href="#seisio.reader.Reader.vaxis">vaxis</a></code></li>
@@ -2700,7 +1936,7 @@ table currently in use.</dd>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

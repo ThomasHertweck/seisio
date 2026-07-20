@@ -6,7 +6,7 @@ I/O operations for seismic (geophysical) data files in SEG-Y, SU and SEG2 format
 
 The **seisio** module provides methods to read and write seismic data in typical standard formats such as SEG-Y, SEG2 (read-only) or SU and can be easily extended.
 
-The module was designed with simplicity and usability in mind. The code is pure Python and kept deliberately simple to get students participating our Geophysics classes and exercises at university going with Python and seismic data. The code is not meant to offer all functionality most likely required in a commercial processing environment. Although best performance, highest throughput and minimizing memory footprint are not at the heart of this module, we have tried to keep these topics in mind and use, for instance, memory-mapped I/O where possible (see section "Performance" below). The module has been used successfully to analyze and read SEG-Y data sets of approx. 10 TB in size.
+The module was designed with simplicity and usability in mind. The code is pure Python and kept deliberately simple to get, for instance, students participating our Geophysics classes and exercises at university going with Python and seismic data. The code is not meant to offer all functionality most likely required in a commercial processing environment. Although best performance, highest throughput and minimizing memory footprint are not at the heart of this module, we have tried to keep these topics in mind and use, for instance, memory-mapped I/O where possible (see section "Performance" below). The module has been used successfully to analyze and read SEG-Y data sets of approx. 10 TB in size.
 
 ## Why another seismic I/O package?
 
@@ -20,6 +20,7 @@ There are quite a few great Python packages available to read and/or write seism
 * Data are only read into memory on demand (lazy loading), not at the point of creating the reader object; also, the file (input or output) is not kept open all the time, i.e., **seisio** itself does not need a context manager. Files should always be in a consistent state.
 * Flexible and customizable header definitions via JSON parameter file. You need to pick up a "float" value at byte 32 in the trace header? Or you would like to name the SU header `cmp` instead of `cdp`? Or you have values of non-standard type "double" in the trace headers? No problem! You can also remap headers when outputting files and the current trace header table does not match the output trace header table.
 * Allows reading a subset of trace header mnemonics instead of all trace header mnemonics.
+* Allows reading of time/depth slices with optional, automatic padding of trace positions.
 * Good I/O performance (see below) and hardly any external dependencies.
 * Automatic detection of endian byte order. I/O of both little- and big-endian byte order possible.
 * Automatic detection of the SEG-Y textual header encoding (ASCII or EBCDIC).
@@ -206,6 +207,12 @@ All methods mentioned above allow reading a subset of trace header mnemonics by 
 mnemonics=["fldr", "tracf", "cdp", "cdpt", "ns", "dt"]
 ```
 Based on the trace header definition table, the code creates a custom np.dtype with offsets to read the data as efficiently as possible. The mnemonics can be specified in any order but obviously they need to exist, otherwise the code raises an exception.
+
+Reading a time/depth slice is also quite simple:
+```
+sio.read_vslice(n=99, idef="xline", jdef="iline")
+```
+Here, time slice 99 (starting at 0) is read and the i- and j-axes are defined by the trace header mnemonics "xline" and "iline" (which, if not explicitly given, would also be the default). If there are gaps in the crossline or inline ranges, the slice will automatically be padded with trace positions containing a certain fill value (which can be user-defined; by default, it's np.nan) - these padded traces are marked by their trace identification code (3 for "dummy"). Why is an index number required here and not a time or depth value in order to identify the slice? The reason is quite simple: the vertical axis is often somewhat unreliably defined in SEG-Y data, in particular when it is a depth axis. Therefore, reading by index number seems much more reliable than reading by physical unit. Nevertheless, such a functionality could of course be added quite easily.
 
 SEG2 data sets are often relatively small, or there are individual SEG2 files for the survey's shots. SEG2 strings in the descriptor blocks are often (at least in practical terms) not complying with the SEG2 standard (many companies add their own strings), i.e., reading of SEG2 data files into Numpy structured arrays with strict types or parsing SEG2 strings to put values (of a certain type) in a SEG-Y-like trace header table is complicated or sometimes not even possible, resulting in errors or loss of information. Therefore, when reading SEG2 data files, the **seisio** module returns the traces as standard 2D Numpy array with a separate Pandas dataframe with strings and values contained in the trace descriptor blocks.
 
