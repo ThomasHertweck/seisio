@@ -47,7 +47,7 @@ from . import _txtheader
 log = logging.getLogger(__name__)
 
 _FILE_SUFFIX = [".SGY", ".SEGY", ".SEG-Y", ".SEG_Y",   # SEG-Y
-                ".SEG2", ".DAT", ".SG2",               # SEG2
+                ".SEG2", ".DAT", ".S2", ".SG2",        # SEG2
                 ".SU"]                                 # SU
 
 
@@ -78,7 +78,7 @@ def input(file, *args, **kwargs):
         if suffix not in _FILE_SUFFIX:
             raise ValueError(f"Unknown value '{filetype}' for argument 'filetype'.")
 
-    if suffix in [".SEGY", ".SGY", ".SEG-Y"]:
+    if suffix in [".SEGY", ".SGY", ".SEG-Y", ".SEG_Y"]:
         return segy.Reader(file, **kwargs)
     elif suffix in [".SEG2", ".DAT", ".S2", ".SG2"]:
         return seg2.Reader(file, **kwargs)
@@ -113,7 +113,7 @@ def output(file, **kwargs):
         if suffix not in _FILE_SUFFIX:
             raise ValueError(f"Unknown value '{filetype}' for parameter 'filetype'.")
 
-    if suffix in [".SEGY", ".SGY", ".SEG-Y"]:
+    if suffix in [".SEGY", ".SGY", ".SEG-Y", ".SEG_Y"]:
         return segy.Writer(file, **kwargs)
     elif suffix in [".SEG2", ".DAT", ".S2", ".SG2"]:
         raise NotImplementedError("SEG2 output not implemented as it is an acq. format.")
