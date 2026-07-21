@@ -142,23 +142,25 @@ class Reader(seisio.SeisIO, abc.ABC):
     def _alter_dtype(self, mnemonics, trace=False):
         """Alter an existing trace dtype to provide a subset of headers only."""
         if isinstance(mnemonics, str):
-            mnemonics = [mnemonics]
+            keys = [mnemonics]
+        else:
+            keys = mnemonics.copy()
         # check mnemonic(s) exist
-        if not set(mnemonics).issubset(self.mnemonics):
+        if not set(keys).issubset(self.mnemonics):
             raise ValueError("At least one mnemonic in 'mnemonics' is invalid.")
 
         if trace:
             # add data back in
-            mnemonics.append("data")
+            keys.append("data")
             itemsize = self._tr.trsize
         else:
             itemsize = self._tr.thsize
 
-        formats = [self._tr.trdtype.fields[mn][0] for mn in mnemonics]
-        offsets = [self._tr.trdtype.fields[mn][1] for mn in mnemonics]
-        titles = [self._tr.trdtype.fields[name][2] if len(self._tr.trdtype.fields[name]) == 3 else None for name in mnemonics]
+        formats = [self._tr.trdtype.fields[mn][0] for mn in keys]
+        offsets = [self._tr.trdtype.fields[mn][1] for mn in keys]
+        titles = [self._tr.trdtype.fields[name][2] if len(self._tr.trdtype.fields[name]) == 3 else None for name in keys]
 
-        return tools._create_custom_dtype(mnemonics, formats, offsets,
+        return tools._create_custom_dtype(keys, formats, offsets,
                                           itemsize, titles=titles)
 
     def read_all_headers(self, mnemonics=None, silent=False):
@@ -626,8 +628,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Parameter 'batch_size' cannot be zero or negative.")
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_headers(start, ntraces, mnemonics=mnemonics,
-                                             silent=silent)
+            yield self.read_batch_of_headers(start=start, nheaders=ntraces,
+                                             mnemonics=mnemonics, silent=silent)
 
     def batches(self, batch_size=100, mnemonics=None, silent=False, history=None):
         """
@@ -656,8 +658,9 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Parameter 'batch_size' cannot be zero or negative.")
         bs = np.int64(batch_size)
         for start, ntraces in _create_batches(nt, bs):
-            yield self.read_batch_of_traces(start, ntraces, mnemonics=mnemonics,
-                                            silent=silent, history=history)
+            yield self.read_batch_of_traces(start=start, ntraces=ntraces,
+                                            mnemonics=mnemonics, silent=silent,
+                                            history=history)
 
     def traces(self, mnemonics=None, silent=False, history=None):
         """
@@ -681,8 +684,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         counter = 0
         while counter < self._dp.nt:
-            yield self.read_traces(counter, mnemonics=mnemonics, silent=silent,
-                                   history=history)
+            yield self.read_traces(counter, mnemonics=mnemonics,
+                                   silent=silent, history=history)
             counter += 1
 
     def headers(self, mnemonics=None, silent=False):
@@ -1044,7 +1047,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             log.info("Reading ensemble(s) '%s'.", idx_keys[0])
 
         if tools._check_if_contiguous(traces_to_read):
-            d = self.read_batch_of_traces(traces_to_read[0], len(traces_to_read),
+            d = self.read_batch_of_traces(start=traces_to_read[0], ntraces=len(traces_to_read),
                                           mnemonics=mnemonics, silent=silent)
         else:
             d = self.read_traces(*traces_to_read, mnemonics=mnemonics, silent=silent)
@@ -1079,8 +1082,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         if self._idx.keys is not None:
             for e in self._idx.keys:
-                yield self.read_ensemble(e, mnemonics=mnemonics, silent=silent,
-                                         history=history)
+                yield self.read_ensemble(e, mnemonics=mnemonics,
+                                         silent=silent, history=history)
         else:
             raise RuntimeError("No index available. You need to call create_index() first.")
 
@@ -1104,7 +1107,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             if ntmax is None:
                 h = self.read_all_headers()
             else:
-                h = self.read_batch_of_headers(0, ntmax)
+                h = self.read_batch_of_headers(start=0, nheaders=ntmax)
         else:
             if headers.dtype.names is not None:
                 keys = list(headers.dtype.names)
