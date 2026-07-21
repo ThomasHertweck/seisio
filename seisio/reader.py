@@ -1117,6 +1117,9 @@ class Reader(seisio.SeisIO, abc.ABC):
             else:
                 raise ValueError("No structured array with trace headers given.")
 
+        if not h.dtype.isnative:
+            h = h.view(h.dtype.newbyteorder()).byteswap()
+
         summary = pd.DataFrame(h).describe().transpose().loc[:, ['min', 'max', 'mean',
                                                                  'std', '25%', '75%']]
 
