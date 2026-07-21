@@ -222,6 +222,10 @@ def _thstat(traces):
     keys = list(traces.dtype.names)
     if "data" in keys:
         keys.remove("data")
+
+    if not traces.dtype.isnative:
+        traces = traces.view(traces.dtype.newbyteorder()).byteswap()
+
     summary = pd.DataFrame(traces[keys]).describe().transpose().loc[:, ['min', 'max', 'mean',
                                                                         'std', '25%', '75%']]
     return summary
@@ -252,9 +256,9 @@ def log_thstat(traces, zero=False):
     try:
         from tabulate import tabulate
         log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
-    except ImportError:
+    except (ImportError, ModuleNotFoundError):
         log.info("%s", msg)
-        log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
+        log.info("%s\n%s", "-------- BEGIN --------", df.to_string())
         log.info("%s", "--------- END ---------")
 
     return df
@@ -335,8 +339,8 @@ def _log_default_thdef(thdef):
     try:
         from tabulate import tabulate
         log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
-    except ImportError:
+    except (ImportError, ModuleNotFoundError):
         log.info("%s", msg)
-        log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
+        log.info("%s\n%s", "-------- BEGIN --------", df.to_string())
         log.info("%s", "--------- END ---------")
     return thdict

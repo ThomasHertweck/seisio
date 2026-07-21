@@ -216,7 +216,7 @@ class SeisIO(abc.ABC):
         try:
             from tabulate import tabulate
             log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
-        except ImportError:
+        except (ImportError, ModuleNotFoundError):
             log.info("%s", msg)
             log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
             log.info("%s", "--------- END ---------")
@@ -235,7 +235,7 @@ class SeisIO(abc.ABC):
         try:
             from tabulate import tabulate
             log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
-        except ImportError:
+        except (ImportError, ModuleNotFoundError):
             log.info("%s", msg)
             log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
             log.info("%s", "--------- END ---------")
@@ -274,7 +274,7 @@ class SeisIO(abc.ABC):
         try:
             from tabulate import tabulate
             log.info("%s\n%s", msg, tabulate(df, headers="keys", tablefmt="psql"))
-        except ImportError:
+        except (ImportError, ModuleNotFoundError):
             log.info("%s", msg)
             log.info("%s\n%s", "-------- BEGIN --------", df.to_markdown())
             log.info("%s", "--------- END ---------")
