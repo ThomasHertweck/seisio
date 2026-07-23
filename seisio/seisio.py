@@ -203,6 +203,20 @@ class SeisIO(abc.ABC):
         """
         return list(self._tr.thdict.keys())
 
+    @property
+    def dataformat(self):
+        """
+        Get the data format code.
+
+        Attention: format codes differ between SEG-Y/SU and SEG2.
+
+        Returns
+        -------
+        int
+            Format code.
+        """
+        return self._fp.datfmt
+
     def log_thdef(self):
         """Log the used trace header definition."""
         msg = "Trace header definition:"
