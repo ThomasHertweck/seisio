@@ -53,7 +53,7 @@ def _numba_ibm2ieee32_single(ibm):
 
 
 @vectorize("float32(uint32)", nopython=True, cache=True)
-def _numba_ibm2ieee32_vector(ibm_array):
+def _numba_ibm2ieee32_vector(ibm_array):  # pragma: no cover
     """Wrapper for vectorizing IBM to IEEE conversion to arrays."""
     return _numba_ibm2ieee32_single(ibm_array)
 
@@ -103,6 +103,6 @@ def _numba_ieee2ibm32_single(ieee):
 
 
 @vectorize("uint32(float32)", nopython=True, cache=True)
-def _numba_ieee2ibm32_vector(ieee_array):
+def _numba_ieee2ibm32_vector(ieee_array):  # pragma: no cover
     """Wrapper for vectorizing IEEE to IBM conversion to arrays."""
     return _numba_ieee2ibm32_single(ieee_array)

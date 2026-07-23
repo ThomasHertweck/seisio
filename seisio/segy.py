@@ -436,10 +436,17 @@ class Reader(reader.Reader):
         # field.
         iconst_le = binhead_le[self._par["bin_iconst"]].item()
         iconst_be = binhead_be[self._par["bin_iconst"]].item()
-        if iconst_be == 67305985 or iconst_le == 67305985:
-            # need to swap, iconst should be 16909060
-            # if host is big endian, data are small endian and vice versa
-            return "<" if byteorder == "big" else ">"
+        log.debug("iconst_le=%d, iconst_be=%d", iconst_le, iconst_be)
+        if byteorder == "little":
+            if iconst_le == 16909060 and iconst_be == 67305985:
+                return "<"
+            elif iconst_le == 67305985 and iconst_be == 16909060:
+                return ">"
+        if byteorder == "big":
+            if iconst_be == 16909060 and iconst_le == 67305985:
+                return ">"
+            elif iconst_be == 67305985 and iconst_le == 16909060:
+                return "<"
 
         # check format
         format_le = binhead_le[self._par["bin_format"]].item()

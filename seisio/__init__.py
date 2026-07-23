@@ -309,22 +309,13 @@ def check_thdef_validity(file):
     # try to parse and check thdict
     try:
         nn, ff, tt = tools._parse_hdef(thdict, endian=tools._native_endian())
-    except ValueError as err:
+    except (ValueError, KeyError) as err:
         log.info("Trace header definition file %s is invalid.", file)
         log.info("Error: %s", err)
         return False
 
-    # try to create dtype
-    try:
-        dtp = tools._create_dtype(nn, ff, titles=tt)
-    except Exception as err:
-        log.info("Trace header definition file %s causes problems when "
-                 "creating the custom dtype.", file)
-        log.info("Error: %s", err)
-        return False
-
-    log.info("Trace header definition file %s is valid. Size: %d bytes.",
-             file, dtp.itemsize)
+    dtp = tools._create_dtype(nn, ff, titles=tt)
+    log.info("Trace header definition file %s is valid. Size: %d bytes.", file, dtp.itemsize)
     return True
 
 def _log_default_thdef(thdef):
