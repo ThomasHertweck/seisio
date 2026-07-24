@@ -24,7 +24,7 @@ def ibm2ieee32(ibm, endian):
 
 
 @jit("float32(uint32)", nopython=True, cache=True)
-def _numba_ibm2ieee32_single(ibm):
+def _numba_ibm2ieee32_single(ibm):  # pragma: no cover
     ieee_sign = ibm & 0x80000000
     ibm_frac = int(ibm & 0x00ffffff)
     if not ibm_frac:
@@ -84,7 +84,7 @@ _MANTMASK = np.uint32(0x7fffff)
 
 
 @jit("uint32(float32)", nopython=True, cache=True)
-def _numba_ieee2ibm32_single(ieee):
+def _numba_ieee2ibm32_single(ieee):   # pragma: no cover
     ieee = np.float32(ieee).view(np.uint32)
     sign = ieee & _SIGNMASK
     if ieee in [0, 2147483648]:
