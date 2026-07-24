@@ -320,30 +320,3 @@ class TxtHeader:
         ostr = "\n".join(self._list)
         log.info("%s\n%s", "-------- BEGIN --------", ostr)
         log.info("%s", "--------- END ---------")
-
-
-if __name__ == "__main__":
-    try:
-        txt = TxtHeader(encoding="StrangeValue")
-    except ValueError:
-        log.info("Caught an exception of type ValueError (as expected).")
-    try:
-        txt = TxtHeader(encoding=42.0)
-    except TypeError:
-        log.info("Caught an exception of type TypeError (as expected).")
-    txt = TxtHeader(encoding="ascii")
-    txt = TxtHeader(encoding="AsCiI")
-    txt = TxtHeader(encoding="ebcdic")
-    myheader = txt.template()
-    tmp = list(myheader[0])
-    tmp[4:7] = "ABC"
-    myheader[0] = "".join(tmp)
-    tmp = list(myheader[37])
-    tmp[4:7] = "XYZ"
-    myheader[37] = "".join(tmp)
-    txt.header = myheader
-    ebcdic = txt.get_header(decode=False)
-    converted = ebcdic.decode("cp037")
-    asciihead = txt.get_header(decode=True)
-    txt.log_txthead()
-    log.info("Length of %s: %d bytes", txt.info, len(txt))
