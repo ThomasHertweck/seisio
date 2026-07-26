@@ -219,11 +219,11 @@ class TxtHeader:
         self._header = hdr
 
         if encode:
+            if self._encoding is None:
+                self._encoding = "ascii"
             if not silent:
                 log.info("%s encoding set to '%s'.", self._info, _TXT_ENCODING[self._encoding])
             self._to_list()
-            if self._encoding is None:
-                self._encoding = "ascii"
             self._bytes = self._header.encode(self._encoding)
         else:
             self._bytes = self._header
