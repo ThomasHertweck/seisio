@@ -3,19 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.1">
+<meta name="generator" content="pdoc3 0.11.6">
 <title>seisio.segy API documentation</title>
 <meta name="description" content="I/O of seismic files in SEG-Y format.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => {
 hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
 hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
 })</script>
 </head>
 <body>
@@ -41,107 +52,6 @@ hljs.highlightAll();
 <span>(</span><span>file, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class to deal with input of seismic files in SEG-Y format.</p>
-<p>Initialize class Reader.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
-<dd>The name of the SEG-Y input file to read.</dd>
-<dt><strong><code>format</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
-<dd>Data format of SEG-Y traces, see SEG-Y standard for details.
-Usually, this is determined automatically from the binary file
-header. This parameter allows to manually override the automatic
-detection. A typical value would be 1 (IBM 32-bit floats) or 5
-(IEEE 32-bit floats).</dd>
-<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: None)</code></dt>
-<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
-endian. If endian=None (default), then the endianess of the file
-is determined automatically. This parameter can be used to force
-a specific setting.</dd>
-<dt><strong><code>fixed</code></strong> :&ensp;<code>bool</code>, optional <code>(default: None)</code></dt>
-<dd>Flag whether the file actually has a fixed trace length with
-identical number of samples and sampling interval on all traces.
-Usually, this is determined automatically, i.e., this flag is a
-way to override the automatic detection. Note that this class
-will only handle files with fixed trace length.</dd>
-<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y trace header definition JSON file. Defaults
-to the standard SEG-Y trace header definition provided by the
-seisio package.</dd>
-<dt><strong><code>bhdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y binary header definition JSON file. Defaults
-to the standard SEG-Y binary header definition provided by the
-seisio package.</dd>
-<dt><strong><code>txtenc</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>Encoding of the SEG-Y textual file header. Either "ascii" or
-"ebcdic", or None. If None (default), then the encoding of the
-textual file header is determined automatically.</dd>
-<dt><strong><code>thext1</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
-<dd>Flag whether trace header extension 1 is used or not.</dd>
-<dt><strong><code>thdef1</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y trace header extension 1 definition JSON file.
-Defaults to the standard SEG-Y header extension 1 provided by the
-seisio package.</dd>
-<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
-<dd>The number of additional 240-byte user-defined trace headers. If
-set, this number must match the number of trace header definition
-files specified as 'thdefu'. Note that trace header extension 1
-must be present if user-defined trace headers are used, according
-to SEG-Y standard.</dd>
-<dt><strong><code>thdefu</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y user-defined trace header definition JSON
-file(s) if user-defined trace headers are used.</dd>
-<dt><strong><code>ntxtrec</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
-<dd>The number of additional 3200-byte textual header records that
-follow the SEG-Y binary header. Usually, this is determined
-automatically, i.e., this parameter is a way to override the
-automatic detection.</dd>
-<dt><strong><code>ntxtrail</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
-<dd>The number of additional 3200-byte trailer records that follow
-the actual data traces. Usually, this is determined automatically,
-i.e., this parameter is a way to override the automatic detection.</dd>
-<dt><strong><code>bin_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
-<dd>The binary header mnemonic specifying the sampling interval.</dd>
-<dt><strong><code>bin_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
-<dd>The binary header mnemonic specifying the number of samples.</dd>
-<dt><strong><code>bin_format</code></strong> :&ensp;<code>str, otional (default: "format")</code></dt>
-<dd>The binary header mnemonic specifying the data format.</dd>
-<dt><strong><code>bin_fixed</code></strong> :&ensp;<code>str, otional (default: "fixed")</code></dt>
-<dd>The binary header mnemonic specifying the fixed trace length flag.</dd>
-<dt><strong><code>bin_iconst</code></strong> :&ensp;<code>str</code>, optional <code>(default: "iconst")</code></dt>
-<dd>The binary header mnemonic specifying the integer constant
-16909060_10.</dd>
-<dt><strong><code>bin_segymaj</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymaj")</code></dt>
-<dd>The binary header mnemonic specifying the SEG-Y major revision
-number.</dd>
-<dt><strong><code>bin_segymin</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymin")</code></dt>
-<dd>The binary header mnemonic specifying the SEG-Y minor revision
-number.</dd>
-<dt><strong><code>bin_ntxthead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntxthead")</code></dt>
-<dd>The binary header mnemonic specifying the number of textual header
-records.</dd>
-<dt><strong><code>bin_ntrailer</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntrailer")</code></dt>
-<dd>The binary header mnemonic specifying the number of trailer stanza
-records.</dd>
-<dt><strong><code>bin_maxtrhead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "maxtrhead")</code></dt>
-<dd>The binary header mnemonic specifying the maximum number of
-additional 240-bytes trace headers.</dd>
-<dt><strong><code>bin_byteoff</code></strong> :&ensp;<code>str</code>, optional <code>(default: "byteoff")</code></dt>
-<dd>The binary header mnemonic specifying the byte offset to the first
-data trace.</dd>
-<dt><strong><code>bin_ens</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ens")</code></dt>
-<dd>The binary header mnemonic specifying the extended number of
-samples.</dd>
-<dt><strong><code>bin_edt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "edt")</code></dt>
-<dd>The binary header mnemonic specifying the sextended ampling
-interval.</dd>
-<dt><strong><code>bin_ntfile</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntfile")</code></dt>
-<dd>The binary header mnemonic specifying the number of traces in the
-file.</dd>
-<dt><strong><code>mnemonic_delrt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "delrt")</code></dt>
-<dd>The SEG-Y trace header mnemonic specifying the delay recording
-time.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -563,10 +473,17 @@ time.</dd>
         # field.
         iconst_le = binhead_le[self._par[&#34;bin_iconst&#34;]].item()
         iconst_be = binhead_be[self._par[&#34;bin_iconst&#34;]].item()
-        if iconst_be == 67305985 or iconst_le == 67305985:
-            # need to swap, iconst should be 16909060
-            # if host is big endian, data are small endian and vice versa
-            return &#34;&lt;&#34; if byteorder == &#34;big&#34; else &#34;&gt;&#34;
+        log.debug(&#34;iconst_le=%d, iconst_be=%d&#34;, iconst_le, iconst_be)
+        if byteorder == &#34;little&#34;:
+            if iconst_le == 16909060 and iconst_be == 67305985:
+                return &#34;&lt;&#34;
+            elif iconst_le == 67305985 and iconst_be == 16909060:
+                return &#34;&gt;&#34;
+        if byteorder == &#34;big&#34;:
+            if iconst_be == 16909060 and iconst_le == 67305985:
+                return &#34;&gt;&#34;
+            elif iconst_be == 67305985 and iconst_le == 16909060:
+                return &#34;&lt;&#34;
 
         # check format
         format_le = binhead_le[self._par[&#34;bin_format&#34;]].item()
@@ -815,7 +732,11 @@ time.</dd>
                                                                   info=&#34;SEG-Y trailer &#34;
                                                                   f&#34;{str(segy_num_trailer+1)}&#34;))
                     self._sgy.txtrail[segy_num_trailer].read(fio)
-                    stanza = self._sgy.txtrail[segy_num_trailer].get_header().casefold().strip(&#39; &#39;)
+                    try:
+                        stanza = self._sgy.txtrail[segy_num_trailer].get_header().casefold().strip(&#39; &#39;)
+                    except Exception:
+                        # we have most likely just read binary data
+                        stanza = &#34;x&#34; * 20
                     # ensure we have a valid stanza
                     if &#34;((SEG:User Data&#34;.casefold().strip(&#39; &#39;) in stanza[0:18]:
                         segy_num_trailer += 1
@@ -980,6 +901,107 @@ time.</dd>
             self._dp.delay = 0
             log.info(&#34;No data traces, delay set to 0.&#34;)</code></pre>
 </details>
+<div class="desc"><p>Class to deal with input of seismic files in SEG-Y format.</p>
+<p>Initialize class Reader.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the SEG-Y input file to read.</dd>
+<dt><strong><code>format</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
+<dd>Data format of SEG-Y traces, see SEG-Y standard for details.
+Usually, this is determined automatically from the binary file
+header. This parameter allows to manually override the automatic
+detection. A typical value would be 1 (IBM 32-bit floats) or 5
+(IEEE 32-bit floats).</dd>
+<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: None)</code></dt>
+<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
+endian. If endian=None (default), then the endianess of the file
+is determined automatically. This parameter can be used to force
+a specific setting.</dd>
+<dt><strong><code>fixed</code></strong> :&ensp;<code>bool</code>, optional <code>(default: None)</code></dt>
+<dd>Flag whether the file actually has a fixed trace length with
+identical number of samples and sampling interval on all traces.
+Usually, this is determined automatically, i.e., this flag is a
+way to override the automatic detection. Note that this class
+will only handle files with fixed trace length.</dd>
+<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y trace header definition JSON file. Defaults
+to the standard SEG-Y trace header definition provided by the
+seisio package.</dd>
+<dt><strong><code>bhdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y binary header definition JSON file. Defaults
+to the standard SEG-Y binary header definition provided by the
+seisio package.</dd>
+<dt><strong><code>txtenc</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>Encoding of the SEG-Y textual file header. Either "ascii" or
+"ebcdic", or None. If None (default), then the encoding of the
+textual file header is determined automatically.</dd>
+<dt><strong><code>thext1</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Flag whether trace header extension 1 is used or not.</dd>
+<dt><strong><code>thdef1</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y trace header extension 1 definition JSON file.
+Defaults to the standard SEG-Y header extension 1 provided by the
+seisio package.</dd>
+<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
+<dd>The number of additional 240-byte user-defined trace headers. If
+set, this number must match the number of trace header definition
+files specified as 'thdefu'. Note that trace header extension 1
+must be present if user-defined trace headers are used, according
+to SEG-Y standard.</dd>
+<dt><strong><code>thdefu</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y user-defined trace header definition JSON
+file(s) if user-defined trace headers are used.</dd>
+<dt><strong><code>ntxtrec</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
+<dd>The number of additional 3200-byte textual header records that
+follow the SEG-Y binary header. Usually, this is determined
+automatically, i.e., this parameter is a way to override the
+automatic detection.</dd>
+<dt><strong><code>ntxtrail</code></strong> :&ensp;<code>int</code>, optional <code>(default: None)</code></dt>
+<dd>The number of additional 3200-byte trailer records that follow
+the actual data traces. Usually, this is determined automatically,
+i.e., this parameter is a way to override the automatic detection.</dd>
+<dt><strong><code>bin_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
+<dd>The binary header mnemonic specifying the sampling interval.</dd>
+<dt><strong><code>bin_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
+<dd>The binary header mnemonic specifying the number of samples.</dd>
+<dt><strong><code>bin_format</code></strong> :&ensp;<code>str, otional (default: "format")</code></dt>
+<dd>The binary header mnemonic specifying the data format.</dd>
+<dt><strong><code>bin_fixed</code></strong> :&ensp;<code>str, otional (default: "fixed")</code></dt>
+<dd>The binary header mnemonic specifying the fixed trace length flag.</dd>
+<dt><strong><code>bin_iconst</code></strong> :&ensp;<code>str</code>, optional <code>(default: "iconst")</code></dt>
+<dd>The binary header mnemonic specifying the integer constant
+16909060_10.</dd>
+<dt><strong><code>bin_segymaj</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymaj")</code></dt>
+<dd>The binary header mnemonic specifying the SEG-Y major revision
+number.</dd>
+<dt><strong><code>bin_segymin</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymin")</code></dt>
+<dd>The binary header mnemonic specifying the SEG-Y minor revision
+number.</dd>
+<dt><strong><code>bin_ntxthead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntxthead")</code></dt>
+<dd>The binary header mnemonic specifying the number of textual header
+records.</dd>
+<dt><strong><code>bin_ntrailer</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntrailer")</code></dt>
+<dd>The binary header mnemonic specifying the number of trailer stanza
+records.</dd>
+<dt><strong><code>bin_maxtrhead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "maxtrhead")</code></dt>
+<dd>The binary header mnemonic specifying the maximum number of
+additional 240-bytes trace headers.</dd>
+<dt><strong><code>bin_byteoff</code></strong> :&ensp;<code>str</code>, optional <code>(default: "byteoff")</code></dt>
+<dd>The binary header mnemonic specifying the byte offset to the first
+data trace.</dd>
+<dt><strong><code>bin_ens</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ens")</code></dt>
+<dd>The binary header mnemonic specifying the extended number of
+samples.</dd>
+<dt><strong><code>bin_edt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "edt")</code></dt>
+<dd>The binary header mnemonic specifying the sextended ampling
+interval.</dd>
+<dt><strong><code>bin_ntfile</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntfile")</code></dt>
+<dd>The binary header mnemonic specifying the number of traces in the
+file.</dd>
+<dt><strong><code>mnemonic_delrt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "delrt")</code></dt>
+<dd>The SEG-Y trace header mnemonic specifying the delay recording
+time.</dd>
+</dl></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="seisio.reader.Reader" href="reader.html#seisio.reader.Reader">Reader</a></li>
@@ -990,12 +1012,6 @@ time.</dd>
 <dl>
 <dt id="seisio.segy.Reader.binhead"><code class="name">prop <span class="ident">binhead</span></code></dt>
 <dd>
-<div class="desc"><p>Get the SEG-Y binary file header.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Numpy structured array</code></dt>
-<dd>SEG-Y binary file header.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1012,15 +1028,15 @@ def binhead(self):
     &#34;&#34;&#34;
     return self._sgy.binhead</code></pre>
 </details>
+<div class="desc"><p>Get the SEG-Y binary file header.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>SEG-Y binary file header.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Reader.nthuser"><code class="name">prop <span class="ident">nthuser</span></code></dt>
 <dd>
-<div class="desc"><p>Get the number of user-defined trace headers.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Number of user-defined headers.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1037,15 +1053,15 @@ def nthuser(self):
     &#34;&#34;&#34;
     return self._par[&#34;nthuser&#34;]</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Reader.ntxtrail"><code class="name">prop <span class="ident">ntxtrail</span></code></dt>
-<dd>
-<div class="desc"><p>Get the number of trailer stanza records.</p>
+<div class="desc"><p>Get the number of user-defined trace headers.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
-<dd>Number of trailer stanza records.</dd>
+<dd>Number of user-defined headers.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Reader.ntxtrail"><code class="name">prop <span class="ident">ntxtrail</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1062,15 +1078,15 @@ def ntxtrail(self):
     &#34;&#34;&#34;
     return len(self._sgy.txtrail)</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Reader.ntxtrec"><code class="name">prop <span class="ident">ntxtrec</span></code></dt>
-<dd>
-<div class="desc"><p>Get the number of extended textual header records.</p>
+<div class="desc"><p>Get the number of trailer stanza records.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
-<dd>Number of extended header records.</dd>
+<dd>Number of trailer stanza records.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Reader.ntxtrec"><code class="name">prop <span class="ident">ntxtrec</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1087,15 +1103,15 @@ def ntxtrec(self):
     &#34;&#34;&#34;
     return len(self._sgy.txtrec)</code></pre>
 </details>
+<div class="desc"><p>Get the number of extended textual header records.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Number of extended header records.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Reader.records"><code class="name">prop <span class="ident">records</span></code></dt>
 <dd>
-<div class="desc"><p>Get the additional SEG-Y textual header records.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>list</code></dt>
-<dd>List of decoded 3200-byte-long strings.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1112,15 +1128,15 @@ def records(self):
     &#34;&#34;&#34;
     return self.get_records()</code></pre>
 </details>
+<div class="desc"><p>Get the additional SEG-Y textual header records.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>List of decoded 3200-byte-long strings.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Reader.thext1"><code class="name">prop <span class="ident">thext1</span></code></dt>
 <dd>
-<div class="desc"><p>Get flag whether trace header extension 1 is present.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>bool</code></dt>
-<dd>True if trace header extension 1 is present, otherwise False.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1137,15 +1153,15 @@ def thext1(self):
     &#34;&#34;&#34;
     return self._par[&#34;thext1&#34;]</code></pre>
 </details>
+<div class="desc"><p>Get flag whether trace header extension 1 is present.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if trace header extension 1 is present, otherwise False.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Reader.trailers"><code class="name">prop <span class="ident">trailers</span></code></dt>
 <dd>
-<div class="desc"><p>Get the SEG-Y decoded trailer records.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>list</code></dt>
-<dd>List of 3200-byte-long byte strings.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1162,15 +1178,15 @@ def trailers(self):
     &#34;&#34;&#34;
     return self.get_trailers()</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Reader.txthead"><code class="name">prop <span class="ident">txthead</span></code></dt>
-<dd>
-<div class="desc"><p>Get the primary SEG-Y textual file header.</p>
+<div class="desc"><p>Get the SEG-Y decoded trailer records.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>list</code></dt>
-<dd>SEG-Y textual header as a list of 40 strings with 80 characters.</dd>
+<dd>List of 3200-byte-long byte strings.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Reader.txthead"><code class="name">prop <span class="ident">txthead</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1187,6 +1203,12 @@ def txthead(self):
     &#34;&#34;&#34;
     return self._sgy.txthead.header</code></pre>
 </details>
+<div class="desc"><p>Get the primary SEG-Y textual file header.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>SEG-Y textual header as a list of 40 strings with 80 characters.</dd>
+</dl></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -1195,6 +1217,21 @@ def txthead(self):
 <span>def <span class="ident">get_binhead</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binhead(self):
+    &#34;&#34;&#34;
+    Get the SEG-Y binary file header.
+
+    Returns
+    -------
+    Numpy structured array
+        SEG-Y binary file header.
+    &#34;&#34;&#34;
+    return self._sgy.binhead</code></pre>
+</details>
 <div class="desc"><p>Get the SEG-Y binary file header.</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1206,6 +1243,24 @@ def txthead(self):
 <span>def <span class="ident">get_records</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_records(self):
+    &#34;&#34;&#34;
+    Get the additional SEG-Y textual header records.
+
+    Returns
+    -------
+    list
+        List of decoded 3200-byte-long strings.
+    &#34;&#34;&#34;
+    if self.ntxtrec == 0:
+        return []
+    else:
+        return [t.get_header(decode=True) for t in self._sgy.txtrec]</code></pre>
+</details>
 <div class="desc"><p>Get the additional SEG-Y textual header records.</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1217,6 +1272,29 @@ def txthead(self):
 <span>def <span class="ident">get_trailers</span></span>(<span>self, decode=True)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_trailers(self, decode=True):
+    &#34;&#34;&#34;
+    Get the SEG-Y trailer records.
+
+    Parameters
+    ----------
+    decode : boolean, optional (default: True)
+        Whether to decode the trailer or not.
+
+    Returns
+    -------
+    list
+        List of 3200-byte-long byte strings.
+    &#34;&#34;&#34;
+    if self.ntxtrail == 0:
+        return []
+    else:
+        return [t.get_header(decode=decode) for t in self._sgy.txtrail]</code></pre>
+</details>
 <div class="desc"><p>Get the SEG-Y trailer records.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1233,6 +1311,21 @@ def txthead(self):
 <span>def <span class="ident">get_txthead</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_txthead(self):
+    &#34;&#34;&#34;
+    Get the primary SEG-Y textual file header.
+
+    Returns
+    -------
+    list
+        SEG-Y textual header as a list of 40 strings with 80 characters.
+    &#34;&#34;&#34;
+    return self._sgy.txthead.header</code></pre>
+</details>
 <div class="desc"><p>Get the primary SEG-Y textual file header.</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1244,12 +1337,40 @@ def txthead(self):
 <span>def <span class="ident">log_bhdef</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_bhdef(self):
+    &#34;&#34;&#34;Log the SEG-Y binary file header definition.&#34;&#34;&#34;
+    self._log_bhdef()</code></pre>
+</details>
 <div class="desc"><p>Log the SEG-Y binary file header definition.</p></div>
 </dd>
 <dt id="seisio.segy.Reader.log_binhead"><code class="name flex">
 <span>def <span class="ident">log_binhead</span></span>(<span>self, zero=False)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_binhead(self, zero=False):
+    &#34;&#34;&#34;
+    Log the SEG-Y binary file header.
+
+    Parameters
+    ----------
+    zero : boolean, optional (default: False)
+        Whether to print binary header entries that are zero or not.
+
+    Returns
+    -------
+    Numpy structured array
+        The SEG-Y binary header.
+    &#34;&#34;&#34;
+    return self._log_binhead(zero=zero)</code></pre>
+</details>
 <div class="desc"><p>Log the SEG-Y binary file header.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1266,6 +1387,21 @@ def txthead(self):
 <span>def <span class="ident">log_txthead</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_txthead(self):
+    &#34;&#34;&#34;
+    Log the primary textual file header.
+
+    Returns
+    -------
+    list
+        The textual header.
+    &#34;&#34;&#34;
+    return self._log_txthead()</code></pre>
+</details>
 <div class="desc"><p>Log the primary textual file header.</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1281,6 +1417,7 @@ def txthead(self):
 <li><code><a title="seisio.reader.Reader.batches" href="reader.html#seisio.reader.Reader.batches">batches</a></code></li>
 <li><code><a title="seisio.reader.Reader.batches_of_headers" href="reader.html#seisio.reader.Reader.batches_of_headers">batches_of_headers</a></code></li>
 <li><code><a title="seisio.reader.Reader.create_index" href="reader.html#seisio.reader.Reader.create_index">create_index</a></code></li>
+<li><code><a title="seisio.reader.Reader.dataformat" href="seisio.html#seisio.seisio.SeisIO.dataformat">dataformat</a></code></li>
 <li><code><a title="seisio.reader.Reader.delay" href="reader.html#seisio.reader.Reader.delay">delay</a></code></li>
 <li><code><a title="seisio.reader.Reader.endianess" href="seisio.html#seisio.seisio.SeisIO.endianess">endianess</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensemble_keys" href="reader.html#seisio.reader.Reader.ensemble_keys">ensemble_keys</a></code></li>
@@ -1325,99 +1462,6 @@ def txthead(self):
 <span>(</span><span>file, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class to deal with output of seismic files in SEG-Y format.</p>
-<p>Initialize class Writer.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
-<dd>The name of the SEG-Y output file to write.</dd>
-<dt><strong><code>ns</code></strong> :&ensp;<code>int</code></dt>
-<dd>Number of samples per output trace.</dd>
-<dt><strong><code>vsi</code></strong> :&ensp;<code>int</code></dt>
-<dd>(Vertical) sampling interval (typically in microunits).</dd>
-<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: "&gt;")</code></dt>
-<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
-endian, "=" for native endian.</dd>
-<dt><strong><code>format</code></strong> :&ensp;<code>int</code>, optional <code>(default: 5)</code></dt>
-<dd>Data format of SEG-Y traces, see SEG-Y standard for details.</dd>
-<dt><strong><code>segymaj</code></strong> :&ensp;<code>int</code>, optional <code>(default: 1)</code></dt>
-<dd>SEG-Y major revision number.</dd>
-<dt><strong><code>segymin</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
-<dd>SEG-Y minor revision number.</dd>
-<dt><strong><code>txtenc</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ascii")</code></dt>
-<dd>Encoding of the SEG-Y textual file header. Either "ascii" or
-"ebcdic".</dd>
-<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y trace header definition JSON file. Defaults
-to the standard SEG-Y trace header definition provided by the
-seisio package.</dd>
-<dt><strong><code>bhdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y binary header definition JSON file. Defaults
-to the standard SEG-Y binary header definition provided by the
-seisio package.</dd>
-<dt><strong><code>thext1</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
-<dd>Flag whether trace header extension 1 is used or not.</dd>
-<dt><strong><code>thdef1</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y trace header extension 1 definition JSON file.
-Defaults to the standard SEG-Y header extension 1 provided by the
-seisio package.</dd>
-<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
-<dd>The number of additional 240-byte user-defined trace headers. If
-set, this number must match the number of trace header definition
-files specified as 'thdefu'. Note that trace header extension 1
-must be present if user-defined trace headers are used, according
-to SEG-Y standard.</dd>
-<dt><strong><code>thdefu</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code>, optional <code>(default: None)</code></dt>
-<dd>The name of the SEG-Y user-defined trace header definition JSON
-file(s) if user-defined trace headers are used.</dd>
-<dt><strong><code>ntxtrec</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
-<dd>The number of additional 3200-byte textual header records that
-follow the SEG-Y binary header. Usually, this is determined
-automatically, i.e., this parameter is a way to override the
-automatic detection.</dd>
-<dt><strong><code>ntxtrail</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
-<dd>The number of additional 3200-byte trailer records that follow
-the actual data traces. Usually, this is determined automatically,
-i.e., this parameter is a way to override the automatic detection.</dd>
-<dt><strong><code>bin_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
-<dd>The binary header mnemonic specifying the sampling interval.</dd>
-<dt><strong><code>bin_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
-<dd>The binary header mnemonic specifying the number of samples.</dd>
-<dt><strong><code>bin_format</code></strong> :&ensp;<code>str, otional (default: "format")</code></dt>
-<dd>The binary header mnemonic specifying the data format.</dd>
-<dt><strong><code>bin_fixed</code></strong> :&ensp;<code>str, otional (default: "fixed")</code></dt>
-<dd>The binary header mnemonic specifying the fixed trace length flag.</dd>
-<dt><strong><code>bin_iconst</code></strong> :&ensp;<code>str</code>, optional <code>(default: "iconst")</code></dt>
-<dd>The binary header mnemonic specifying the integer constant
-16909060_10.</dd>
-<dt><strong><code>bin_segymaj</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymaj")</code></dt>
-<dd>The binary header mnemonic specifying the SEG-Y major revision
-number.</dd>
-<dt><strong><code>bin_segymin</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymin")</code></dt>
-<dd>The binary header mnemonic specifying the SEG-Y minor revision
-number.</dd>
-<dt><strong><code>bin_ntxthead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntxthead")</code></dt>
-<dd>The binary header mnemonic specifying the number of textual header
-records.</dd>
-<dt><strong><code>bin_ntrailer</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntrailer")</code></dt>
-<dd>The binary header mnemonic specifying the number of trailer stanza
-records.</dd>
-<dt><strong><code>bin_maxtrhead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "maxtrhead")</code></dt>
-<dd>The binary header mnemonic specifying the maximum number of
-additional 240-bytes trace headers.</dd>
-<dt><strong><code>bin_byteoff</code></strong> :&ensp;<code>str</code>, optional <code>(default: "byteoff")</code></dt>
-<dd>The binary header mnemonic specifying the byte offset to the first
-data trace.</dd>
-<dt><strong><code>bin_ens</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ens")</code></dt>
-<dd>The binary header mnemonic specifying the extended number of
-samples.</dd>
-<dt><strong><code>bin_edt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "edt")</code></dt>
-<dd>The binary header mnemonic specifying the sextended ampling
-interval.</dd>
-<dt><strong><code>bin_ntfile</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntfile")</code></dt>
-<dd>The binary header mnemonic specifying the number of traces in the
-file.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1823,6 +1867,8 @@ file.</dd>
         &#34;&#34;&#34;
         Log the (primary) textual file header.
 
+        Parameters
+        ----------
         txthead : list of strings or string, optional (default: None)
             The textual header. If &#39;None&#39;, the internally stored textual
             header (if available) is used.
@@ -1942,6 +1988,10 @@ file.</dd>
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         &#34;&#34;&#34;
+        if self._tail_written:
+            log.warning(&#34;finalize() method called several times; call ignored.&#34;)
+            return
+
         if self.ntxtrail &gt; 0:
             if not isinstance(encode, bool):
                 log.warning(&#34;Parameter &#39;encode&#39; should be a boolean. Reset to &#39;True&#39;.&#34;)
@@ -1958,8 +2008,9 @@ file.</dd>
 
             with open(self._fp.file, &#34;ab&#34;) as io:
                 for i, string in enumerate(args):
-                    self._sgy.txtrail[i].set_header(string, encode=encode)
-                    self._sgy.txtrail[i].write(io)
+                    if i &lt; self.ntxtrail:
+                        self._sgy.txtrail[i].set_header(string, encode=encode)
+                        self._sgy.txtrail[i].write(io)
 
             log.info(&#34;Wrote %d trailer records.&#34;)
 
@@ -1979,6 +2030,99 @@ file.</dd>
 
         self._tail_written = True</code></pre>
 </details>
+<div class="desc"><p>Class to deal with output of seismic files in SEG-Y format.</p>
+<p>Initialize class Writer.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the SEG-Y output file to write.</dd>
+<dt><strong><code>ns</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of samples per output trace.</dd>
+<dt><strong><code>vsi</code></strong> :&ensp;<code>int</code></dt>
+<dd>(Vertical) sampling interval (typically in microunits).</dd>
+<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: "&gt;")</code></dt>
+<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
+endian, "=" for native endian.</dd>
+<dt><strong><code>format</code></strong> :&ensp;<code>int</code>, optional <code>(default: 5)</code></dt>
+<dd>Data format of SEG-Y traces, see SEG-Y standard for details.</dd>
+<dt><strong><code>segymaj</code></strong> :&ensp;<code>int</code>, optional <code>(default: 1)</code></dt>
+<dd>SEG-Y major revision number.</dd>
+<dt><strong><code>segymin</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dd>SEG-Y minor revision number.</dd>
+<dt><strong><code>txtenc</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ascii")</code></dt>
+<dd>Encoding of the SEG-Y textual file header. Either "ascii" or
+"ebcdic".</dd>
+<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y trace header definition JSON file. Defaults
+to the standard SEG-Y trace header definition provided by the
+seisio package.</dd>
+<dt><strong><code>bhdef</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y binary header definition JSON file. Defaults
+to the standard SEG-Y binary header definition provided by the
+seisio package.</dd>
+<dt><strong><code>thext1</code></strong> :&ensp;<code>bool</code>, optional <code>(default: False)</code></dt>
+<dd>Flag whether trace header extension 1 is used or not.</dd>
+<dt><strong><code>thdef1</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y trace header extension 1 definition JSON file.
+Defaults to the standard SEG-Y header extension 1 provided by the
+seisio package.</dd>
+<dt><strong><code>nthuser</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dd>The number of additional 240-byte user-defined trace headers. If
+set, this number must match the number of trace header definition
+files specified as 'thdefu'. Note that trace header extension 1
+must be present if user-defined trace headers are used, according
+to SEG-Y standard.</dd>
+<dt><strong><code>thdefu</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code>, optional <code>(default: None)</code></dt>
+<dd>The name of the SEG-Y user-defined trace header definition JSON
+file(s) if user-defined trace headers are used.</dd>
+<dt><strong><code>ntxtrec</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dd>The number of additional 3200-byte textual header records that
+follow the SEG-Y binary header. Usually, this is determined
+automatically, i.e., this parameter is a way to override the
+automatic detection.</dd>
+<dt><strong><code>ntxtrail</code></strong> :&ensp;<code>int</code>, optional <code>(default: 0)</code></dt>
+<dd>The number of additional 3200-byte trailer records that follow
+the actual data traces. Usually, this is determined automatically,
+i.e., this parameter is a way to override the automatic detection.</dd>
+<dt><strong><code>bin_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
+<dd>The binary header mnemonic specifying the sampling interval.</dd>
+<dt><strong><code>bin_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
+<dd>The binary header mnemonic specifying the number of samples.</dd>
+<dt><strong><code>bin_format</code></strong> :&ensp;<code>str, otional (default: "format")</code></dt>
+<dd>The binary header mnemonic specifying the data format.</dd>
+<dt><strong><code>bin_fixed</code></strong> :&ensp;<code>str, otional (default: "fixed")</code></dt>
+<dd>The binary header mnemonic specifying the fixed trace length flag.</dd>
+<dt><strong><code>bin_iconst</code></strong> :&ensp;<code>str</code>, optional <code>(default: "iconst")</code></dt>
+<dd>The binary header mnemonic specifying the integer constant
+16909060_10.</dd>
+<dt><strong><code>bin_segymaj</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymaj")</code></dt>
+<dd>The binary header mnemonic specifying the SEG-Y major revision
+number.</dd>
+<dt><strong><code>bin_segymin</code></strong> :&ensp;<code>str</code>, optional <code>(default: "segymin")</code></dt>
+<dd>The binary header mnemonic specifying the SEG-Y minor revision
+number.</dd>
+<dt><strong><code>bin_ntxthead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntxthead")</code></dt>
+<dd>The binary header mnemonic specifying the number of textual header
+records.</dd>
+<dt><strong><code>bin_ntrailer</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntrailer")</code></dt>
+<dd>The binary header mnemonic specifying the number of trailer stanza
+records.</dd>
+<dt><strong><code>bin_maxtrhead</code></strong> :&ensp;<code>str</code>, optional <code>(default: "maxtrhead")</code></dt>
+<dd>The binary header mnemonic specifying the maximum number of
+additional 240-bytes trace headers.</dd>
+<dt><strong><code>bin_byteoff</code></strong> :&ensp;<code>str</code>, optional <code>(default: "byteoff")</code></dt>
+<dd>The binary header mnemonic specifying the byte offset to the first
+data trace.</dd>
+<dt><strong><code>bin_ens</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ens")</code></dt>
+<dd>The binary header mnemonic specifying the extended number of
+samples.</dd>
+<dt><strong><code>bin_edt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "edt")</code></dt>
+<dd>The binary header mnemonic specifying the sextended ampling
+interval.</dd>
+<dt><strong><code>bin_ntfile</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ntfile")</code></dt>
+<dd>The binary header mnemonic specifying the number of traces in the
+file.</dd>
+</dl></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="seisio.writer.Writer" href="writer.html#seisio.writer.Writer">Writer</a></li>
@@ -1989,12 +2133,6 @@ file.</dd>
 <dl>
 <dt id="seisio.segy.Writer.binhead_template"><code class="name">prop <span class="ident">binhead_template</span></code></dt>
 <dd>
-<div class="desc"><p>Provide a template for a SEG-Y binary file header.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Numpy structured array</code></dt>
-<dd>SEG-Y binary file header.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2039,15 +2177,15 @@ def binhead_template(self):
 
     return self._sgy.binhead</code></pre>
 </details>
+<div class="desc"><p>Provide a template for a SEG-Y binary file header.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Numpy structured array</code></dt>
+<dd>SEG-Y binary file header.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Writer.nthuser"><code class="name">prop <span class="ident">nthuser</span></code></dt>
 <dd>
-<div class="desc"><p>Get the number of user-defined trace headers.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code></dt>
-<dd>Number of user-defined headers.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2064,15 +2202,15 @@ def nthuser(self):
     &#34;&#34;&#34;
     return self._par[&#34;nthuser&#34;]</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Writer.ntxtrail"><code class="name">prop <span class="ident">ntxtrail</span></code></dt>
-<dd>
-<div class="desc"><p>Get the number of trailer stanza records.</p>
+<div class="desc"><p>Get the number of user-defined trace headers.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
-<dd>Number of trailer stanza records.</dd>
+<dd>Number of user-defined headers.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Writer.ntxtrail"><code class="name">prop <span class="ident">ntxtrail</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2089,15 +2227,15 @@ def ntxtrail(self):
     &#34;&#34;&#34;
     return len(self._sgy.txtrail)</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Writer.ntxtrec"><code class="name">prop <span class="ident">ntxtrec</span></code></dt>
-<dd>
-<div class="desc"><p>Get the number of extended textual header records.</p>
+<div class="desc"><p>Get the number of trailer stanza records.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>int</code></dt>
-<dd>Number of extended header records.</dd>
+<dd>Number of trailer stanza records.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Writer.ntxtrec"><code class="name">prop <span class="ident">ntxtrec</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2114,15 +2252,15 @@ def ntxtrec(self):
     &#34;&#34;&#34;
     return len(self._sgy.txtrec)</code></pre>
 </details>
+<div class="desc"><p>Get the number of extended textual header records.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>Number of extended header records.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Writer.thext1"><code class="name">prop <span class="ident">thext1</span></code></dt>
 <dd>
-<div class="desc"><p>Get flag whether trace header extension 1 is present.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>bool</code></dt>
-<dd>True if trace header extension 1 is present, otherwise False.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2139,15 +2277,15 @@ def thext1(self):
     &#34;&#34;&#34;
     return self._par[&#34;thext1&#34;]</code></pre>
 </details>
+<div class="desc"><p>Get flag whether trace header extension 1 is present.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if trace header extension 1 is present, otherwise False.</dd>
+</dl></div>
 </dd>
 <dt id="seisio.segy.Writer.txthead_template"><code class="name">prop <span class="ident">txthead_template</span></code></dt>
 <dd>
-<div class="desc"><p>Provide a template for a primary SEG-Y textual file header.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>list</code></dt>
-<dd>A list of strings, 40 card images (strings), each of 80 characters.</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2166,18 +2304,15 @@ def txthead_template(self):
     return segy_txthead_template(major_version=self._par[&#34;segymaj&#34;],
                                  minor_version=self._par[&#34;segymin&#34;], fill=True)</code></pre>
 </details>
-</dd>
-<dt id="seisio.segy.Writer.txtrec_template"><code class="name">prop <span class="ident">txtrec_template</span></code></dt>
-<dd>
-<div class="desc"><p>Provide a template for an additional SEG-Y textual file header.</p>
-<p>Note: The difference to txthead_template(), which provides a primary
-textual file header, is the lack of the 'Cxx' convention at the
-beginning of each card image.</p>
+<div class="desc"><p>Provide a template for a primary SEG-Y textual file header.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>list</code></dt>
 <dd>A list of strings, 40 card images (strings), each of 80 characters.</dd>
 </dl></div>
+</dd>
+<dt id="seisio.segy.Writer.txtrec_template"><code class="name">prop <span class="ident">txtrec_template</span></code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2200,6 +2335,15 @@ def txtrec_template(self):
     return segy_txthead_template(major_version=self._par[&#34;segymaj&#34;],
                                  minor_version=self._par[&#34;segymin&#34;], fill=False)</code></pre>
 </details>
+<div class="desc"><p>Provide a template for an additional SEG-Y textual file header.</p>
+<p>Note: The difference to txthead_template(), which provides a primary
+textual file header, is the lack of the 'Cxx' convention at the
+beginning of each card image.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>A list of strings, 40 card images (strings), each of 80 characters.</dd>
+</dl></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -2208,6 +2352,70 @@ def txtrec_template(self):
 <span>def <span class="ident">finalize</span></span>(<span>self, *args, encode=True, silent=False)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def finalize(self, *args, encode=True, silent=False):
+    &#34;&#34;&#34;
+    Finalize output (and write all SEG-Y file trailers to disk).
+
+    This function has to be called after writing all traces to the file.
+    Handle errors / inconsistencies gracefully to allow writing a file at
+    the end of a job even if something seems wrong.
+
+    Parameters
+    ----------
+    *args : 3200-byte buffer(s)
+        The actual 3200-bytes trailer buffers.
+    encode : bool, optional (default: True)
+        ASCII-encode the trailers. If binary data are to be written as
+        part of trailer stanzas, trailers should not be encoded.
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+    &#34;&#34;&#34;
+    if self._tail_written:
+        log.warning(&#34;finalize() method called several times; call ignored.&#34;)
+        return
+
+    if self.ntxtrail &gt; 0:
+        if not isinstance(encode, bool):
+            log.warning(&#34;Parameter &#39;encode&#39; should be a boolean. Reset to &#39;True&#39;.&#34;)
+            encode = True
+
+        if len(args) != self.ntxtrail:
+            log.warning(&#34;Number of provided trailer records differs from expected number (%d).&#34;,
+                        self.ntxtrail)
+            if len(args) &gt; self.ntxtrail:
+                log.warning(&#34;Some trailer records will be ignored.&#34;)
+            else:
+                log.warning(&#34;Resetting number of trailer records to %d.&#34;, len(args))
+                del self._sgy.txtrail[len(args):]
+
+        with open(self._fp.file, &#34;ab&#34;) as io:
+            for i, string in enumerate(args):
+                if i &lt; self.ntxtrail:
+                    self._sgy.txtrail[i].set_header(string, encode=encode)
+                    self._sgy.txtrail[i].write(io)
+
+        log.info(&#34;Wrote %d trailer records.&#34;)
+
+    self._sgy.binhead[self._par[&#34;bin_ntfile&#34;]] = self._dp.nt
+    self._sgy.binhead[self._par[&#34;bin_ntrailer&#34;]] = self.ntxtrail
+
+    log.info(&#34;Finalizing output file and re-writing updated binary header.&#34;)
+
+    with open(self._fp.file, &#34;r+b&#34;) as io:
+        io.seek(self._sgy.txthead.size, 0)
+        io.write(self._sgy.binhead.tobytes())
+        io.seek(0, 2)
+        self._fp.filesize = io.tell()
+
+    log.info(&#34;Wrote a total of %d trace(s), file size: %d bytes.&#34;,
+             self._dp.nt, self._fp.filesize)
+
+    self._tail_written = True</code></pre>
+</details>
 <div class="desc"><p>Finalize output (and write all SEG-Y file trailers to disk).</p>
 <p>This function has to be called after writing all traces to the file.
 Handle errors / inconsistencies gracefully to allow writing a file at
@@ -2227,6 +2435,103 @@ part of trailer stanzas, trailers should not be encoded.</dd>
 <span>def <span class="ident">init</span></span>(<span>self, **kwargs)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init(self, **kwargs):
+    &#34;&#34;&#34;
+    Initialize output and write all SEG-Y file headers to disk.
+
+    This includes the standard textual header, the binary header, and
+    possibly any extended header records. This function has to be called
+    before writing any traces to the file.
+
+    Parameters
+    ----------
+    textual : list of strings or string, optional (default: None)
+        Primary textual file header (will be encoded &#39;ascii&#39; or &#39;ebcdic&#39;).
+        List of 40 strings. If a string is less than 80 characters, it will
+        be padded up to the length of the card image. If a string is more
+        than 80 characters, it will be truncated. If no textual header is
+        supplied, a default template will be used. Alternatively, a single
+        string of length 3200 bytes can be supplied.
+    binary : Numpy structured array, optional (default: None)
+        The SEG-Y binary header corresponding to the binary header
+        definition file used in the class constructor. If no binary header
+        is supplied, a default template with minimally pre-filled
+        information based on parameters supplied to the class constructor
+        will be used.
+    records: string or list of strings, optional (default: None)
+        The additional SEG-Y extended textual header(s). Each header record
+        must be 3200-bytes long.
+    silent : bool, optional (default: False)
+        Whether to suppress all standard logging (True) or not (False).
+    &#34;&#34;&#34;
+    if self._head_written:
+        log.warning(&#34;init() method called several times; call ignored.&#34;)
+        return
+
+    txth = kwargs.pop(&#34;textual&#34;, None)
+    binh = kwargs.pop(&#34;binary&#34;, None)
+    hrec = kwargs.pop(&#34;records&#34;, None)
+    silent = kwargs.pop(&#34;silent&#34;, False)
+
+    if kwargs:
+        for key, val in kwargs.items():
+            log.warning(&#34;Unknown argument &#39;%s&#39; with value &#39;%s&#39; encountered.&#34;, key, str(val))
+
+    if txth is None:
+        txth = self.txthead_template
+        txth[0] = f&#34;C01 This SEG-Y file was created by Python seisio version {__version__}.&#34;
+        txth[0] = txth[0].ljust(_txtheader._SEGY_CARDLEN)
+    self._sgy.txthead.header = txth
+    # Should the last entries be checked for SEG-Y revision information
+    # and &#39;END TEXTUAL HEADER&#39; string? A lot of SEG-Y files do not provide
+    # such entries although strictly speaking required by the standard.
+
+    if binh is None:
+        self._sgy.binhead = self.binhead_template
+    else:
+        self._sgy.binhead = binh.astype(self._sgy.bhdtype)
+
+    if hrec is not None:
+        if isinstance(hrec, str):
+            if self.ntxtrec &gt; 1:
+                raise ValueError(&#34;Received fewer ext. header records than expected. &#34;
+                                 &#34;Check &#39;ntxtrec&#39; parameter in constructor.&#34;)
+            elif self.ntxtrec == 0:
+                log.warning(&#34;Expected no ext. header records. Ignoring &#39;records&#39; parameter.&#34;)
+            else:
+                self._sgy.txtrec[0].header = hrec
+        else:
+            if self.ntxtrec &gt; len(hrec):
+                raise ValueError(&#34;Received fewer ext. header records than expected. &#34;
+                                 &#34;Check &#39;ntxtrec&#39; parameter in constructor.&#34;)
+            elif self.ntxtrec &lt; len(hrec):
+                log.warning(&#34;Received more ext. header records than expected (%d).&#34;
+                            &#34;Ignoring add. &#39;records&#39;.&#34;, self.ntxtrec)
+                for i in range(self.ntxtrec):
+                    self._sgy.txtrec[i].header = hrec[i]
+            else:
+                for i, rec in enumerate(hrec):
+                    self._sgy.txtrec[i].header = rec
+    elif self.ntxtrec &gt; 0:
+        raise ValueError(f&#34;Expected {self.ntxtrec} extended header &#34;
+                         &#34;record(s), received none.&#34;)
+
+    with open(self._fp.file, &#34;ab&#34;) as io:
+        self._sgy.txthead.write(io)
+        io.write(self._sgy.binhead.tobytes())
+        for i in range(self.ntxtrec):
+            self._sgy.txtrec[i].write(io)
+        self._fp.filesize = io.tell()
+
+    self._head_written = True
+    if not silent:
+        log.info(&#34;Wrote textual and binary file headers and %d add. header record(s).&#34;,
+                 self.ntxtrec)</code></pre>
+</details>
 <div class="desc"><p>Initialize output and write all SEG-Y file headers to disk.</p>
 <p>This includes the standard textual header, the binary header, and
 possibly any extended header records. This function has to be called
@@ -2257,12 +2562,38 @@ must be 3200-bytes long.</dd>
 <span>def <span class="ident">log_bhdef</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_bhdef(self):
+    &#34;&#34;&#34;Log the SEG-Y binary file header definition.&#34;&#34;&#34;
+    self._log_bhdef()</code></pre>
+</details>
 <div class="desc"><p>Log the SEG-Y binary file header definition.</p></div>
 </dd>
 <dt id="seisio.segy.Writer.log_binhead"><code class="name flex">
 <span>def <span class="ident">log_binhead</span></span>(<span>self, binhead=None, zero=False)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_binhead(self, binhead=None, zero=False):
+    &#34;&#34;&#34;
+    Log the SEG-Y binary file header.
+
+    Parameters
+    ----------
+    binhead : Numpy structured array, optional (default: None)
+        The binary header. If &#39;None&#39;, the internally stored binary header
+        (if available) is used.
+    zero : boolean, optional (default: False)
+        Whether to print binary header entries that are zero or not.
+    &#34;&#34;&#34;
+    self._log_binhead(binhead=binhead, zero=zero)</code></pre>
+</details>
 <div class="desc"><p>Log the SEG-Y binary file header.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -2277,18 +2608,40 @@ must be 3200-bytes long.</dd>
 <span>def <span class="ident">log_txthead</span></span>(<span>self, txthead=None, info=None)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log_txthead(self, txthead=None, info=None):
+    &#34;&#34;&#34;
+    Log the (primary) textual file header.
+
+    Parameters
+    ----------
+    txthead : list of strings or string, optional (default: None)
+        The textual header. If &#39;None&#39;, the internally stored textual
+        header (if available) is used.
+    info : str, optional (default: None)
+        A verbal description of this textual header.
+    &#34;&#34;&#34;
+    self._log_txthead(txthead=txthead, info=info)</code></pre>
+</details>
 <div class="desc"><p>Log the (primary) textual file header.</p>
-<p>txthead : list of strings or string, optional (default: None)
-The textual header. If 'None', the internally stored textual
-header (if available) is used.
-info : str, optional (default: None)
-A verbal description of this textual header.</p></div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>txthead</code></strong> :&ensp;<code>list</code> of <code>strings</code> or <code>string</code>, optional <code>(default: None)</code></dt>
+<dd>The textual header. If 'None', the internally stored textual
+header (if available) is used.</dd>
+<dt><strong><code>info</code></strong> :&ensp;<code>str</code>, optional <code>(default: None)</code></dt>
+<dd>A verbal description of this textual header.</dd>
+</dl></div>
 </dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="seisio.writer.Writer" href="writer.html#seisio.writer.Writer">Writer</a></b></code>:
 <ul class="hlist">
+<li><code><a title="seisio.writer.Writer.dataformat" href="seisio.html#seisio.seisio.SeisIO.dataformat">dataformat</a></code></li>
 <li><code><a title="seisio.writer.Writer.endianess" href="seisio.html#seisio.seisio.SeisIO.endianess">endianess</a></code></li>
 <li><code><a title="seisio.writer.Writer.file" href="seisio.html#seisio.seisio.SeisIO.file">file</a></code></li>
 <li><code><a title="seisio.writer.Writer.fsize" href="seisio.html#seisio.seisio.SeisIO.fsize">fsize</a></code></li>
@@ -2365,7 +2718,7 @@ A verbal description of this textual header.</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
 </footer>
 </body>
 </html>
