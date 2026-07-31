@@ -695,7 +695,11 @@ class Reader(reader.Reader):
                                                                   info="SEG-Y trailer "
                                                                   f"{str(segy_num_trailer+1)}"))
                     self._sgy.txtrail[segy_num_trailer].read(fio)
-                    stanza = self._sgy.txtrail[segy_num_trailer].get_header().casefold().strip(' ')
+                    try:
+                        stanza = self._sgy.txtrail[segy_num_trailer].get_header().casefold().strip(' ')
+                    except Exception:
+                        # we have most likely just read binary data
+                        stanza = "x" * 20
                     # ensure we have a valid stanza
                     if "((SEG:User Data".casefold().strip(' ') in stanza[0:18]:
                         segy_num_trailer += 1
@@ -1262,6 +1266,8 @@ class Writer(writer.Writer):
         """
         Log the (primary) textual file header.
 
+        Parameters
+        ----------
         txthead : list of strings or string, optional (default: None)
             The textual header. If 'None', the internally stored textual
             header (if available) is used.
@@ -1381,6 +1387,10 @@ class Writer(writer.Writer):
         silent : bool, optional (default: False)
             Whether to suppress all standard logging (True) or not (False).
         """
+        if self._tail_written:
+            log.warning("finalize() method called several times; call ignored.")
+            return
+
         if self.ntxtrail > 0:
             if not isinstance(encode, bool):
                 log.warning("Parameter 'encode' should be a boolean. Reset to 'True'.")
@@ -1397,8 +1407,9 @@ class Writer(writer.Writer):
 
             with open(self._fp.file, "ab") as io:
                 for i, string in enumerate(args):
-                    self._sgy.txtrail[i].set_header(string, encode=encode)
-                    self._sgy.txtrail[i].write(io)
+                    if i < self.ntxtrail:
+                        self._sgy.txtrail[i].set_header(string, encode=encode)
+                        self._sgy.txtrail[i].write(io)
 
             log.info("Wrote %d trailer records.")
 

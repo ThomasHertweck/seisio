@@ -47,7 +47,7 @@ def _addhist(func, *args, **kwargs):
 
 
 @jit("(int64,int64,int64,int64)", nopython=True)
-def _calc_blocks(start, stride, count, block):
+def _calc_blocks(start, stride, count, block):   # pragma: no cover
     """Calculate parameters for multi block reads."""
     indices = np.empty((count*block,), dtype=np.int64)
     i = 0
@@ -62,7 +62,7 @@ def _calc_blocks(start, stride, count, block):
 
 
 @jit("(int64,int64)", nopython=True)
-def _create_batches(nt, batch_size):
+def _create_batches(nt, batch_size):   # pragma: no cover
     """Calculate parameters for batch reads."""
     for ii in np.arange(0, nt, batch_size, dtype=np.int64):
         if ii+batch_size > nt:

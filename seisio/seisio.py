@@ -21,7 +21,6 @@ class SeisIO(abc.ABC):
     @dataclass
     class _FP():
         """File-related parameters."""
-
         file: pathlib.Path = None
         filesize: int = 0
         endian: str = None
@@ -34,7 +33,6 @@ class SeisIO(abc.ABC):
     @dataclass
     class _DP():
         """Data-related parameters."""
-
         nt: int = 0
         ns: int = 0
         si: int = 0
@@ -43,7 +41,6 @@ class SeisIO(abc.ABC):
     @dataclass
     class _TR():
         """Trace-related parameters and objects."""
-
         thdict: dict = field(default_factory=dict)
         thsize: int = 0
         trsize: int = 0
@@ -53,7 +50,6 @@ class SeisIO(abc.ABC):
     @dataclass
     class _SEGY():
         """SEG-Y-related parameters and objects."""
-
         major: int = 0
         minor: int = 0
         bhdict: dict = None
@@ -66,7 +62,6 @@ class SeisIO(abc.ABC):
     @dataclass
     class _SEG2():
         """SEG2-related parameters and objects."""
-
         sterm: str = None
         lterm: str = None
         trcptr: np.ndarray = None
