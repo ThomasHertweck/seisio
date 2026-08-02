@@ -56,13 +56,25 @@ Repository = "https://gitlab.kit.edu/thomas.hertweck/seisio"
 opt = [
   "tabulate",
 ]
+test = [
+  "pytest>=7.0",
+]
 
 [tool.setuptools.packages.find]
 include = ["seisio*"]
-exclude = ["docs*", "examples*"]
+exclude = ["docs*", "examples*", "tests*"]
 
 [tool.setuptools.dynamic]
 version = { attr = "seisio.__version__" }
 
 [tool.setuptools.package-data]
 "seisio.json" = ["*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+]

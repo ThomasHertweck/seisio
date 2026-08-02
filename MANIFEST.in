@@ -1,0 +1,3 @@
+include tests/data/my_traceheaders.json
+include tests/data/sample.seg2
+
