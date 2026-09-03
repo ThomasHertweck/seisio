@@ -2,6 +2,7 @@
 
 import abc
 import decorator
+import fsspec
 import inspect
 import logging
 import mmap
@@ -77,7 +78,6 @@ class Reader(seisio.SeisIO, abc.ABC):
     @dataclass
     class _IDX():
         """Index-related parameters and objects."""
-
         grp_by: list = None
         srt_by: list = None
         gord: int = 1
@@ -90,15 +90,12 @@ class Reader(seisio.SeisIO, abc.ABC):
         hist: str = None
 
     @abc.abstractmethod
-    def __init__(self, file):
+    def __init__(self, file, **kwargs):
         """Initialize class Reader."""
-        super().__init__(file)
-
+        super().__init__(file, **kwargs)
         self._idx = self._IDX()
-
         log.info("Input file: %s", self._fp.file)
-        if not self._fp.file.exists():
-            raise ValueError(f"File '{self._fp.file}' does not exist.")
+        log.info("Input file is local? %s", self._fp.local)
 
     @property
     def vsi(self):
@@ -123,6 +120,30 @@ class Reader(seisio.SeisIO, abc.ABC):
             Delay, usually in milliunits (e.g., milliseconds)
         """
         return self._dp.delay
+
+    @property
+    def coord_scaler(self):
+        """
+        Get the coordinate scaler of the first trace.
+
+        Returns
+        -------
+        int
+            Coordinate scaler (should be pos or neg 1, 10, 100, or 1000).
+        """
+        return self._dp.scalco
+
+    @property
+    def elev_scaler(self):
+        """
+        Get the elevation scaler of the first trace.
+
+        Returns
+        -------
+        int
+            Elevation scaler (should be pos or neg 1, 10, 100, or 1000).
+        """
+        return self._dp.scalel
 
     @property
     def vaxis(self):
@@ -163,6 +184,32 @@ class Reader(seisio.SeisIO, abc.ABC):
         return tools._create_custom_dtype(keys, formats, offsets,
                                           itemsize, titles=titles)
 
+    def _merge_remote(self, starts, ends, block_size=8388608):
+        """Read bytes from remote storage and merge buffers."""
+        paths = [self._fp.uri] * len(starts)
+        p, s, e = fsspec.utils.merge_offset_ranges(paths, starts.tolist(), ends.tolist(),
+                                                   max_block=block_size, sort=True)
+        buffer_bytes = self._fp.fs.cat_ranges(paths=p, starts=s, ends=e)
+        return bytearray(b"".join(buffer_bytes))
+
+    def _idx2bytes(self, idx, length=None):
+        """Convert trace indices to file byte offsets."""
+        starts = self._fp.skip + idx * self._tr.trsize
+        ends = starts + length
+        return starts, ends
+
+    def _fetch_remote(self, indices, dtype, length=None):
+        """Fetch bytes from remote storage."""
+        if length is None:
+            raise ValueError("Need to provide 'length' parameter.")
+        idx = np.atleast_1d(indices)
+        bnd_check = np.where((idx < 0) | (idx >= self._dp.nt))[0]
+        if len(bnd_check) > 0:
+            raise ValueError("Requested indices out of valid range.")
+        starts, ends = self._idx2bytes(idx, length=length)
+        buffer = self._merge_remote(starts, ends)
+        return np.frombuffer(buffer, dtype=dtype, count=-1)
+
     def read_all_headers(self, mnemonics=None, silent=False):
         """
         Get trace headers for all traces.
@@ -182,7 +229,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             Trace header table.
         """
         if not silent:
-            log.info("Reading trace headers for all (%d) traces from disk...", self._dp.nt)
+            log.info("Reading trace headers for all (%d) traces...", self._dp.nt)
 
         if mnemonics is not None:
             dtype = self._alter_dtype(mnemonics)
@@ -190,10 +237,13 @@ class Reader(seisio.SeisIO, abc.ABC):
             dtype = self._tr.thdtype
 
         st = time.time()
-        with open(self._fp.file, "rb") as fio:
-            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                h = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
-                               strides=(self.trsize, ), order='F', offset=self._fp.skip).copy()
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                    h = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
+                                   strides=(self.trsize, ), order='F', offset=self._fp.skip).copy()
+            else:
+                h = self._fetch_remote(np.arange(self._dp.nt), dtype, length=self._tr.thsize)
         et = time.time()
 
         if not silent:
@@ -212,7 +262,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         *trcno : int(s)
-            The trace numbers (zero-based) to read from disk.
+            The trace numbers (zero-based) to read.
         mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
@@ -231,21 +281,23 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("No trace numbers requested. Need at least one.")
 
         if not silent:
-            log.info("Reading headers for %d specific traces from disk...", nt)
+            log.info("Reading headers for %d specific traces...", nt)
 
         if mnemonics is not None:
             dtype = self._alter_dtype(mnemonics)
         else:
             dtype = self._tr.thdtype
 
-        h = np.ndarray((nt, ), dtype=dtype)
-
-        with open(self._fp.file, "rb") as fio:
-            for i, trc in enumerate(trcs):
-                if trc < 0 or trc >= self._dp.nt:
-                    raise ValueError(f"Requested trace no. {trc} out of range [0,{self._dp.nt}).")
-                fio.seek(self._fp.skip+trc*self.trsize, 0)
-                h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                h = np.ndarray((nt, ), dtype=dtype)
+                for i, trc in enumerate(trcs):
+                    if trc < 0 or trc >= self._dp.nt:
+                        raise ValueError(f"Requested trace no. {trc} out of range [0,{self._dp.nt}).")
+                    fio.seek(self._fp.skip+trc*self.trsize, 0)
+                    h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+            else:
+                h = self._fetch_remote(trcs, dtype, length=self._tr.thsize)
 
         return h
 
@@ -256,7 +308,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         start : int, optional (default: 0)
-            The trace number (zero-based) to start reading from disk.
+            The trace number (zero-based) to start reading.
         nheaders : int, optional (default: 100)
             The number of subsequent traces to read, including 'start' itself.
         mnemonics : list of strings (default: None)
@@ -277,7 +329,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError(f"Requested batch of headers out of range [0,{self._dp.nt}).")
 
         if not silent:
-            log.info("Reading headers for %d traces from disk starting at trace %d...",
+            log.info("Reading headers for %d traces starting at trace index %d...",
                      nheaders, start)
 
         if mnemonics is not None:
@@ -285,11 +337,14 @@ class Reader(seisio.SeisIO, abc.ABC):
         else:
             dtype = self._tr.thdtype
 
-        with open(self._fp.file, "rb") as fio:
-            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                h = np.ndarray(shape=(nheaders, ), dtype=dtype, buffer=mm,
-                               strides=(self.trsize, ),
-                               offset=self._fp.skip+start*self.trsize, order='F').copy()
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                    h = np.ndarray(shape=(nheaders, ), dtype=dtype, buffer=mm,
+                                   strides=(self.trsize, ),
+                                   offset=self._fp.skip+start*self.trsize, order='F').copy()
+            else:
+                h = self._fetch_remote(np.arange(start, start+nheaders), dtype, length=self._tr.thsize)
 
         return h
 
@@ -311,7 +366,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         start : int, optional (default: 0)
-            The trace number (zero-based) at which to start reading from disk.
+            The trace number (zero-based) at which to start reading.
         count : int
             The total number of blocks to read.
         stride : int
@@ -336,8 +391,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Need to specify count, stride and block.")
 
         if not silent:
-            log.info("Reading %d block(s) of %d trace header(s) from disk, "
-                     "starting at %d with stride %d...", count, block, start, stride)
+            log.info("Reading %d block(s) of %d trace header(s), "
+                     "starting at index %d with stride %d...", count, block, start, stride)
 
         indices = _calc_blocks(start, stride, count, block)
 
@@ -351,12 +406,14 @@ class Reader(seisio.SeisIO, abc.ABC):
         else:
             dtype = self._tr.thdtype
 
-        h = np.ndarray((nheaders, ), dtype=dtype)
-
-        with open(self._fp.file, "rb") as fio:
-            for i in np.arange(nheaders):
-                fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-                h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                h = np.ndarray((nheaders, ), dtype=dtype)
+                for i in np.arange(nheaders):
+                    fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
+                    h[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+            else:
+                h = self._fetch_remote(indices, dtype, length=self._tr.thsize)
 
         return h
 
@@ -385,7 +442,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             Trace headers and data.
         """
         if not silent:
-            log.info("Reading entire file (%d traces) from disk...", self._dp.nt)
+            log.info("Reading entire file (%d traces in total)...", self._dp.nt)
 
         if mnemonics is not None:
             dtype = self._alter_dtype(mnemonics, trace=True)
@@ -393,10 +450,13 @@ class Reader(seisio.SeisIO, abc.ABC):
             dtype = self._tr.trdtype
 
         st = time.time()
-        with open(self._fp.file, "rb") as fio:
-            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
-                               offset=self._fp.skip, order='F').copy()
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                    d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
+                                   offset=self._fp.skip, order='F').copy()
+            else:
+                d = self._fetch_remote(np.arange(self._dp.nt), dtype, self._tr.trsize)
         et = time.time()
 
         if not silent:
@@ -421,7 +481,7 @@ class Reader(seisio.SeisIO, abc.ABC):
                     log.info("Converting all traces took %.1f seconds.", et-st)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read entire data set '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read entire data set '{self._fp.file}', "
                            f"ntraces={self._dp.nt:d}, nsamples={self._dp.ns:d}.")
 
         return d
@@ -433,7 +493,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         *trcno : int(s)
-            The trace numbers (zero-based) to read from disk.
+            The trace numbers (zero-based) to read.
         mnemonics : list of strings (default: None)
             A list of trace header mnemonics to read. If None, all header
             mnemonics are read according to the trace header definition
@@ -454,28 +514,30 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("No trace numbers requested. Need at least one.")
 
         if not silent:
-            log.info("Reading %d specific trace(s) from disk...", nt)
+            log.info("Reading %d specific trace(s)...", nt)
 
         if mnemonics is not None:
             dtype = self._alter_dtype(mnemonics, trace=True)
         else:
             dtype = self._tr.trdtype
 
-        d = np.ndarray((nt, ), dtype=dtype)
-
-        with open(self._fp.file, "rb") as fio:
-            for i, trc in enumerate(trcs):
-                if trc < 0 or trc >= self._dp.nt:
-                    raise ValueError(f"Requested trace no. {trc} out of range [0,{self._dp.nt}).")
-                fio.seek(self._fp.skip+trc*self.trsize, 0)
-                d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                d = np.ndarray((nt, ), dtype=dtype)
+                for i, trc in enumerate(trcs):
+                    if trc < 0 or trc >= self._dp.nt:
+                        raise ValueError(f"Requested trace no. {trc} out of range [0,{self._dp.nt}).")
+                    fio.seek(self._fp.skip+trc*self.trsize, 0)
+                    d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+            else:
+                d = self._fetch_remote(trcs, dtype, length=self._tr.trsize)
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file}', "
                            f"trace numbers=[{', '.join(str(x) for x in trcs)}], "
                            f"ntraces={nt:d}, nsamples={self._dp.ns:d}.")
 
@@ -489,7 +551,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         start : int, optional (default: 0)
-            The trace number (zero-based) to start reading from disk.
+            The trace number (zero-based) to start reading.
         ntraces : int, optional (default: 100)
             The number of subsequent traces to read, including 'start' itself.
         mnemonics : list of strings (default: None)
@@ -512,23 +574,26 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError(f"Requested batch of traces out of range [0,{self._dp.nt}).")
 
         if not silent:
-            log.info("Reading %d trace(s) from disk starting at trace %d...", ntraces, start)
+            log.info("Reading %d trace(s) starting at trace index %d...", ntraces, start)
 
         if mnemonics is not None:
             dtype = self._alter_dtype(mnemonics, trace=True)
         else:
             dtype = self._tr.trdtype
 
-        with open(self._fp.file, "rb") as fio:
-            fio.seek(self._fp.skip+start*self.trsize, 0)
-            d = np.fromfile(fio, dtype=dtype, count=ntraces, offset=0)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                fio.seek(self._fp.skip+start*self.trsize, 0)
+                d = np.fromfile(fio, dtype=dtype, count=ntraces, offset=0)
+            else:
+                d = self._fetch_remote(np.arange(start, start+ntraces), dtype, length=self._tr.trsize)
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file}', "
                            f"first trace={start:d}, ntraces={ntraces:d}, "
                            f"nsamples={self._dp.ns:d}.")
 
@@ -544,7 +609,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         Parameters
         ----------
         start : int, optional (default: 0)
-            The trace number (zero-based) at which to start reading from disk.
+            The trace number (zero-based) at which to start reading.
         count : int
             The total number of blocks to read.
         stride : int
@@ -571,8 +636,8 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError("Need to specify count, stride and block.")
 
         if not silent:
-            log.info("Reading %d block(s) of %d trace(s) from disk, "
-                     "starting at %d with stride %d...", count, block, start, stride)
+            log.info("Reading %d block(s) of %d trace(s), "
+                     "starting at index %d with stride %d...", count, block, start, stride)
 
         indices = _calc_blocks(start, stride, count, block)
         if np.max(indices) >= self._dp.nt:
@@ -584,19 +649,21 @@ class Reader(seisio.SeisIO, abc.ABC):
         else:
             dtype = self._tr.trdtype
 
-        d = np.zeros((ntraces, ), dtype=dtype)
-
-        with open(self._fp.file, "rb") as fio:
-            for i in np.arange(ntraces):
-                fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
-                d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                d = np.zeros((ntraces, ), dtype=dtype)
+                for i in np.arange(ntraces):
+                    fio.seek(self._fp.skip+indices[i]*self.trsize, 0)
+                    d[i] = np.fromfile(fio, dtype=dtype, count=1, offset=0)
+            else:
+                d = self._fetch_remote(indices, dtype, length=self._tr.trsize)
 
         if self._fp.datfmt == 1:
             data = d["data"].view(f"{self._fp.endian}u4")
             d["data"] = _ibm2ieee.ibm2ieee32(data, self._fp.endian)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file}', "
                            f"first trace={start:d}, block size={block:d}, "
                            f"number of blocks={count:d}, stride={stride:d}, "
                            f"ntraces={ntraces:d}, nsamples={self._dp.ns:d}.")
@@ -717,8 +784,8 @@ class Reader(seisio.SeisIO, abc.ABC):
         """
         Get a time or depth slice.
 
-        For additional details on how the data read from disk might get
-        reshaped or padded, please check the ensemble2cube function.
+        For additional details on how the data read might get reshaped or
+        padded, please check the ensemble2cube function.
 
         Parameters
         ----------
@@ -726,7 +793,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             The vertical slice number to read. Value must be in range [0,ns).
             If None, then ns//2 is chosen as default.
         reshape : bool, optional (default: True)
-            Whether to reshape the data read from disk into a 2D time or depth
+            Whether to reshape the data read into a 2D time or depth
             slice via function ensemble2cube.
         idef : str, optional (default: 'xline')
             The header mnemonic present in the ensemble's trace headers that
@@ -760,9 +827,9 @@ class Reader(seisio.SeisIO, abc.ABC):
             raise ValueError(f"Requested vertical slice {n} out of range [0,{self._dp.ns}).")
 
         if not silent:
-            log.info("Reading vertical slice %d from disk...", n)
+            log.info("Reading vertical slice at index %d...", n)
 
-        # construct cutom dtype
+        # construct custom dtype
         keys = self._tr.trdtype.names
         formats = [self._tr.trdtype.fields[k][0] for k in keys]
         # read only one sample per trace
@@ -776,10 +843,13 @@ class Reader(seisio.SeisIO, abc.ABC):
         dtype = tools._create_custom_dtype(keys, formats, offsets, itemsize, titles=titles)
 
         st = time.time()
-        with open(self._fp.file, "rb") as fio:
-            with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
-                d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
-                               offset=self._fp.skip, order='F').copy()
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            if self._fp.local:
+                with mmap.mmap(fio.fileno(), length=0, access=mmap.ACCESS_READ, offset=0) as mm:
+                    d = np.ndarray(shape=(self._dp.nt, ), dtype=dtype, buffer=mm,
+                                   offset=self._fp.skip, order='F').copy()
+            else:
+                d = self._fetch_remote(np.arange(self._dp.nt), dtype, self._tr.trsize)
         et = time.time()
 
         if not silent:
@@ -805,7 +875,7 @@ class Reader(seisio.SeisIO, abc.ABC):
 
         if history is not None:
             history.append(f"seisio {__version__}: read vertical slice {n:d} from "
-                           f"data set '{self._fp.file.absolute()}', reshape={reshape}, "
+                           f"data set '{self._fp.file}', reshape={reshape}, "
                            f"idef='{idef}', jdef='{jdef}'.")
 
         if not reshape:
@@ -852,7 +922,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             descending.
         headers : Numpy structured array or None (default: None)
             The trace header table with values for the entire file. If you
-            have previously read headers *for all traces* from disk you can
+            have previously read headers *for all traces* you can
             supply a complete header array here. If none is available, the
             (relevant) headers are read from the disk file.
         filt:
@@ -1053,7 +1123,7 @@ class Reader(seisio.SeisIO, abc.ABC):
             d = self.read_traces(*traces_to_read, mnemonics=mnemonics, silent=silent)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read traces from '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read traces from '{self._fp.file}', "
                            f"ensembles=[{', '.join(str(x) for x in tools._check(idx_keys))}], "
                            f"ntraces={len(traces_to_read):d}, nsamples={self._dp.ns:d}; "
                            f"{self._idx.hist}.")
@@ -1095,7 +1165,7 @@ class Reader(seisio.SeisIO, abc.ABC):
         ----------
         headers : Numpy structured array, optional (default: None)
             The trace header values. If None, then all trace headers will
-            be read from disk. If a structured array contains the data as
+            be read. If a structured array contains the data as
             well, they will be dropped before calculating the statistics.
         ntmax : int, optional (default: None)
             Maximum number of traces to take into consideration to build

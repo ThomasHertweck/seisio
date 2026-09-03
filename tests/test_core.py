@@ -163,8 +163,10 @@ def test_segy_txthead_template(major, minor):
 def test_missing_input():
     with pytest.raises(TypeError):
         seisio.input()
-    with pytest.raises(ValueError):
-        seisio.input("does_not_exist")
+    with pytest.raises(FileNotFoundError):
+        seisio.input("does_not_exist.sgy")
+    with pytest.raises(RuntimeError):
+        seisio.input("unknown_type")
 
 @pytest.mark.parametrize("suffix", ["SGY",
                                     "SEGY",

@@ -133,7 +133,7 @@ def test_remove_mnemonic(dummy_segy_file):
 
     new_dataset = tools.remove_mnemonic(dataset, allzero=True)
     for n in new_dataset.dtype.names:
-        assert np.max(new_dataset[n]) > 0
+        assert np.max(np.abs(new_dataset[n])) > 0 
 
 def test_rename_mnemonic(dummy_segy_file):
     sio = seisio.input(dummy_segy_file)
@@ -258,3 +258,49 @@ def test_create_custom_dtype():
     offsets = [0]
     v = tools._create_custom_dtype(names, formats, offsets, 4, titles=None)
     assert v is not None
+
+def test_is_structured():
+    names = ["bla", "data"]
+    formats = ["<f4", "(7,)<f4"]
+    dtp = tools._create_dtype(names, formats, titles=None)
+    assert dtp is not None
+    
+    v = np.zeros((2,), dtype=dtp)
+    is_struct_arr = tools._is_structured(v)
+    assert is_struct_arr == True
+
+    v = np.zeros((2, 11), dtype=np.float32)
+    is_struct_arr = tools._is_structured(v)
+    assert is_struct_arr == False
+
+def test_shape():
+    names = ["bla", "data"]
+    formats = ["<f4", "(11,)<f4"]
+    dtp = tools._create_dtype(names, formats, titles=None)
+
+    v = np.zeros((2, ), dtype=dtp)
+    nt, ns = tools._shape(v)
+    assert nt == 2
+    assert ns == 11
+
+    v = np.zeros((1, ), dtype=dtp)
+    nt, ns = tools._shape(v)
+    assert nt == 1
+    assert ns == 11
+
+    names = ["bla", "blubb"]
+    formats = ["<f4", "(11,)<f4"]
+    dtp = tools._create_dtype(names, formats, titles=None)
+    v = np.zeros((2, ), dtype=dtp)
+    with pytest.raises(ValueError):
+        _, _ = tools._shape(v)
+
+    v = np.zeros((3, 7), dtype=np.float32)
+    nt, ns = tools._shape(v)
+    assert nt == 3
+    assert ns == 7
+
+    v = np.zeros((7, ), dtype=np.float32)
+    nt, ns = tools._shape(v)
+    assert nt == 1
+    assert ns == 7

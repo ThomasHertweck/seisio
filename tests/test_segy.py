@@ -1,12 +1,13 @@
 
 import json
 import numpy as np
+import pandas as pd
 import pytest
 import seisio
 import sys
 
 from pathlib import Path
-
+from seisio import tools
 
 TESTS_DIR = Path(__file__).parent.resolve()
 
@@ -62,6 +63,12 @@ def test_open(dummy_segy_file):
     v = sio.delay
     assert v == 10
 
+    v = sio.coord_scaler
+    assert v == 1
+    
+    v = sio.elev_scaler
+    assert v == -1
+
     v = sio.vsi
     assert v == 2000
 
@@ -96,6 +103,12 @@ def test_open(dummy_segy_file):
 
     v = sio.txthead
     assert len(v) == 40
+    
+    v = sio.trdtype
+    assert isinstance(v, np.dtype)
+
+    v = sio.thdtype
+    assert isinstance(v, np.dtype)
 
     with pytest.raises(NotImplementedError):
         seisio.input(dummy_segy_file, fixed=False)
@@ -155,7 +168,9 @@ def test_open_json(dummy_segy_file, tmp_path):
          "tracr": {"byte": 5, "type": "i", "desc": "BBB"},
          "ns": {"byte": 9, "type": "h", "desc": "CCC"},
          "dt": {"byte": 11, "type": "h", "desc": "DDD"},
-         "delrt": {"byte": 13, "type": "h", "desc": "EEE"}}
+         "delrt": {"byte": 13, "type": "h", "desc": "EEE"},
+         "scalel": {"byte": 15, "type": "h", "desc": "FFF"},
+         "scalco": {"byte": 17, "type": "h", "desc": "GGG"}}
     thdef_json.write_text(json.dumps(d, indent=4))
     sin = seisio.input(dummy_segy_file, thdef=thdef_json)
     assert sin is not None
@@ -1315,3 +1330,30 @@ def test_vslice(dummy_segy_file):
     sl = sio.read_vslice(n=4, reshape=False, silent=True)
     assert sl is not None
 
+def test_write_single_trace(tmp_path, dummy_su_file):
+    file_path = tmp_path / "dummy_out_single.segy"
+
+    sin = seisio.input(dummy_su_file)
+    assert sin is not None
+    dataset = sin.read_traces(0)
+    
+    sol = seisio.output(file_path, ns=sin.ns, vsi=sin.vsi)
+    assert sol is not None
+    
+    sol.init()
+    
+    nt_written = sol.write_traces(traces=dataset)
+    assert nt_written == 1
+    
+    headers = tools.remove_mnemonic(dataset, names=["data"])
+    assert headers is not None
+    
+    df = pd.DataFrame(headers)
+    nt_written += sol.write_traces(data=dataset["data"], headers=df)
+    assert nt_written == 2
+    
+    sol.finalize()
+    
+    sin_check = seisio.input(file_path)
+    assert sin_check.ns == sin.ns
+    assert sin_check.nt == 2

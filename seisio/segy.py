@@ -1,5 +1,6 @@
 """I/O of seismic files in SEG-Y format."""
 
+import fsspec
 import json
 import logging
 import numpy as np
@@ -28,8 +29,10 @@ class Reader(reader.Reader):
 
         Parameters
         ----------
-        file : str or pathlib.Path
+        file : str
             The name of the SEG-Y input file to read.
+        storage_options : dict (default: None)
+            Storage options to pass to the storage backend (if remote).
         format : int, optional (default: None)
             Data format of SEG-Y traces, see SEG-Y standard for details.
             Usually, this is determined automatically from the binary file
@@ -124,8 +127,12 @@ class Reader(reader.Reader):
         mnemonic_delrt : str, optional (default: "delrt")
             The SEG-Y trace header mnemonic specifying the delay recording
             time.
+        mnemonic_scalco : str, optional (default: "scalco")
+            The SEG-Y trace header mnemonic specifying the coordinate scaler.
+        mnemonic_scalel : str, optional (default: "scalel")
+            The SEG-Y trace header mnemonic specifying the elevation scaler.
         """
-        super().__init__(file)
+        super().__init__(file, **kwargs)
         self._sgy = self._SEGY()
 
         self._fp.endian = kwargs.pop("endian", None)
@@ -157,10 +164,13 @@ class Reader(reader.Reader):
         self._par["bin_edt"] = kwargs.pop("bin_edt", "edt")
         self._par["bin_ntfile"] = kwargs.pop("bin_ntfile", "ntfile")
         self._par["mnemonic_delrt"] = kwargs.pop("mnemonic_delrt", "delrt")
+        self._par["mnemonic_scalco"] = kwargs.pop("mnemonic_scalco", "scalco")
+        self._par["mnemonic_scalel"] = kwargs.pop("mnemonic_scalel", "scalel")
 
         if kwargs:
             for key, val in kwargs.items():
-                log.warning("Unknown argument '%s' with value '%s' encountered.", key, str(val))
+                if key != "storage_options":
+                    log.warning("Unknown argument '%s' with value '%s' encountered.", key, str(val))
 
         self._fp.mode = "r"
 
@@ -190,7 +200,7 @@ class Reader(reader.Reader):
             raise ValueError("Value for argument 'nthuser' cannot be negative.")
 
         self._sgy.txthead = _txtheader.TxtHeader(encoding=self._par["txtenc"])
-        with open(self._fp.file, "rb") as fio:
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
             self._sgy.txthead.read(fio)
             fio.seek(0, 2)
             self._fp.filesize = fio.tell()
@@ -417,11 +427,11 @@ class Reader(reader.Reader):
         """
         from sys import byteorder
 
-        with open(self._fp.file, "rb") as fio:
-            fio.seek(self._fp.skip, 0)
-            binhead_le = np.fromfile(fio, dtype=bhdtype_le, count=1)
-            fio.seek(self._fp.skip, 0)
-            binhead_be = np.fromfile(fio, dtype=bhdtype_be, count=1)
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            binhead_bytes = fsspec.utils.read_block(fio, offset=self._fp.skip,
+                                                    length=bhdtype_le.itemsize)
+            binhead_le = np.frombuffer(binhead_bytes, dtype=bhdtype_le, count=1)
+            binhead_be = np.frombuffer(binhead_bytes, dtype=bhdtype_be, count=1)
 
         # The integer constant 16909060_10 (01020304_16). This is used to
         # allow unambiguous detection of the byte ordering to expect for this
@@ -475,10 +485,10 @@ class Reader(reader.Reader):
 
     def _get_fileattr(self):
         """Determine certain attributes by analzying binary file header."""
-        with open(self._fp.file, "rb") as fio:
-            fio.seek(self._fp.skip, 0)
-            self._sgy.binhead = np.fromfile(fio, dtype=self._sgy.bhdtype, count=1)
-
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            binhead_bytes = fsspec.utils.read_block(fio, offset=self._fp.skip,
+                                                    length=self._sgy.bhdtype.itemsize)
+            self._sgy.binhead = np.frombuffer(binhead_bytes, dtype=self._sgy.bhdtype, count=1)
         self._fp.skip += self._sgy.bhdtype.itemsize
 
         self._segy_revision()
@@ -619,7 +629,7 @@ class Reader(reader.Reader):
 
         if segy_num_headrec > 0:
             # fixed number of additional header records
-            with open(self._fp.file, "rb") as fio:
+            with self._fp.fs.open(self._fp.uri, "rb") as fio:
                 for i in range(segy_num_headrec):
                     fio.seek(self._fp.skip+i*self._sgy.txthead.size, 0)
                     self._sgy.txtrec.append(_txtheader.TxtHeader(encoding=None, info="SEG-Y ext. "
@@ -629,7 +639,7 @@ class Reader(reader.Reader):
             # variable number of add. header records
             cont_reading = True
             segy_num_headrec = 0
-            with open(self._fp.file, "rb") as fio:
+            with self._fp.fs.open(self._fp.uri, "rb") as fio:
                 while cont_reading:
                     fio.seek(self._fp.skip+segy_num_headrec*self._sgy.txthead.size, 0)
                     self._sgy.txtrec.append(_txtheader.TxtHeader(encoding=None,
@@ -676,7 +686,7 @@ class Reader(reader.Reader):
 
         if segy_num_trailer > 0:
             # fixed number of additional trailer records
-            with open(self._fp.file, "rb") as fio:
+            with self._fp.fs.open(self._fp.uri, "rb") as fio:
                 for count in range(segy_num_trailer):
                     fio.seek(0, 2)
                     self._sgy.txtrail.append(_txtheader.TxtHeader(encoding="ascii", info="SEG-Y "
@@ -688,7 +698,7 @@ class Reader(reader.Reader):
             cont_reading = True
             segy_num_trailer = 0
             txtsize = self._sgy.txthead.size
-            with open(self._fp.file, "rb") as fio:
+            with self._fp.fs.open(self._fp.uri, "rb") as fio:
                 while cont_reading:
                     fio.seek(-(txtsize+segy_num_trailer*txtsize), 2)
                     self._sgy.txtrail.append(_txtheader.TxtHeader(encoding="ascii",
@@ -855,13 +865,20 @@ class Reader(reader.Reader):
         log.info("Number of data traces in file: %d.", self._dp.nt)
 
         if self._dp.nt > 0:
-            with open(self._fp.file, "rb") as fio:
-                fio.seek(self._fp.skip, 0)
-                headers = np.fromfile(fio, dtype=self._tr.thdtype, count=1)
+            with self._fp.fs.open(self._fp.uri, "rb") as fio:
+                header_bytes = fsspec.utils.read_block(fio, offset=self._fp.skip,
+                                                       length=self._tr.thdtype.itemsize)
+                headers = np.frombuffer(header_bytes, dtype=self._tr.thdtype, count=1)
                 self._dp.delay = headers[self._par["mnemonic_delrt"]][0]
+                self._dp.scalco = headers[self._par["mnemonic_scalco"]][0]
+                self._dp.scalel = headers[self._par["mnemonic_scalel"]][0]
             log.info("Delay (on first trace): %s (unit as per SEG-Y standard).", str(self._dp.delay))
+            log.info("Coordinate scaler (on first trace): %s.", str(self._dp.scalco))
+            log.info("Elevation scaler (on first trace): %s.", str(self._dp.scalel))
         else:
             self._dp.delay = 0
+            self._dp.scalco = 1
+            self._dp.scalel = 1
             log.info("No data traces, delay set to 0.")
 
 
@@ -880,6 +897,8 @@ class Writer(writer.Writer):
             Number of samples per output trace.
         vsi : int
             (Vertical) sampling interval (typically in microunits).
+        storage_options : dict (default: None)
+            Storage options to pass to the storage backend (if remote).
         endian : char, optional (default: ">")
             Endianess of the input file, ">" for big endian, "<" for little
             endian, "=" for native endian.
@@ -964,7 +983,7 @@ class Writer(writer.Writer):
             file.
         """
         mode = "w"
-        super().__init__(file, mode)
+        super().__init__(file, mode, **kwargs)
 
         self._sgy = self._SEGY()
 
@@ -1357,7 +1376,7 @@ class Writer(writer.Writer):
             raise ValueError(f"Expected {self.ntxtrec} extended header "
                              "record(s), received none.")
 
-        with open(self._fp.file, "ab") as io:
+        with self._fp.fs.open(self._fp.uri, "ab") as io:
             self._sgy.txthead.write(io)
             io.write(self._sgy.binhead.tobytes())
             for i in range(self.ntxtrec):
@@ -1371,7 +1390,7 @@ class Writer(writer.Writer):
 
     def finalize(self, *args, encode=True, silent=False):
         """
-        Finalize output (and write all SEG-Y file trailers to disk).
+        Finalize output (and write all SEG-Y file trailers).
 
         This function has to be called after writing all traces to the file.
         Handle errors / inconsistencies gracefully to allow writing a file at
@@ -1405,7 +1424,7 @@ class Writer(writer.Writer):
                     log.warning("Resetting number of trailer records to %d.", len(args))
                     del self._sgy.txtrail[len(args):]
 
-            with open(self._fp.file, "ab") as io:
+            with self._fp.fs.open(self._fp.uri, "ab") as io:
                 for i, string in enumerate(args):
                     if i < self.ntxtrail:
                         self._sgy.txtrail[i].set_header(string, encode=encode)
@@ -1418,9 +1437,10 @@ class Writer(writer.Writer):
 
         log.info("Finalizing output file and re-writing updated binary header.")
 
-        with open(self._fp.file, "r+b") as io:
+        with self._fp.fs.open(self._fp.uri, "r+b") as io:
             io.seek(self._sgy.txthead.size, 0)
             io.write(self._sgy.binhead.tobytes())
+            io.flush()
             io.seek(0, 2)
             self._fp.filesize = io.tell()
 

@@ -17,27 +17,33 @@ log = logging.getLogger(__name__)
 class Reader(seisio.SeisIO):
     """Class to deal with input of seismic files in SEG2 format."""
 
-    def __init__(self, file):
+    def __init__(self, file, **kwargs):
         """
         Initialize class Reader.
 
         Parameters
         ----------
-        file : str or pathlib.Path
+        file : str
             The name of the SEG2 input file to read.
+        storage_options : dict (default: None)
+            Storage options to pass to the storage backend (if remote).
         """
-        super().__init__(file)
+        super().__init__(file, **kwargs)
+
+        if kwargs:
+            for key, val in kwargs.items():
+                if key != "storage_options":
+                    log.warning("Unknown argument '%s' with value '%s' encountered.", key, str(val))
 
         self._sg2 = self._SEG2()
         self._fp.fixed = True
 
         log.info("Input file: %s", self._fp.file)
 
-        with open(self._fp.file, "rb") as fio:
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
             fio.seek(0, 2)
             self._fp.filesize = fio.tell()
             fio.seek(0, 0)
-
             # file descriptor block and free format section
             tpb_size = self._read_file_descriptor_block(fio)
             log.debug("Size of file descriptor block: %d bytes.", tpb_size)
@@ -288,7 +294,7 @@ class Reader(seisio.SeisIO):
         all_headers = []
         all_data = []
 
-        with open(self._fp.file, "rb") as fio:
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
             for trace in np.arange(self.nt):
                 trp = self._sg2.trcptr[trace]
                 fio.seek(trp, 0)
@@ -330,7 +336,7 @@ class Reader(seisio.SeisIO):
                 log.info("Reading all traces took %.1f seconds.", et-st)
 
         if history is not None:
-            history.append(f"seisio {__version__}: read entire data set '{self._fp.file.absolute()}', "
+            history.append(f"seisio {__version__}: read entire data set '{self._fp.file}', "
                            f"ntraces={self.nt:d}, nsamples={self.ns:d}.")
 
         return data, df
@@ -355,7 +361,7 @@ class Reader(seisio.SeisIO):
         st = time.time()
         all_headers = []
 
-        with open(self._fp.file, "rb") as fio:
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
             for trace in np.arange(self.nt):
                 trp = self._sg2.trcptr[trace]
                 fio.seek(trp, 0)

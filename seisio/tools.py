@@ -201,6 +201,39 @@ def _create_custom_dtype(names, formats, offsets, itemsize, titles=None):
     return dtype
 
 
+def _is_structured(array):
+    """Check whether an array is a structured array."""
+    try:
+        dtp = array.dtype
+    except AttributeError:
+        # input is not a Numpy array
+        return False
+    if dtp.names is not None:
+        # structured Numpy array
+        return True
+    else:
+        # unstructured Numpy array
+        return False
+
+
+def _shape(array):
+    """Determine shape of a possibly structured Numpy array."""
+    if _is_structured(array):
+        try:
+            data = array["data"].view()
+        except ValueError:
+            log.error("Structured array has no 'data' field.")
+            raise
+    else:
+        data = array.view()
+    if data.ndim == 1:
+        return (1, len(data))
+    elif data.ndim == 2:
+        return data.shape
+    else:
+        raise RuntimeError("Cannot handle arrays of ndim > 2.")
+
+
 def add_mnemonic(headers, names=None, data=None, dtypes=None):
     """
     Add mnemonic(s) to structured array.
@@ -452,7 +485,7 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
     if header_trid is not None and header_trid not in keys:
         raise KeyError(f"Mnemonic '{header_trid}' not found in ensemble's trace headers.")
 
-    nt, ns = ensemble["data"].shape
+    nt, ns = _shape(ensemble)
     if nt < 3:
         log.warning("Reshaping an ensemble with only %d trace(s) is not meaningful.")
         if nt == 0:
@@ -593,7 +626,7 @@ def ensemble2cube(ensemble, idef="xline", jdef="iline",
 #     if header_trid is not None and header_trid not in keys:
 #         raise KeyError(f"Mnemonic '{header_trid}' not found in ensemble's trace headers.")
 
-#     nt, ns = ensemble["data"].shape
+#     nt, ns = _shape(ensemble)
 #     if nt < 3:
 #         log.warning("Reshaping an ensemble with only %d trace(s) is not meaningful.")
 #         if nt == 0:

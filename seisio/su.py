@@ -1,5 +1,6 @@
 """I/O of seismic files in SU format."""
 
+import fsspec
 import json
 import logging
 import numpy as np
@@ -24,8 +25,10 @@ class Reader(reader.Reader):
 
         Parameters
         ----------
-        file : str or pathlib.Path
+        file : str
             The name of the SU input file to read.
+        storage_options : dict (default: None)
+            Storage options to pass to the storage backend (if remote).
         endian : char, optional (default: None)
             Endianess of the input file, ">" for big endian, "<" for little
             endian. If endian=None (default), then the endianess of the file
@@ -47,8 +50,12 @@ class Reader(reader.Reader):
             The SU trace header mnemonic specifying the delay recording time.
             Using this parameter is only useful in case the standard trace
             header definition is changed.
+        mnemonic_scalco : str, optional (default: "scalco")
+            The SU trace header mnemonic specifying the coordinate scaler.
+        mnemonic_scalel : str, optional (default: "scalel")
+            The SU trace header mnemonic specifying the elevation scaler.
         """
-        super().__init__(file)
+        super().__init__(file, **kwargs)
 
         self._fp.endian = kwargs.pop("endian", None)
 
@@ -56,10 +63,13 @@ class Reader(reader.Reader):
         self._par["mnemonic_dt"] = kwargs.pop("mnemonic_dt", "dt")
         self._par["mnemonic_ns"] = kwargs.pop("mnemonic_ns", "ns")
         self._par["mnemonic_delrt"] = kwargs.pop("mnemonic_delrt", "delrt")
+        self._par["mnemonic_scalco"] = kwargs.pop("mnemonic_scalco", "scalco")
+        self._par["mnemonic_scalel"] = kwargs.pop("mnemonic_scalel", "scalel")
 
         if kwargs:
             for key, val in kwargs.items():
-                log.warning("Unknown argument '%s' with value '%s' encountered.", key, str(val))
+                if key != "storage_options":
+                    log.warning("Unknown argument '%s' with value '%s' encountered.", key, str(val))
 
         self._fp.mode = "r"
         self._fp.datfmt = 5
@@ -103,15 +113,17 @@ class Reader(reader.Reader):
         byte_dt = self._tr.thdict[self._par["mnemonic_dt"]]["byte"]
         type_dt = self._tr.thdict[self._par["mnemonic_dt"]]["type"]
 
-        with open(self._fp.file, "rb") as io:
-            io.seek(byte_ns-1, 0)
-            ns_le = np.fromfile(io, dtype=f"<{type_ns}", count=1)[0]
-            io.seek(byte_dt-1, 0)
-            dt_le = np.fromfile(io, dtype=f"<{type_dt}", count=1)[0]
-            io.seek(byte_ns-1, 0)
-            ns_be = np.fromfile(io, dtype=f">{type_ns}", count=1)[0]
-            io.seek(byte_dt-1, 0)
-            dt_be = np.fromfile(io, dtype=f">{type_dt}", count=1)[0]
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            dtp_le = np.dtype(f"<{type_ns}")
+            dtp_be = np.dtype(f">{type_ns}")
+            ns_bytes = fsspec.utils.read_block(fio, offset=byte_ns-1, length=dtp_le.itemsize)
+            ns_le = np.frombuffer(ns_bytes, dtype=dtp_le, count=1)[0]
+            ns_be = np.frombuffer(ns_bytes, dtype=dtp_be, count=1)[0]
+            dtp_le = np.dtype(f"<{type_dt}")
+            dtp_be = np.dtype(f">{type_dt}")
+            dt_bytes = fsspec.utils.read_block(fio, offset=byte_dt-1, length=dtp_le.itemsize)
+            dt_le = np.frombuffer(dt_bytes, dtype=dtp_le, count=1)[0]
+            dt_be = np.frombuffer(dt_bytes, dtype=dtp_be, count=1)[0]
 
         if (dt_be <= 10000) and (ns_be <= 20000):  # likely big endian
             return '>'
@@ -121,29 +133,24 @@ class Reader(reader.Reader):
 
     def _get_fileattr(self):
         """Determine certain attributes by analzying file."""
-        byte_ns = self._tr.thdict[self._par["mnemonic_ns"]]["byte"]
-        type_ns = self._tr.thdict[self._par["mnemonic_ns"]]["type"]
-        byte_dt = self._tr.thdict[self._par["mnemonic_dt"]]["byte"]
-        type_dt = self._tr.thdict[self._par["mnemonic_dt"]]["type"]
-        byte_delrt = self._tr.thdict[self._par["mnemonic_delrt"]]["byte"]
-        type_delrt = self._tr.thdict[self._par["mnemonic_delrt"]]["type"]
-
-        with open(self._fp.file, "rb") as io:
-            io.seek(byte_ns-1, 0)
-            self._dp.ns = np.fromfile(io, dtype=f"{self._fp.endian}{type_ns}", count=1)[0]
-            io.seek(byte_dt-1, 0)
-            self._dp.si = np.fromfile(io, dtype=f"{self._fp.endian}{type_dt}", count=1)[0]
-            io.seek(byte_delrt-1, 0)
-            self._dp.delay = np.fromfile(io, dtype=f"{self._fp.endian}{type_delrt}", count=1)[0]
-            io.seek(0, 2)
-            self._fp.filesize = io.tell()
-
         keys, formats, titles = tools._parse_hdef(self._tr.thdict, endian=self._fp.endian)
         self._tr.thdtype = tools._create_dtype(keys, formats, titles=titles)
         self._tr.thsize = self._tr.thdtype.itemsize
         if self._tr.thsize != _SUHEADSIZE:
             log.warning("Size of trace header (%d bytes) violates SU standard (%d bytes)",
                         self._tr.thsize, _SUHEADSIZE)
+
+        with self._fp.fs.open(self._fp.uri, "rb") as fio:
+            header_bytes = fsspec.utils.read_block(fio, offset=self._fp.skip,
+                                                   length=self._tr.thdtype.itemsize)
+            headers = np.frombuffer(header_bytes, dtype=self._tr.thdtype, count=1)
+            self._dp.ns = headers[self._par["mnemonic_ns"]][0]
+            self._dp.si = headers[self._par["mnemonic_dt"]][0]
+            self._dp.delay = headers[self._par["mnemonic_delrt"]][0]
+            self._dp.scalco = headers[self._par["mnemonic_scalco"]][0]
+            self._dp.scalel = headers[self._par["mnemonic_scalel"]][0]
+            fio.seek(0, 2)
+            self._fp.filesize = fio.tell()
 
         keys.append("data")
         formats.append(f"({self._dp.ns},){self._fp.endian}"
@@ -161,12 +168,13 @@ class Reader(reader.Reader):
 
         log.info("Number of samples per data trace: %d.", self.ns)
         log.info("Sampling interval: %s (unit as per SU standard).", str(self.vsi))
-        log.info("Delay (on first trace): %s (unit as per SU standard).", str(self.delay))
+        log.info("Delay (on first trace): %s (unit as per SU standard).", str(self._dp.delay))
+        log.info("Coordinate scaler (on first trace): %s.", str(self._dp.scalco))
+        log.info("Elevation scaler (on first trace): %s.", str(self._dp.scalel))
         log.info("Number of data traces in file: %d.", self.nt)
 
-
 class Writer(writer.Writer):
-    """Class to deal with input of seismic files in SU format."""
+    """Class to deal with ouput of seismic files in SU format."""
 
     def __init__(self, file, ns=None, mode="w", **kwargs):
         """
@@ -175,9 +183,11 @@ class Writer(writer.Writer):
         Parameters
         ----------
         file : str or pathlib.Path
-            The name of the SU input file to read.
+            The name of the SU output file to write.
         ns : int
             Number of samples per output trace.
+        storage_options : dict (default: None)
+           Storage options to pass to the storage backend (if remote).
         mode : char, optional (default: "w")
             File opening mode. "w" writes a new file, or truncates an existing
             file if it already exists. "a" writes a new file, or appends to an
@@ -190,7 +200,7 @@ class Writer(writer.Writer):
             the standard SU trace header definition as originally provided by
             the SU segy.h source code file.
         """
-        super().__init__(file, mode)
+        super().__init__(file, mode, **kwargs)
 
         self._dp.ns = ns
         self._fp.endian = kwargs.pop("endian", "=")

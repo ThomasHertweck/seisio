@@ -1,6 +1,7 @@
 """SeisIO abstract base class."""
 
 import abc
+import fsspec
 import json
 import logging
 import numpy as np
@@ -8,6 +9,8 @@ import pandas as pd
 import pathlib
 
 from dataclasses import dataclass, field
+from fsspec.core import url_to_fs
+from fsspec.implementations.local import LocalFileSystem
 
 from . import tools
 from . import _txtheader
@@ -29,6 +32,10 @@ class SeisIO(abc.ABC):
         skip: int = 0
         datfmt: int = None
         dtype: np.dtype = None
+        fs: fsspec.AbstractFileSystem = None
+        uri: str = None
+        local: bool = True
+        options: dict = field(default_factory=dict)
 
     @dataclass
     class _DP():
@@ -37,6 +44,8 @@ class SeisIO(abc.ABC):
         ns: int = 0
         si: int = 0
         delay: int = 0
+        scalco: int = 1
+        scalel: int = 1
 
     @dataclass
     class _TR():
@@ -69,7 +78,7 @@ class SeisIO(abc.ABC):
         theader: dict = field(default_factory=dict)
 
     @abc.abstractmethod
-    def __init__(self, file):
+    def __init__(self, file, **kwargs):
         """Initialize class SeisIO."""
         self._fp = self._FP()
         self._dp = self._DP()
@@ -78,6 +87,16 @@ class SeisIO(abc.ABC):
         self._sg2 = None
         self._par = {}
         self._fp.file = pathlib.Path(file)
+        self._fp.options = kwargs.pop("storage_options", self._fp.options)
+        self._fp.fs, self._fp.uri = url_to_fs(file, **self._fp.options)
+        self._fp.local = self._is_local_with_fileno()
+
+    def _is_local_with_fileno(self):
+        """Check if fsspec file object is local."""
+        if self._fp.fs is not None:
+            if isinstance(self._fp.fs, LocalFileSystem):
+                return True
+        return False
 
     @property
     def endianess(self):
@@ -128,6 +147,18 @@ class SeisIO(abc.ABC):
         return self._tr.thsize
 
     @property
+    def thdtype(self):
+        """
+        Get the dtype of a trace header.
+
+        Returns
+        -------
+        np.dtype
+            Trace header dtype.
+        """
+        return self._tr.thdtype
+
+    @property
     def trsize(self):
         """
         Get the size of one complete trace (trace header plus data).
@@ -138,6 +169,18 @@ class SeisIO(abc.ABC):
             Size of one complete trace in bytes.
         """
         return self._tr.trsize
+
+    @property
+    def trdtype(self):
+        """
+        Get the dtype of a complete trace.
+
+        Returns
+        -------
+        np.dtype
+            Trace dtype.
+        """
+        return self._tr.trdtype
 
     @property
     def ns(self):

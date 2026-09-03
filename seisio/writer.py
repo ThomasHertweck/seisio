@@ -16,30 +16,31 @@ class Writer(seisio.SeisIO, abc.ABC):
     """An abstract Writer class for seismic data I/O."""
 
     @abc.abstractmethod
-    def __init__(self, file, mode):
+    def __init__(self, file, mode, **kwargs):
         """Initialize class Writer."""
-        super().__init__(file)
+        super().__init__(file, **kwargs)
 
         log.info("Output file: %s", self._fp.file)
+        log.info("Output file is local? %s", self._fp.local)
 
         self._fp.mode = mode
         if self._fp.mode not in ["w", "a"]:
             raise ValueError(f"Unknown value '{self._fp.mode}' for argument 'mode'.")
 
-        f_exists = self._fp.file.exists()
-
+        f_exists = self._fp.fs.exists(self._fp.uri)
         if f_exists and self._fp.mode == "w":
             log.warning("File %s already exists, truncating file.", self._fp.file)
-            with open(self._fp.file, "wb") as _:
+            with self._fp.fs.open(self._fp.file, "wb") as _:
                 pass  # truncate file
         elif not f_exists and self._fp.mode == "w":
-            with open(self._fp.file, "wb") as _:
+            with self._fp.fs.open(self._fp.file, "wb") as _:
                 pass  # create file
         elif f_exists and self._fp.mode == "a":
             log.info("File %s already exists, appending to file.", self._fp.file)
             log.warning("Note: there are no consistency cross-checks performed.")
+            log.warning("Note: storage backend might not support append mode.")
         elif not f_exists and self._fp.mode == "a":
-            with open(self._fp.file, "wb") as _:
+            with self._fp.fs.open(self._fp.file, "wb") as _:
                 pass  # create file
         # subsequent writes can now always use "append" mode
 
@@ -118,7 +119,11 @@ class Writer(seisio.SeisIO, abc.ABC):
         if headers is None:
             raise ValueError("No headers given on input.")
 
-        nt = len(headers)
+        if headers.ndim == 0:
+            nt = 1
+        else:
+            nt = len(headers)
+
         myheaders = self.headers_template(nt=nt)
 
         if nt == 0:
@@ -196,6 +201,8 @@ class Writer(seisio.SeisIO, abc.ABC):
         int
             The number of traces written in this call.
         """
+        ns = None
+        nt = None
         if data is None and headers is None and traces is None:
             raise ValueError("No traces (data, headers) to write to disk.")
         if traces is not None and (data is not None or headers is not None):
@@ -209,14 +216,9 @@ class Writer(seisio.SeisIO, abc.ABC):
             raise RuntimeError("File has already been finalized by 'finalize' function call.")
 
         if traces is not None:
-            nt = len(traces)
+            nt, ns = tools._shape(traces)
             if nt == 0:
                 raise ValueError("No traces given, structure is empty.")
-            try:
-                nt, ns = np.shape(traces["data"])
-            except ValueError:
-                log.error("Supplied Numpy structure 'traces' has no key called 'data'.")
-                raise
             if ns == 0:
                 raise ValueError("Traces have zero samples.")
             if ns != self._dp.ns:
@@ -229,7 +231,7 @@ class Writer(seisio.SeisIO, abc.ABC):
 
         if headers is not None:
             nt_h = len(headers)
-            nt, ns = data.shape
+            nt, ns = tools._shape(data)
             if nt == 0:
                 raise ValueError("No traces available, data object is empty.")
             if nt != nt_h:
@@ -246,6 +248,9 @@ class Writer(seisio.SeisIO, abc.ABC):
                 outheaders = self._headers_transfer(headers, remap=remap, silent=silent)
             else:
                 raise TypeError("Given headers object has unsupported type: %s", type(headers))
+
+        if nt == 1:
+            data = np.reshape(data, (1, ns))
 
         if self._fp.datfmt == 1:
             # IBM float
@@ -267,8 +272,8 @@ class Writer(seisio.SeisIO, abc.ABC):
                 outdat = outdat.byteswap(inplace=False)
 
         if not silent:
-            log.info("Writing %d trace(s) to disk...", nt)
-        with open(self._fp.file, "ab") as fio:
+            log.info("Writing %d trace(s)...", nt)
+        with self._fp.fs.open(self._fp.uri, "ab") as fio:
             for i in np.arange(nt):
                 fio.write(outheaders[i].tobytes())
                 fio.write(outdat[i, :].tobytes())

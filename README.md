@@ -17,6 +17,7 @@ There are quite a few great Python packages available to read and/or write seism
 * Reads and writes SEG-Y data (with support for SEG-Y rev. 2.1, i.e., it can handle more than 65535 samples per trace or sampling intervals smaller than 1 microsecond, extended textual header records or trailer records) as IBM floats, IEEE floats, or similar.
 * Reads and writes data in Seismic Unix (SU) format, both little or big endian (SUXDR).
 * Reads SEG2 data, including non-standard strings in the descriptor blocks.
+* Allows reading and writing files from/to local disk, cloud storage, etc.; local file input uses memory mapping.
 * Data are only read into memory on demand (lazy loading), not at the point of creating the reader object; also, the file (input or output) is not kept open all the time, i.e., **seisio** itself does not need a context manager. Files should always be in a consistent state.
 * Flexible and customizable header definitions via JSON parameter file. You need to pick up a "float" value at byte 32 in the trace header? Or you would like to name the SU header `cmp` instead of `cdp`? Or you have values of non-standard type "double" in the trace headers? No problem! You can also remap headers when outputting files and the current trace header table does not match the output trace header table.
 * Allows reading a subset of trace header mnemonics instead of all trace header mnemonics.
@@ -56,7 +57,7 @@ Obviously, the comparison might look different when only reading subsets of the 
 
 ### Dependencies
 
-Required: numpy, pandas, numba 
+Required: fsspec, numba, numpy, pandas
 
 Highly recommended: tabulate
 
@@ -224,6 +225,16 @@ fheader = sio.fheader   # strings of the file descriptor block
 data, theaders = sio.read_all_traces()
 ```
 
+Files do not necessarily have to be local although local files offer the best overall performance. If you would like to read a file from, for instance, an S3 filesystem, you can simply use
+```
+sio = seisio.input("s3://...", storage_options={"anon": True})
+```
+where the parameter `storage_options` is a dict holding options to pass to the storage backend (see `fsspec` for details). Similarly, reading directly from a web server can be achieved via
+```
+sio = seisio.input("https://...")
+```
+Keep in mind, though, that it could be faster to make a local copy of the remote file(s) first. Please note that for obvious reasons not all available filesystems offered by `fsspec` could be tested in **seisio**. Similar considerations hold for outputting files to remote storage; it is important to remember, though, that certain remote files are immutable, i.e., a full download, local update and full upload is triggered - probably not what you want. It usually is a better idea to write files locally and transfer them to remote storage later on.
+
 ## Other packages dealing with I/O of seismic data
 
 The following list (by no means complete!) shows a few other packages dealing with I/O of seismic data that I have tested myself:
@@ -239,7 +250,7 @@ The following list (by no means complete!) shows a few other packages dealing wi
 
 ## Testing
 
-The current version of the **seisio** module has primarily been tested on Linux-based computers using Python 3.10 to 3.14, including Numpy versions up to 2.4.3.
+The current version of the **seisio** module has primarily been tested on Linux-based computers using Python 3.10 to 3.14, including Numpy versions up to 2.4.6.
 
 ## Main author
 
@@ -249,7 +260,7 @@ Dr. Thomas Hertweck, geophysics@email.de
 
 If you use the **seisio** module and you find it useful, getting some feedback would be very much appreciated. If you would like to cite this module, please use, for instance:
 ```
-Hertweck, T. (2026). seisio: A Python library for I/O operations of seismic data. Version 1.5.0. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 20/07/2026).
+Hertweck, T. (2026). seisio: A Python library for I/O operations of seismic data. Version 1.6.0. url: https://gitlab.kit.edu/thomas.hertweck/seisio/ (visited on 02/09/2026).
 ```
 Adjust year, version and last visited date as required. Here's a BibTeX entry:
 ```
@@ -258,8 +269,8 @@ Adjust year, version and last visited date as required. Here's a BibTeX entry:
   year    = {2026},
   title   = {seisio: A {P}ython library for {I/O} operations of seismic data},
   url     = {https://gitlab.kit.edu/thomas.hertweck/seisio/},
-  urldate = {2026-07-20},
-  version = {1.5.0}
+  urldate = {2026-09-02},
+  version = {1.6.0}
 }
 ```
 ## License

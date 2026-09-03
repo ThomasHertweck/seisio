@@ -3,30 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.6">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>seisio.su API documentation</title>
 <meta name="description" content="I/O of seismic files in SU format.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => {
 hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
 hljs.highlightAll();
-/* Collapse source docstrings */
-setTimeout(() => {
-[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
-.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
-.forEach(el => {
-let d = document.createElement('details');
-d.classList.add('hljs-string');
-d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
-el.replaceWith(d);
-});
-}, 100);
 })</script>
 </head>
 <body>
@@ -52,6 +41,40 @@ el.replaceWith(d);
 <span>(</span><span>file, **kwargs)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>Class to deal with input of seismic files in SU format.</p>
+<p>Initialize class Reader.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the SU input file to read.</dd>
+<dt><strong><code>storage_options</code></strong> :&ensp;<code>dict (default: None)</code></dt>
+<dd>Storage options to pass to the storage backend (if remote).</dd>
+<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: None)</code></dt>
+<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
+endian. If endian=None (default), then the endianess of the file
+is determined automatically. This parameter can be used to force
+a specific setting.</dd>
+<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The name of the SU trace header definition JSON file. Defaults
+to the standard SU trace header definition as originally provided
+by the SU segy.h source code file.</dd>
+<dt><strong><code>mnemonic_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
+<dd>The SU trace header mnemonic specifying the sampling interval.
+Using this parameter is only useful in case the standard trace
+header definition is changed.</dd>
+<dt><strong><code>mnemonic_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
+<dd>The SU trace header mnemonic specifying the number of samples.
+Using this parameter is only useful in case the standard trace
+header definition is changed.</dd>
+<dt><strong><code>mnemonic_delrt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "delrt")</code></dt>
+<dd>The SU trace header mnemonic specifying the delay recording time.
+Using this parameter is only useful in case the standard trace
+header definition is changed.</dd>
+<dt><strong><code>mnemonic_scalco</code></strong> :&ensp;<code>str</code>, optional <code>(default: "scalco")</code></dt>
+<dd>The SU trace header mnemonic specifying the coordinate scaler.</dd>
+<dt><strong><code>mnemonic_scalel</code></strong> :&ensp;<code>str</code>, optional <code>(default: "scalel")</code></dt>
+<dd>The SU trace header mnemonic specifying the elevation scaler.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -65,8 +88,10 @@ el.replaceWith(d);
 
         Parameters
         ----------
-        file : str or pathlib.Path
+        file : str
             The name of the SU input file to read.
+        storage_options : dict (default: None)
+            Storage options to pass to the storage backend (if remote).
         endian : char, optional (default: None)
             Endianess of the input file, &#34;&gt;&#34; for big endian, &#34;&lt;&#34; for little
             endian. If endian=None (default), then the endianess of the file
@@ -88,8 +113,12 @@ el.replaceWith(d);
             The SU trace header mnemonic specifying the delay recording time.
             Using this parameter is only useful in case the standard trace
             header definition is changed.
+        mnemonic_scalco : str, optional (default: &#34;scalco&#34;)
+            The SU trace header mnemonic specifying the coordinate scaler.
+        mnemonic_scalel : str, optional (default: &#34;scalel&#34;)
+            The SU trace header mnemonic specifying the elevation scaler.
         &#34;&#34;&#34;
-        super().__init__(file)
+        super().__init__(file, **kwargs)
 
         self._fp.endian = kwargs.pop(&#34;endian&#34;, None)
 
@@ -97,10 +126,13 @@ el.replaceWith(d);
         self._par[&#34;mnemonic_dt&#34;] = kwargs.pop(&#34;mnemonic_dt&#34;, &#34;dt&#34;)
         self._par[&#34;mnemonic_ns&#34;] = kwargs.pop(&#34;mnemonic_ns&#34;, &#34;ns&#34;)
         self._par[&#34;mnemonic_delrt&#34;] = kwargs.pop(&#34;mnemonic_delrt&#34;, &#34;delrt&#34;)
+        self._par[&#34;mnemonic_scalco&#34;] = kwargs.pop(&#34;mnemonic_scalco&#34;, &#34;scalco&#34;)
+        self._par[&#34;mnemonic_scalel&#34;] = kwargs.pop(&#34;mnemonic_scalel&#34;, &#34;scalel&#34;)
 
         if kwargs:
             for key, val in kwargs.items():
-                log.warning(&#34;Unknown argument &#39;%s&#39; with value &#39;%s&#39; encountered.&#34;, key, str(val))
+                if key != &#34;storage_options&#34;:
+                    log.warning(&#34;Unknown argument &#39;%s&#39; with value &#39;%s&#39; encountered.&#34;, key, str(val))
 
         self._fp.mode = &#34;r&#34;
         self._fp.datfmt = 5
@@ -144,15 +176,17 @@ el.replaceWith(d);
         byte_dt = self._tr.thdict[self._par[&#34;mnemonic_dt&#34;]][&#34;byte&#34;]
         type_dt = self._tr.thdict[self._par[&#34;mnemonic_dt&#34;]][&#34;type&#34;]
 
-        with open(self._fp.file, &#34;rb&#34;) as io:
-            io.seek(byte_ns-1, 0)
-            ns_le = np.fromfile(io, dtype=f&#34;&lt;{type_ns}&#34;, count=1)[0]
-            io.seek(byte_dt-1, 0)
-            dt_le = np.fromfile(io, dtype=f&#34;&lt;{type_dt}&#34;, count=1)[0]
-            io.seek(byte_ns-1, 0)
-            ns_be = np.fromfile(io, dtype=f&#34;&gt;{type_ns}&#34;, count=1)[0]
-            io.seek(byte_dt-1, 0)
-            dt_be = np.fromfile(io, dtype=f&#34;&gt;{type_dt}&#34;, count=1)[0]
+        with self._fp.fs.open(self._fp.uri, &#34;rb&#34;) as fio:
+            dtp_le = np.dtype(f&#34;&lt;{type_ns}&#34;)
+            dtp_be = np.dtype(f&#34;&gt;{type_ns}&#34;)
+            ns_bytes = fsspec.utils.read_block(fio, offset=byte_ns-1, length=dtp_le.itemsize)
+            ns_le = np.frombuffer(ns_bytes, dtype=dtp_le, count=1)[0]
+            ns_be = np.frombuffer(ns_bytes, dtype=dtp_be, count=1)[0]
+            dtp_le = np.dtype(f&#34;&lt;{type_dt}&#34;)
+            dtp_be = np.dtype(f&#34;&gt;{type_dt}&#34;)
+            dt_bytes = fsspec.utils.read_block(fio, offset=byte_dt-1, length=dtp_le.itemsize)
+            dt_le = np.frombuffer(dt_bytes, dtype=dtp_le, count=1)[0]
+            dt_be = np.frombuffer(dt_bytes, dtype=dtp_be, count=1)[0]
 
         if (dt_be &lt;= 10000) and (ns_be &lt;= 20000):  # likely big endian
             return &#39;&gt;&#39;
@@ -162,29 +196,24 @@ el.replaceWith(d);
 
     def _get_fileattr(self):
         &#34;&#34;&#34;Determine certain attributes by analzying file.&#34;&#34;&#34;
-        byte_ns = self._tr.thdict[self._par[&#34;mnemonic_ns&#34;]][&#34;byte&#34;]
-        type_ns = self._tr.thdict[self._par[&#34;mnemonic_ns&#34;]][&#34;type&#34;]
-        byte_dt = self._tr.thdict[self._par[&#34;mnemonic_dt&#34;]][&#34;byte&#34;]
-        type_dt = self._tr.thdict[self._par[&#34;mnemonic_dt&#34;]][&#34;type&#34;]
-        byte_delrt = self._tr.thdict[self._par[&#34;mnemonic_delrt&#34;]][&#34;byte&#34;]
-        type_delrt = self._tr.thdict[self._par[&#34;mnemonic_delrt&#34;]][&#34;type&#34;]
-
-        with open(self._fp.file, &#34;rb&#34;) as io:
-            io.seek(byte_ns-1, 0)
-            self._dp.ns = np.fromfile(io, dtype=f&#34;{self._fp.endian}{type_ns}&#34;, count=1)[0]
-            io.seek(byte_dt-1, 0)
-            self._dp.si = np.fromfile(io, dtype=f&#34;{self._fp.endian}{type_dt}&#34;, count=1)[0]
-            io.seek(byte_delrt-1, 0)
-            self._dp.delay = np.fromfile(io, dtype=f&#34;{self._fp.endian}{type_delrt}&#34;, count=1)[0]
-            io.seek(0, 2)
-            self._fp.filesize = io.tell()
-
         keys, formats, titles = tools._parse_hdef(self._tr.thdict, endian=self._fp.endian)
         self._tr.thdtype = tools._create_dtype(keys, formats, titles=titles)
         self._tr.thsize = self._tr.thdtype.itemsize
         if self._tr.thsize != _SUHEADSIZE:
             log.warning(&#34;Size of trace header (%d bytes) violates SU standard (%d bytes)&#34;,
                         self._tr.thsize, _SUHEADSIZE)
+
+        with self._fp.fs.open(self._fp.uri, &#34;rb&#34;) as fio:
+            header_bytes = fsspec.utils.read_block(fio, offset=self._fp.skip,
+                                                   length=self._tr.thdtype.itemsize)
+            headers = np.frombuffer(header_bytes, dtype=self._tr.thdtype, count=1)
+            self._dp.ns = headers[self._par[&#34;mnemonic_ns&#34;]][0]
+            self._dp.si = headers[self._par[&#34;mnemonic_dt&#34;]][0]
+            self._dp.delay = headers[self._par[&#34;mnemonic_delrt&#34;]][0]
+            self._dp.scalco = headers[self._par[&#34;mnemonic_scalco&#34;]][0]
+            self._dp.scalel = headers[self._par[&#34;mnemonic_scalel&#34;]][0]
+            fio.seek(0, 2)
+            self._fp.filesize = fio.tell()
 
         keys.append(&#34;data&#34;)
         formats.append(f&#34;({self._dp.ns},){self._fp.endian}&#34;
@@ -202,37 +231,11 @@ el.replaceWith(d);
 
         log.info(&#34;Number of samples per data trace: %d.&#34;, self.ns)
         log.info(&#34;Sampling interval: %s (unit as per SU standard).&#34;, str(self.vsi))
-        log.info(&#34;Delay (on first trace): %s (unit as per SU standard).&#34;, str(self.delay))
+        log.info(&#34;Delay (on first trace): %s (unit as per SU standard).&#34;, str(self._dp.delay))
+        log.info(&#34;Coordinate scaler (on first trace): %s.&#34;, str(self._dp.scalco))
+        log.info(&#34;Elevation scaler (on first trace): %s.&#34;, str(self._dp.scalel))
         log.info(&#34;Number of data traces in file: %d.&#34;, self.nt)</code></pre>
 </details>
-<div class="desc"><p>Class to deal with input of seismic files in SU format.</p>
-<p>Initialize class Reader.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
-<dd>The name of the SU input file to read.</dd>
-<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: None)</code></dt>
-<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
-endian. If endian=None (default), then the endianess of the file
-is determined automatically. This parameter can be used to force
-a specific setting.</dd>
-<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional</dt>
-<dd>The name of the SU trace header definition JSON file. Defaults
-to the standard SU trace header definition as originally provided
-by the SU segy.h source code file.</dd>
-<dt><strong><code>mnemonic_dt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "dt")</code></dt>
-<dd>The SU trace header mnemonic specifying the sampling interval.
-Using this parameter is only useful in case the standard trace
-header definition is changed.</dd>
-<dt><strong><code>mnemonic_ns</code></strong> :&ensp;<code>str</code>, optional <code>(default: "ns")</code></dt>
-<dd>The SU trace header mnemonic specifying the number of samples.
-Using this parameter is only useful in case the standard trace
-header definition is changed.</dd>
-<dt><strong><code>mnemonic_delrt</code></strong> :&ensp;<code>str</code>, optional <code>(default: "delrt")</code></dt>
-<dd>The SU trace header mnemonic specifying the delay recording time.
-Using this parameter is only useful in case the standard trace
-header definition is changed.</dd>
-</dl></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="seisio.reader.Reader" href="reader.html#seisio.reader.Reader">Reader</a></li>
@@ -245,9 +248,11 @@ header definition is changed.</dd>
 <ul class="hlist">
 <li><code><a title="seisio.reader.Reader.batches" href="reader.html#seisio.reader.Reader.batches">batches</a></code></li>
 <li><code><a title="seisio.reader.Reader.batches_of_headers" href="reader.html#seisio.reader.Reader.batches_of_headers">batches_of_headers</a></code></li>
+<li><code><a title="seisio.reader.Reader.coord_scaler" href="reader.html#seisio.reader.Reader.coord_scaler">coord_scaler</a></code></li>
 <li><code><a title="seisio.reader.Reader.create_index" href="reader.html#seisio.reader.Reader.create_index">create_index</a></code></li>
 <li><code><a title="seisio.reader.Reader.dataformat" href="seisio.html#seisio.seisio.SeisIO.dataformat">dataformat</a></code></li>
 <li><code><a title="seisio.reader.Reader.delay" href="reader.html#seisio.reader.Reader.delay">delay</a></code></li>
+<li><code><a title="seisio.reader.Reader.elev_scaler" href="reader.html#seisio.reader.Reader.elev_scaler">elev_scaler</a></code></li>
 <li><code><a title="seisio.reader.Reader.endianess" href="seisio.html#seisio.seisio.SeisIO.endianess">endianess</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensemble_keys" href="reader.html#seisio.reader.Reader.ensemble_keys">ensemble_keys</a></code></li>
 <li><code><a title="seisio.reader.Reader.ensembles" href="reader.html#seisio.reader.Reader.ensembles">ensembles</a></code></li>
@@ -276,9 +281,11 @@ header definition is changed.</dd>
 <li><code><a title="seisio.reader.Reader.read_multibatch_of_traces" href="reader.html#seisio.reader.Reader.read_multibatch_of_traces">read_multibatch_of_traces</a></code></li>
 <li><code><a title="seisio.reader.Reader.read_traces" href="reader.html#seisio.reader.Reader.read_traces">read_traces</a></code></li>
 <li><code><a title="seisio.reader.Reader.read_vslice" href="reader.html#seisio.reader.Reader.read_vslice">read_vslice</a></code></li>
+<li><code><a title="seisio.reader.Reader.thdtype" href="seisio.html#seisio.seisio.SeisIO.thdtype">thdtype</a></code></li>
 <li><code><a title="seisio.reader.Reader.thsize" href="seisio.html#seisio.seisio.SeisIO.thsize">thsize</a></code></li>
 <li><code><a title="seisio.reader.Reader.thstat" href="reader.html#seisio.reader.Reader.thstat">thstat</a></code></li>
 <li><code><a title="seisio.reader.Reader.traces" href="reader.html#seisio.reader.Reader.traces">traces</a></code></li>
+<li><code><a title="seisio.reader.Reader.trdtype" href="seisio.html#seisio.seisio.SeisIO.trdtype">trdtype</a></code></li>
 <li><code><a title="seisio.reader.Reader.trsize" href="seisio.html#seisio.seisio.SeisIO.trsize">trsize</a></code></li>
 <li><code><a title="seisio.reader.Reader.vaxis" href="reader.html#seisio.reader.Reader.vaxis">vaxis</a></code></li>
 <li><code><a title="seisio.reader.Reader.vsi" href="reader.html#seisio.reader.Reader.vsi">vsi</a></code></li>
@@ -291,12 +298,35 @@ header definition is changed.</dd>
 <span>(</span><span>file, ns=None, mode='w', **kwargs)</span>
 </code></dt>
 <dd>
+<div class="desc"><p>Class to deal with ouput of seismic files in SU format.</p>
+<p>Initialize class Writer.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
+<dd>The name of the SU output file to write.</dd>
+<dt><strong><code>ns</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of samples per output trace.</dd>
+<dt><strong><code>storage_options</code></strong> :&ensp;<code>dict (default: None)</code></dt>
+<dd>&nbsp;</dd>
+<dt>Storage options to pass to the storage backend (if remote).</dt>
+<dt><strong><code>mode</code></strong> :&ensp;<code>char</code>, optional <code>(default: "w")</code></dt>
+<dd>File opening mode. "w" writes a new file, or truncates an existing
+file if it already exists. "a" writes a new file, or appends to an
+existing file if it already exists.</dd>
+<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: "=")</code></dt>
+<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
+endian, "=" for native endian.</dd>
+<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The name of the SU trace header definition JSON file. Defaults to
+the standard SU trace header definition as originally provided by
+the SU segy.h source code file.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Writer(writer.Writer):
-    &#34;&#34;&#34;Class to deal with input of seismic files in SU format.&#34;&#34;&#34;
+    &#34;&#34;&#34;Class to deal with ouput of seismic files in SU format.&#34;&#34;&#34;
 
     def __init__(self, file, ns=None, mode=&#34;w&#34;, **kwargs):
         &#34;&#34;&#34;
@@ -305,9 +335,11 @@ header definition is changed.</dd>
         Parameters
         ----------
         file : str or pathlib.Path
-            The name of the SU input file to read.
+            The name of the SU output file to write.
         ns : int
             Number of samples per output trace.
+        storage_options : dict (default: None)
+           Storage options to pass to the storage backend (if remote).
         mode : char, optional (default: &#34;w&#34;)
             File opening mode. &#34;w&#34; writes a new file, or truncates an existing
             file if it already exists. &#34;a&#34; writes a new file, or appends to an
@@ -320,7 +352,7 @@ header definition is changed.</dd>
             the standard SU trace header definition as originally provided by
             the SU segy.h source code file.
         &#34;&#34;&#34;
-        super().__init__(file, mode)
+        super().__init__(file, mode, **kwargs)
 
         self._dp.ns = ns
         self._fp.endian = kwargs.pop(&#34;endian&#34;, &#34;=&#34;)
@@ -370,26 +402,6 @@ header definition is changed.</dd>
         log.info(&#34;Byte offset of first trace relative to start of file: %d bytes.&#34;,
                  self._fp.skip)</code></pre>
 </details>
-<div class="desc"><p>Class to deal with input of seismic files in SU format.</p>
-<p>Initialize class Writer.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>file</code></strong> :&ensp;<code>str</code> or <code>pathlib.Path</code></dt>
-<dd>The name of the SU input file to read.</dd>
-<dt><strong><code>ns</code></strong> :&ensp;<code>int</code></dt>
-<dd>Number of samples per output trace.</dd>
-<dt><strong><code>mode</code></strong> :&ensp;<code>char</code>, optional <code>(default: "w")</code></dt>
-<dd>File opening mode. "w" writes a new file, or truncates an existing
-file if it already exists. "a" writes a new file, or appends to an
-existing file if it already exists.</dd>
-<dt><strong><code>endian</code></strong> :&ensp;<code>char</code>, optional <code>(default: "=")</code></dt>
-<dd>Endianess of the input file, "&gt;" for big endian, "&lt;" for little
-endian, "=" for native endian.</dd>
-<dt><strong><code>thdef</code></strong> :&ensp;<code>str</code>, optional</dt>
-<dd>The name of the SU trace header definition JSON file. Defaults to
-the standard SU trace header definition as originally provided by
-the SU segy.h source code file.</dd>
-</dl></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="seisio.writer.Writer" href="writer.html#seisio.writer.Writer">Writer</a></li>
@@ -411,8 +423,10 @@ the SU segy.h source code file.</dd>
 <li><code><a title="seisio.writer.Writer.nsamples" href="seisio.html#seisio.seisio.SeisIO.nsamples">nsamples</a></code></li>
 <li><code><a title="seisio.writer.Writer.nt" href="seisio.html#seisio.seisio.SeisIO.nt">nt</a></code></li>
 <li><code><a title="seisio.writer.Writer.ntraces" href="seisio.html#seisio.seisio.SeisIO.ntraces">ntraces</a></code></li>
+<li><code><a title="seisio.writer.Writer.thdtype" href="seisio.html#seisio.seisio.SeisIO.thdtype">thdtype</a></code></li>
 <li><code><a title="seisio.writer.Writer.thsize" href="seisio.html#seisio.seisio.SeisIO.thsize">thsize</a></code></li>
 <li><code><a title="seisio.writer.Writer.traces_template" href="writer.html#seisio.writer.Writer.traces_template">traces_template</a></code></li>
+<li><code><a title="seisio.writer.Writer.trdtype" href="seisio.html#seisio.seisio.SeisIO.trdtype">trdtype</a></code></li>
 <li><code><a title="seisio.writer.Writer.trsize" href="seisio.html#seisio.seisio.SeisIO.trsize">trsize</a></code></li>
 <li><code><a title="seisio.writer.Writer.write_traces" href="writer.html#seisio.writer.Writer.write_traces">write_traces</a></code></li>
 </ul>
@@ -446,7 +460,7 @@ the SU segy.h source code file.</dd>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

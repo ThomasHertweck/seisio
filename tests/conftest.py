@@ -48,6 +48,8 @@ def dummy_su_file(tmp_path, request):
         24:  (1, 'i'),     # cdpt = 1 (4-byte int at byte 24)
         28:  (1, 'h'),     # trid = 1 (2-byte short at byte 38)
         36:  (1, 'i'),     # offset = 1 (4-byte int at byte 36)
+        68:  (-1, 'h'),    # scalel = -1 (2-byte short at byte 68)
+        70:  (1, 'h'),     # scalco = 1 (2-byte short at byte 70)
         108: (42, 'h'),    # delrt = 10 (2-byte short at byte 108)
         114: (ns, 'h'),    # ns = ns samples (2-byte short at byte 114)
         116: (2000, 'h')   # dt = 2000 microseconds / 2ms (2-byte short at byte 116)
@@ -245,14 +247,16 @@ def dummy_segy_file(tmp_path, request):
 
             # Standard 240-byte Trace Header
             header_values = {
-                0: (i + 1, "i"),              # Byte 1-4: tracl
-                4: (99, "i"),                 # Byte 5-8: tracr
-                8: (fldr, "i"),               # Byte 9-12: fldr
-                12: (tracf, "i"),             # Byte 13-16: tracf
-                20: (cdp, "i"),               # Byte 21-24: cdp
-                24: (cdpt, "i"),              # Byte 25-28: cdpt
-                28: (1, "h"),                 # Byte 29-30: trid
-                36: (offset, "i"),            # Byte 37-40: offset
+                0:   (i + 1, "i"),            # Byte 1-4: tracl
+                4:   (99, "i"),               # Byte 5-8: tracr
+                8:   (fldr, "i"),             # Byte 9-12: fldr
+                12:  (tracf, "i"),            # Byte 13-16: tracf
+                20:  (cdp, "i"),              # Byte 21-24: cdp
+                24:  (cdpt, "i"),             # Byte 25-28: cdpt
+                28:  (1, "h"),                # Byte 29-30: trid
+                36:  (offset, "i"),           # Byte 37-40: offset
+                68:  (-1, 'h'),               # Byte 69-70: scalel
+                70:  (1, 'h'),                # Byte 71-72: scalco
                 108: (10, "h"),               # Byte 109-110: delrt
                 114: (ns, "h"),               # Byte 115-116: ns
                 116: (2000, "h"),             # Byte 117-118: dt
@@ -400,14 +404,16 @@ def dummy_segy_file_special(tmp_path, request):
 
             # Standard 240-byte Trace Header
             header_values = {
-                0: (i + 1, "i"),              # Byte 1-4: tracl
-                4: (99, "i"),                 # Byte 5-8: tracr
-                8: (fldr, "i"),               # Byte 9-12: fldr
-                12: (tracf, "i"),             # Byte 13-16: tracf
-                20: (cdp, "i"),               # Byte 21-24: cdp
-                24: (cdpt, "i"),              # Byte 25-28: cdpt
-                28: (1, "h"),                 # Byte 29-30: trid
-                36: (offset, "i"),            # Byte 37-40: offset
+                0:   (i + 1, "i"),            # Byte 1-4: tracl
+                4:   (99, "i"),               # Byte 5-8: tracr
+                8:   (fldr, "i"),             # Byte 9-12: fldr
+                12:  (tracf, "i"),            # Byte 13-16: tracf
+                20:  (cdp, "i"),              # Byte 21-24: cdp
+                24:  (cdpt, "i"),             # Byte 25-28: cdpt
+                28:  (1, "h"),                # Byte 29-30: trid
+                36:  (offset, "i"),           # Byte 37-40: offset
+                68:  (-1, 'h'),               # Byte 69-70: scalel
+                70:  (1, 'h'),                # Byte 71-72: scalco
                 108: (10, "h"),               # Byte 109-110: delrt
                 114: (ns, "h"),               # Byte 115-116: ns
                 116: (2000, "h"),             # Byte 117-118: dt

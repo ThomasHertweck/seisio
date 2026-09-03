@@ -62,6 +62,12 @@ def test_open(dummy_su_file):
 
     v = sio.delay
     assert v == 42
+    
+    v = sio.coord_scaler
+    assert v == 1
+    
+    v = sio.elev_scaler
+    assert v == -1
 
     v = sio.vsi
     assert v == 2000
@@ -70,6 +76,12 @@ def test_open(dummy_su_file):
     assert v[0]*1000 == 42
     assert v[-1] == pytest.approx(sio.delay*1e-3 + (sio.ns-1)*sio.vsi*1e-6)
     assert len(v) == sio.ns
+    
+    v = sio.trdtype
+    assert isinstance(v, np.dtype)
+
+    v = sio.thdtype
+    assert isinstance(v, np.dtype)
 
 def test_open_json(dummy_su_file, tmp_path):
     thdef_json = tmp_path / "short.json"
@@ -77,14 +89,16 @@ def test_open_json(dummy_su_file, tmp_path):
          "tracr": {"byte": 5, "type": "i", "desc": "BBB"},
          "ns": {"byte": 9, "type": "h", "desc": "CCC"},
          "dt": {"byte": 11, "type": "h", "desc": "DDD"},
-         "delrt": {"byte": 13, "type": "h", "desc": "EEE"}}
+         "delrt": {"byte": 13, "type": "h", "desc": "EEE"},
+         "scalel": {"byte": 15, "type": "h", "desc": "FFF"},
+         "scalco": {"byte": 17, "type": "h", "desc": "GGG"}}
     thdef_json.write_text(json.dumps(d, indent=4))
     sin = seisio.input(dummy_su_file, thdef=thdef_json)
     assert sin is not None
 
 def test_open_nonexist(tmp_path):
     file_path = tmp_path / "does_not_exist.su"
-    with pytest.raises(ValueError):
+    with pytest.raises(FileNotFoundError):
         seisio.input(file_path)
 
 def test_read_all_headers(dummy_su_file):
@@ -872,3 +886,29 @@ def test_write(tmp_path, dummy_su_file):
     data2 = np.zeros_like(data, dtype=int)
     nt += sol.write_traces(data=data2, headers=headers)
     assert nt == 2*sin.nt
+
+def test_write_single_trace(tmp_path, dummy_su_file):
+    file_path = tmp_path / "dummy_out_single.su"
+
+    sin = seisio.input(dummy_su_file)
+    assert sin is not None
+    dataset = sin.read_traces(0)
+    ns = sin.ns
+    
+    sol = seisio.output(file_path, ns=ns)
+    assert sol is not None
+    
+    nt_written = sol.write_traces(traces=dataset)
+    assert nt_written == 1
+    
+    headers = tools.remove_mnemonic(dataset, names=["data"])
+    assert headers is not None
+    
+    df = pd.DataFrame(headers)
+    nt_written += sol.write_traces(data=dataset["data"], headers=df)
+    assert nt_written == 2
+    
+    sin_check = seisio.input(file_path)
+    assert sin_check.ns == ns
+    assert sin_check.nt == 2
+
