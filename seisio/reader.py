@@ -1245,3 +1245,65 @@ class Reader(seisio.SeisIO, abc.ABC):
             log.info("%s", "--------- END ---------")
 
         return df
+
+    def __getitem__(self, item):
+        """
+        Return traces based on given item.
+
+        It is a shortcut for different trace reading methods. It is primarily
+        provided as a convenient quick way to read traces with default
+        settings for the underlying function calls.
+
+        Parameters
+        ----------
+        item : int, list(int), slice
+            Requested trace numbers (zero-based).
+
+        Returns
+        -------
+        Numpy structured array
+            Trace headers and data.
+        """
+        reverse = 1
+        # single integer indexing: obj[0] or obj[-1]
+        if isinstance(item, int):
+            return self.read_traces(item)
+        # multiple integer values as list
+        elif isinstance(item, list):
+            if not all(isinstance(i, int) for i in item):
+                raise TypeError("Index must contain only integers.")
+            indices = set(item)
+            if len(indices) != len(item):
+                log.warning("Requested indices contained duplicate values.")
+            return self.read_traces(*indices)
+        # slicing: obj[1:3] or obj[::2]
+        elif isinstance(item, slice):
+            start, stop, step = item.indices(self._dp.nt)
+            if step < 0:
+                reverse = -1
+                asc_start = stop + 1
+                asc_stop = start + 1
+                asc_step = abs(step)
+            else:
+                asc_start = start
+                asc_stop = stop
+                asc_step = step
+            log.debug("getitem: start=%d, stop=%d, step=%d, asc_start=%d, asc_stop=%d, asc_step=%d",
+                      start, stop, step, asc_start, asc_stop, asc_step)
+            if asc_stop < asc_start:
+                raise ValueError("Illegal slice provided.")
+            if asc_step == 1:
+                if asc_start == 0 and asc_stop == self._dp.nt:
+                    return self.read_dataset()[::reverse]
+                else:
+                    ntraces = asc_stop-asc_start # stop is one beyond the last index to read
+                    return self.read_batch_of_traces(start=asc_start, ntraces=ntraces)[::reverse]
+            else:
+                indices = range(asc_start, asc_stop, asc_step)
+                return self.read_traces(*indices)[::reverse]
+        # tuple indexing (multidimensional / comma-separated): obj[1, 2]
+        elif isinstance(item, tuple):
+            raise IndexError("Multidimensional indexing currently not supported.")
+        # fallback
+        else:
+            raise TypeError(f"Invalid index type: {type(item).__name__}")

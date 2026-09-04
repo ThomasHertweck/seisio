@@ -48,6 +48,9 @@ def test_open(dummy_su_file):
     v = sio.nt
     assert v == 12
 
+    v = len(sio)
+    assert v == 12
+
     v = sio.ntraces
     assert v == 12
 
@@ -689,6 +692,62 @@ def test_read_ensembles_mnemonics(dummy_su_file):
         assert data.shape == (4, 20)
         assert data[0, 19] == i*4000+19
         assert len(hist) == i+1
+
+def test_read_getitem(dummy_su_file):
+    sio = seisio.input(dummy_su_file)
+
+    nt = len(sio)
+    assert nt == 12
+
+    dataset = sio[0]
+    assert dataset["tracl"][0] == 1
+
+    dataset = sio[0:2]
+    assert dataset["tracl"][0] == 1
+    assert dataset["tracl"][1] == 2
+
+    dataset = sio[[0, 1, 2]]
+    assert dataset["tracl"][0] == 1
+    assert dataset["tracl"][2] == 3
+
+    dataset = sio[[0, 1, 2, 1, 0]]
+    assert len(dataset) == 3
+
+    dataset = sio[1:nt-1:1]
+    assert len(dataset) == nt-2
+
+    dataset = sio[::]
+    assert len(dataset) == nt
+    assert dataset["tracl"][0] == 1
+    assert dataset["tracl"][-1] == 12
+
+    dataset = sio[::-1]
+    assert len(dataset) == nt
+    assert dataset["tracl"][0] == 12
+    assert dataset["tracl"][-1] == 1
+
+    dataset = sio[:1000:]
+    assert len(dataset) == nt
+
+    dataset = sio[::2]
+    assert len(dataset) == nt//2
+    assert dataset["tracl"][0] == 1
+    assert dataset["tracl"][-1] == 11
+
+    dataset = sio[-1:None:-2]
+    assert len(dataset) == nt//2
+    assert dataset["tracl"][0] == 11
+    assert dataset["tracl"][-1] == 1
+
+    dataset = sio[-1:None:-1]
+    assert len(dataset) == nt
+    assert dataset["tracl"][0] == 12
+    assert dataset["tracl"][-1] == 1
+
+    dataset = sio[None:None:-2]
+    assert len(dataset) == nt//2
+    assert dataset["tracl"][0] == 11
+    assert dataset["tracl"][-1] == 1
 
 def test_thstat_default(dummy_su_file):
     sio = seisio.input(dummy_su_file)

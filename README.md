@@ -22,6 +22,7 @@ There are quite a few great Python packages available to read and/or write seism
 * Flexible and customizable header definitions via JSON parameter file. You need to pick up a "float" value at byte 32 in the trace header? Or you would like to name the SU header `cmp` instead of `cdp`? Or you have values of non-standard type "double" in the trace headers? No problem! You can also remap headers when outputting files and the current trace header table does not match the output trace header table.
 * Allows reading a subset of trace header mnemonics instead of all trace header mnemonics.
 * Allows reading of time/depth slices with optional, automatic padding of trace positions.
+* Convenient, well-known slicing syntax available to read traces.
 * Good I/O performance (see below) and hardly any external dependencies.
 * Automatic detection of endian byte order. I/O of both little- and big-endian byte order possible.
 * Automatic detection of the SEG-Y textual header encoding (ASCII or EBCDIC).
@@ -111,8 +112,13 @@ dataset = sio.read_dataset()
 ```
 That's it, you're done. The variable `dataset` is a Numpy structured array that contains all the trace headers and the data themselves (don't try this with a large data set unless you have plenty of RAM available - large data sets should be read in a different way, see below). The code will figure out the type of seismic file from the suffix of the file name - if your file comes with an unusual suffix or no suffix at all, you may have to specify the file type explicitly (e.g., `filetype="SGY"`).
 
-Extracting, for instance, the offset values for all traces is as simple as
+You could also use a convenient
+```
+dataset = sio[:]
+```
+to read the entire data set. The special method `getitem` can work with single integer values, a list of integer values, and slices. It is primarily provided as a convenient shortcut for various methods (shown below) to read traces. A `sio[::2]` would obviously read every second trace, or a `sio[0:10]` would read 10 traces in total (from index 0 to index 9; as usual, the stop index is not included).
 
+Extracting, for instance, the offset values for all traces is as simple as
 ```
 offsets = dataset["offset"]
 ```
@@ -121,16 +127,16 @@ which will give you a 1D array of size `ntraces` that contains the offset values
 ```
 data = dataset["data"]
 ```
-as 2D Numpy array with a shape of `(ntraces, nsamples)`. Various data-related parameters can be obtained as soon as the seisio object is established, for instance:
+as 2D Numpy array with a shape of `(ntraces, nsamples)` (if all traces are read). Various data-related parameters can be obtained as soon as the seisio object is established, for instance:
 
 ```
 ntraces = sio.nt               # or sio.ntraces
 nsamples = sio.ns              # or sio.nsamples
 sampling_interval = sio.vsi
 ```
+You could also use `len(sio)` to get the number of traces in the file.
 
 If you would like to sort your data set in a certain way, this can be achieved by
-
 ```
 dataset_sorted = np.sort(dataset, order=["offset"])
 ```

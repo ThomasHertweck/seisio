@@ -38,6 +38,9 @@ def test_open(sample_seg2_file):
     v = sio.ntraces
     assert v == 48
 
+    v = len(sio)
+    assert v == 48
+
     thsize = sio.thsize
     assert thsize >= 240
 

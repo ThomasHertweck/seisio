@@ -410,3 +410,13 @@ class SeisIO(abc.ABC):
 
         self._tr.trdtype = tools._create_dtype(th_k, th_f, titles=th_t)
         self._tr.trsize = self._tr.trdtype.itemsize
+
+    def __len__(self):
+        """
+        Implementation of len() for seisio.
+
+        Returns
+        -------
+        number of traces in file
+        """
+        return self._dp.nt

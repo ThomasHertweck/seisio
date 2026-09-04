@@ -1,5 +1,4 @@
 
-import numpy as np
 import pytest
 import seisio
 
@@ -10,6 +9,9 @@ def test_input_remote_http_segy():
     assert sio is not None
 
     v = sio.nt
+    assert v == 64860
+
+    v = len(sio)
     assert v == 64860
 
     v = sio.ns
